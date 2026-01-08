@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% block title %}Profile | PlotCraft{% endblock %}
+{% block content %}
+<script src="https://cdn.tailwindcss.com"></script>
+
+<div class="min-h-screen bg-gray-100 font-sans flex justify-center py-10 px-4">
+  
+  <div class="bg-white shadow-2xl rounded-2xl flex flex-col md:flex-row w-full max-w-5xl overflow-hidden border border-[#2F4F4F]/10">
+    
+    <div class="w-full md:w-72 bg-[#2F4F4F] p-8 flex flex-col justify-between text-[#FAEBD7]">
+      <div>
+        <h2 class="text-2xl font-bold mb-8 text-white flex items-center gap-2">
+            <span class="text-[#DAA520]">⚙️</span> Settings
+        </h2>
+
+        <ul class="space-y-2">
+           <li>
+               <a href="{% url 'plotcraft:profile' %}" class="block px-4 py-3 bg-[#FAEBD7]/10 text-white rounded-lg font-medium border-l-4 border-[#DAA520] shadow-sm">
+                   บัญชีผู้ใช้ (Account)
+               </a>
+           </li>
+           <li>
+               <a href="{% url 'plotcraft:quickguide' %}" class="block px-4 py-3 text-[#FAEBD7]/70 hover:bg-[#FAEBD7]/5 hover:text-white rounded-lg transition">
+                   คู่มือการใช้งาน (Guide)
+               </a>
+           </li>
+        </ul>
+      </div>
+
+      <div class="mt-8 pt-8 border-t border-[#FAEBD7]/10 space-y-4">
+                        <a href="{% url 'plotcraft:landing' %}" class="flex items-center gap-2 text-[#FAEBD7]/70 hover:text-white transition px-4">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+              ออกจากระบบ
+          </a>
+      </div>
+
+    </div>
+
+    <div class="flex-1 p-8 md:p-12 overflow-y-auto">
+        <h1 class="text-3xl font-extrabold text-[#2F4F4F] mb-2">แก้ไขโปรไฟล์</h1>
+        <p class="text-gray-500 mb-8">จัดการข้อมูลส่วนตัวและรูปภาพของคุณ</p>
+
+        <form method="post" enctype="multipart/form-data" class="space-y-8">
+            {% csrf_token %}
+            
+            <div class="flex items-center gap-8 pb-8 border-b border-gray-100">
+                <div class="relative group">
+                    <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-[#DAA520]/20 shadow-md bg-gray-200">
+                        {% if user.profile.image %}
+                            <img src="{{ user.profile.image.url }}" alt="Profile" class="w-full h-full object-cover">
+                        {% else %}
+                            <div class="w-full h-full flex items-center justify-center text-[#2F4F4F] text-4xl font-bold">
+                                {{ user.username|slice:":1"|upper }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <label for="id_image" class="absolute bottom-1 right-1 bg-[#DAA520] text-white p-2.5 rounded-full shadow-lg cursor-pointer hover:bg-[#b8860b] hover:scale-110 transition-all duration-200 z-10">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </label>
+
+                    <div class="hidden">
+                        {{ p_form.image }}
+                    </div>
+                </div>
+                
+                <div class="flex-1">
+                    <h3 class="font-bold text-xl text-[#2F4F4F]">{{ user.display_name|default:user.username }}</h3>
+                    <p class="text-sm text-gray-500 mb-2">Member since {{ user.date_joined|date:"F Y" }}</p>
+                    <span class="inline-block px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full">
+                        {{ user.role|default:"Writer" }}
+                    </span>
+                </div>
+            </div>
+
+            <div class="grid gap-6">
+                <div>
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ชื่อที่ใช้แสดง (Display Name)</label>
+                    {{ u_form.display_name }}
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ชื่อผู้ใช้ (Username)</label>
+                    <input type="text" value="{{ user.username }}" readonly 
+                        class="w-full px-4 py-2 bg-gray-100 text-gray-500 border border-gray-200 rounded-lg cursor-not-allowed" />
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">อีเมล (Email)</label>
+                        {{ u_form.email }}
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">เบอร์โทรศัพท์</label>
+                        {{ u_form.phone }}
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">แนะนำตัว (Bio)</label>
+                    {{ p_form.bio }}
+                </div>
+            </div>
+
+            <div class="pt-6 border-t border-gray-100 mt-6">
+                <button type="submit" name="save_changes" class="px-8 py-3 bg-[#2F4F4F] hover:bg-[#1a3030] text-[#FAEBD7] font-bold rounded-xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5 flex items-center gap-2">
+                    บันทึกการเปลี่ยนแปลง
+                </button>
+            </div>
+        </form>
+
+        <div class="mt-16 pt-8 border-t-2 border-red-50">
+            <h3 class="text-red-600 font-bold mb-4 text-sm uppercase tracking-wide flex items-center gap-2">
+                ⚠️ Danger Zone
+            </h3>
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 bg-red-50 rounded-xl border border-red-100">
+                <p class="text-red-800 text-sm">การลบบัญชีจะทำให้ข้อมูลนิยาย ตัวละคร และการตั้งค่าทั้งหมดหายไปถาวร</p>
+                <form method="post" onsubmit="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบบัญชีนี้? การกระทำนี้ไม่สามารถย้อนกลับได้!');">
+                    {% csrf_token %}
+                    <button type="submit" name="delete_account" class="px-4 py-2 bg-white border border-red-200 text-red-600 font-bold rounded-lg hover:bg-red-600 hover:text-white transition shadow-sm whitespace-nowrap text-sm">
+                        ลบบัญชีถาวร
+                    </button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

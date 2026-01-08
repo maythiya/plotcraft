@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block content %}
+<script src="https://cdn.tailwindcss.com"></script>
+
+<div class="min-h-screen py-8 px-4 sm:px-6 lg:px-8 font-sans text-[#2F4F4F]">
+  
+  <div class="max-w-7xl mx-auto">
+    <div class="flex items-center justify-between mb-8">
+      <div class="flex items-center gap-3">
+        <div class="p-2 bg-[#2F4F4F] rounded-lg text-[#FAEBD7]">
+           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+           </svg>
+        </div>
+        <h1 class="text-3xl font-bold text-[#2F4F4F]">สถานที่ทั้งหมด (Locations)</h1>
+      </div>
+      
+      <a href="{% url 'plotcraft:location_create' %}" class="px-5 py-2 bg-[#DAA520] hover:bg-[#b8860b] text-white rounded-lg shadow-md hover:shadow-lg transition font-semibold flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        สร้างสถานที่ใหม่
+      </a>
+    </div>
+
+    {% if locations %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {% for location in locations %}
+        <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transition duration-300 flex flex-col overflow-hidden border border-[#2F4F4F]/10 group h-full">
+          
+          <div class="relative w-full h-56 overflow-hidden bg-gray-100">
+            {% if location.map_image %}
+              <img src="{{ location.map_image.url }}" alt="{{ location.name }}" class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
+            {% else %}
+              <div class="w-full h-full bg-[#2F4F4F] flex items-center justify-center text-6xl text-[#FAEBD7] opacity-90">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                </svg>
+              </div>
+            {% endif %}
+            
+            <div class="absolute inset-0 bg-linear-to-t from-[#2F4F4F]/90 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition duration-300"></div>
+            
+            <div class="absolute bottom-4 left-4 right-4">
+                 <h2 class="text-2xl font-bold text-white drop-shadow-md truncate">{{ location.name }}</h2>
+            </div>
+          </div>
+
+          <div class="p-6 flex-1 flex flex-col relative">
+            <div class="absolute top-0 left-0 w-full h-1 bg-[#DAA520]"></div>
+
+            <div class="flex flex-wrap gap-2 mb-3">
+                {% if location.project %}
+                <span class="inline-block px-2 py-1 bg-[#FAEBD7] text-[#2F4F4F] text-xs font-bold rounded-md border border-[#2F4F4F]/10 truncate max-w-[150px]">
+                    📖 {{ location.project.title|default:location.project }}
+                </span>
+                {% endif %}
+                
+                {% if location.world_type %}
+                <span class="inline-block px-2 py-1 bg-[#2F4F4F]/10 text-[#2F4F4F] text-xs font-bold rounded-md border border-[#2F4F4F]/10">
+                    🌍 {{ location.world_type }}
+                </span>
+                {% endif %}
+            </div>
+
+            <div class="text-gray-600 mb-6 text-sm line-clamp-3 leading-relaxed grow">
+                {% if location.terrain %}
+                    <span class="font-bold text-[#DAA520]">ภูมิประเทศ:</span> {{ location.terrain }}
+                {% elif location.history %}
+                    <span class="font-bold text-[#DAA520]">ประวัติ:</span> {{ location.history }}
+                {% else %}
+                    <span class="italic text-gray-400">ยังไม่มีรายละเอียด...</span>
+                {% endif %}
+            </div>
+
+            <div class="mt-auto flex items-center justify-between pt-4 border-t border-gray-100">
+              <a href="{% url 'plotcraft:location_detail' location.id %}" class="px-4 py-2 border border-[#2F4F4F] rounded-lg text-[#2F4F4F] font-semibold text-sm flex items-center gap-2 hover:bg-[#2F4F4F] hover:text-[#FAEBD7] transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                ดูข้อมูล
+              </a>
+
+              <a href="{% url 'plotcraft:location_edit' location.id %}" class="text-[#DAA520] hover:text-[#b8860b] font-medium text-sm flex items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+                แก้ไข
+              </a>
+            </div>
+
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    
+    {% else %}
+    <div class="bg-white rounded-xl p-12 text-center border border-[#FAEBD7] shadow-sm flex flex-col items-center justify-center min-h-[300px]">
+        <div class="w-20 h-20 bg-[#FAEBD7] rounded-full flex items-center justify-center text-4xl mb-6 text-[#2F4F4F]">
+            🗺️
+        </div>
+        <h3 class="text-2xl font-bold text-[#2F4F4F] mb-2">ยังไม่มีสถานที่ในระบบ</h3>
+        <p class="text-gray-500 mb-8 max-w-md">เริ่มสร้างโลกของคุณด้วยการเพิ่มสถานที่แรก ไม่ว่าจะเป็นเมือง ป่า หรืออาณาจักร</p>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

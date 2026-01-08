@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+{% block content %}
+<script src="https://cdn.tailwindcss.com"></script>
+
+<div class="min-h-screen py-8 px-4 sm:px-6 lg:px-8 font-sans text-[#2F4F4F]">
+    
+    <div class="max-w-5xl mx-auto flex items-center justify-between mb-8">
+        <h1 class="text-3xl font-bold flex items-center text-[#2F4F4F]">
+            <span class="p-2 bg-[#2F4F4F] rounded-lg text-[#FAEBD7] mr-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+            </span>
+            สร้าง / แก้ไข ตัวละคร (Character)
+        </h1>
+        <a href="{% url 'plotcraft:character_list' %}" class="text-[#2F4F4F] hover:text-[#DAA520] transition duration-150 font-medium flex items-center text-sm">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            ย้อนกลับ
+        </a>
+    </div>
+
+    <div class="max-w-5xl mx-auto bg-white shadow-xl rounded-2xl p-8 border border-[#2F4F4F]/10 relative overflow-hidden" x-data="imagePreview()">
+        
+        <div class="absolute top-0 left-0 w-full h-1.5 bg-linear-to-r from-[#2F4F4F] to-[#DAA520]"></div>
+
+        <form method="post" enctype="multipart/form-data" id="character-form">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+                <div class="mb-6 p-4 text-sm text-red-700 bg-red-100 border border-red-400 rounded-lg">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <div class="flex flex-col-reverse md:flex-row gap-8 mb-10">
+                
+                <div class="flex-1 space-y-6">
+                    <div class="flex items-center gap-2 mb-2 border-b border-[#FAEBD7] pb-2">
+                        <span class="text-[#DAA520]">✦</span>
+                        <h2 class="text-xl font-bold text-[#2F4F4F]">ข้อมูลทั่วไป (Identity)</h2>
+                    </div>
+
+                    <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/20">
+                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">
+                            อยู่ในเรื่อง / โปรเจกต์ (Story)
+                            <span class="text-xs text-[#2F4F4F]/60 font-normal ml-2">*เลือกโน้ตที่เป็นชื่อเรื่อง</span>
+                        </label>
+                        <div class="w-full">
+                            {{ form.project }}
+                        </div>
+                    </div>
+
+                    <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10 focus-within:ring-2 ring-[#DAA520]/50 transition">
+                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ชื่อตัวละคร <span class="text-red-500">*</span></label>
+                        {{ form.name }}
+                        {% if form.name.errors %}<p class="text-red-600 text-xs mt-1">{{ form.name.errors.0 }}</p>{% endif %}
+                    </div>
+
+                    <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
+                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ชื่อเล่น / ฉายา (Alias)</label>
+                        {{ form.alias }}
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
+                            <label class="block text-sm font-bold text-[#2F4F4F] mb-1">อายุ</label>
+                            {{ form.age }}
+                        </div>
+                        <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
+                            <label class="block text-sm font-bold text-[#2F4F4F] mb-1">วันเกิด</label>
+                            {{ form.birth_date }}
+                        </div>
+                        <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
+                            <label class="block text-sm font-bold text-[#2F4F4F] mb-1">เพศ</label>
+                            {{ form.gender }}
+                        </div>
+                        <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
+                            <label class="block text-sm font-bold text-[#2F4F4F] mb-1">เผ่าพันธุ์</label>
+                            {{ form.species }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-full md:w-1/3 flex flex-col">
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-2">รูปประจำตัว (Portrait)</label>
+                    <div class="relative w-full aspect-3/4 rounded-xl overflow-hidden border-2 border-dashed border-[#DAA520]/50 bg-[#FAEBD7]/10 flex items-center justify-center hover:bg-[#FAEBD7]/20 transition cursor-pointer group" @click="document.getElementById('id_portrait').click()">
+                        
+                        <img x-show="imageUrl" :src="imageUrl" class="w-full h-full object-cover absolute inset-0 z-10" style="display: none;">
+                        
+                        <div x-show="!imageUrl" class="text-center p-4">
+                            <div class="w-16 h-16 rounded-full bg-[#DAA520]/20 text-[#DAA520] flex items-center justify-center mx-auto mb-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                            <span class="text-sm text-[#2F4F4F]/70 font-medium group-hover:text-[#DAA520]">อัปโหลดรูปภาพ</span>
+                            <p class="text-xs text-[#2F4F4F]/40 mt-1">แนะนำแนวตั้ง</p>
+                        </div>
+                        
+                        <div class="hidden">
+                             {{ form.portrait }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2 mb-4 border-b border-[#FAEBD7] pb-2 pt-4">
+                <span class="text-[#DAA520]">⚓</span>
+                <h2 class="text-xl font-bold text-[#2F4F4F]">บทบาทและสถานะ</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">บทบาท (Role)</label>
+                    {{ form.role }}
+                </div>
+                <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">สถานะ (Status)</label>
+                    {{ form.status }}
+                </div>
+                <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">อาชีพ</label>
+                    {{ form.occupation }}
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2 mb-4 border-b border-[#FAEBD7] pb-2 pt-4">
+                <span class="text-[#DAA520]">♥</span>
+                <h2 class="text-xl font-bold text-[#2F4F4F]">รูปลักษณ์และจิตใจ</h2>
+            </div>
+
+            <div class="mb-6">
+                <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ลักษณะภายนอก (Appearance)</label>
+                    {{ form.appearance }}
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">บุคลิกภาพ (Personality)</label>
+                    {{ form.personality }}
+                </div>
+                <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ภูมิหลัง (Background)</label>
+                    {{ form.background }}
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2 mb-4 border-b border-[#FAEBD7] pb-2 pt-4">
+                <span class="text-[#DAA520]">⚡</span>
+                <h2 class="text-xl font-bold text-[#2F4F4F]">ความสามารถและเป้าหมาย</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10 h-full">
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">เป้าหมาย (Goals)</label>
+                    {{ form.goals }}
+                </div>
+                
+                <div class="rounded-lg border border-[#FAEBD7] p-4 bg-[#FAEBD7]/20 space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-[#2F4F4F]/70 mb-1">ทักษะ (Skills)</label>
+                        {{ form.skills }}
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-green-700 mb-1">จุดแข็ง (Strengths)</label>
+                        {{ form.strengths }}
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-red-700 mb-1">จุดอ่อน (Weaknesses)</label>
+                        {{ form.weaknesses }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2 mb-4 border-b border-[#FAEBD7] pb-2 pt-4">
+                <span class="text-[#DAA520]">🗺️</span>
+                <h2 class="text-xl font-bold text-[#2F4F4F]">ความสัมพันธ์และอื่นๆ</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ที่อยู่ / สถานที่หลัก (Location)</label>
+                    {{ form.location }}
+                </div>
+                <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ความสัมพันธ์ (Relationships)</label>
+                    {{ form.relationships }}
+                    <p class="text-xs text-[#2F4F4F]/60 mt-1">กด Ctrl (หรือ Command) ค้างไว้เพื่อเลือกหลายคน</p>
+                </div>
+            </div>
+
+            <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10 mb-8">
+                <label class="block text-sm font-bold text-[#2F4F4F] mb-1">โน้ตเพิ่มเติม</label>
+                {{ form.notes }}
+            </div>
+
+            <div class="mt-10 flex items-center gap-4 border-t border-[#FAEBD7] pt-6">
+                <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-bold rounded-lg shadow-md text-[#FAEBD7] bg-[#2F4F4F] hover:bg-[#1a3030] hover:shadow-lg focus:outline-none transition duration-150">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    บันทึกข้อมูล
+                </button>
+                
+                <a href="{% url 'plotcraft:character_list' %}" class="px-6 py-3 border border-gray-300 text-base font-medium text-gray-600 bg-white hover:bg-gray-50 rounded-lg transition duration-150">
+                    ยกเลิก
+                </a>
+
+                {% if character %}
+                <div class="ml-auto">
+                    <button type="submit" name="character_delete" class="inline-flex items-center px-4 py-2 border border-red-200 text-sm font-bold rounded-lg text-red-600 bg-red-50 hover:bg-red-100 hover:text-red-700 transition duration-150" onclick="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบตัวละครนี้? ถ้าลบแล้วไม่สามารถกู้คืนได้นะคะ!');">
+                        <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5-4h4a1 1 0 011 1v1H9V4a1 1 0 011-1z"></path></svg>
+                        ลบตัวละคร
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://unpkg.com/alpinejs" defer></script>
+
+<script>
+    function imagePreview() {
+        return {
+            imageUrl: '{% if character.portrait %}{{ character.portrait.url }}{% endif %}',
+            init() {
+                const fileInput = document.getElementById('id_portrait');
+                if(fileInput) {
+                    fileInput.addEventListener('change', (e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                            this.imageUrl = URL.createObjectURL(file);
+                        } else {
+                            this.imageUrl = null;
+                        }
+                    });
+                }
+            }
+        }
+    }
+</script>
+{% endblock %}

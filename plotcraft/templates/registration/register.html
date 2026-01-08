@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>Register | PlotCraft</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#FAEBD7] flex items-center justify-center min-h-screen p-4">
+
+  <div class="bg-white p-8 md:p-10 rounded-2xl shadow-2xl w-full max-w-lg border border-[#2F4F4F]/10 relative overflow-hidden my-8">
+    <div class="absolute top-0 left-0 w-full h-1.5 bg-linear-to-r from-[#DAA520] to-[#2F4F4F]"></div>
+
+    <div class="text-center mb-8">
+        <h2 class="text-3xl font-bold text-[#2F4F4F]">สมัครสมาชิก</h2>
+        <p class="text-gray-500 text-sm mt-2">เริ่มต้นเส้นทางนักเขียนของคุณกับ PlotCraft</p>
+    </div>
+
+    <form method="POST" class="space-y-4">
+      {% csrf_token %}
+      
+      <div>
+        <label class="block text-xs font-bold text-[#2F4F4F] uppercase mb-1">Username</label>
+        <input type="text" name="username" class="w-full p-2.5 bg-[#FAEBD7]/20 border border-[#2F4F4F]/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#DAA520] text-[#2F4F4F]" required>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-[#2F4F4F] uppercase mb-1">Email</label>
+        <input type="email" name="email" class="w-full p-2.5 bg-[#FAEBD7]/20 border border-[#2F4F4F]/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#DAA520] text-[#2F4F4F]" required>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-[#2F4F4F] uppercase mb-1">Birthdate</label>
+            <input type="date" name="birthdate" class="w-full p-2.5 bg-[#FAEBD7]/20 border border-[#2F4F4F]/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#DAA520] text-[#2F4F4F]">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-[#2F4F4F] uppercase mb-1">Phone</label>
+            <input type="text" name="phone" class="w-full p-2.5 bg-[#FAEBD7]/20 border border-[#2F4F4F]/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#DAA520] text-[#2F4F4F]">
+          </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-[#2F4F4F] uppercase mb-1">Password</label>
+        <input type="password" name="password1" class="w-full p-2.5 bg-[#FAEBD7]/20 border border-[#2F4F4F]/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#DAA520] text-[#2F4F4F]" required>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-[#2F4F4F] uppercase mb-1">Confirm Password</label>
+        <input type="password" name="password2" class="w-full p-2.5 bg-[#FAEBD7]/20 border border-[#2F4F4F]/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#DAA520] text-[#2F4F4F]" required>
+      </div>
+      
+      <button type="submit" class="w-full bg-[#DAA520] text-white font-bold py-3 rounded-lg hover:bg-[#b8860b] shadow-md hover:shadow-lg transition transform hover:-translate-y-0.5 mt-6">
+          สมัครสมาชิก
+      </button>
+
+    </form>
+
+    <p class="mt-6 text-center text-sm text-gray-600">
+        มีบัญชีอยู่แล้ว? <a href="{% url 'plotcraft:login' %}" class="text-[#2F4F4F] font-bold hover:underline">เข้าสู่ระบบ</a>
+    </p>
+  </div>
+
+</body>
+</html>

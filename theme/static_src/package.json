@@ -1,0 +1,13 @@
+{
+  "name": "theme",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "tailwindcss -i ./src/styles.css -o ../static/css/dist/styles.css --minify"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.17",
+    "postcss": "^8.4.21",
+    "autoprefixer": "^10.4.14"
+  }
+}

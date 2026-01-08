@@ -1,0 +1,287 @@
+{% extends "base.html" %}
+{% block title %}{{ timeline.title }} | PlotCraft{% endblock %}
+{% block content %}
+<script src="https://cdn.tailwindcss.com"></script>
+
+<div x-data="timelineApp()" class="min-h-screen py-8 px-4 font-sans text-[#2F4F4F]">
+    
+    <div class="max-w-5xl mx-auto mb-10">
+        <div class="text-sm text-gray-500 mb-4 flex items-center gap-2">
+            <a href="{% url 'plotcraft:timeline_list' %}" class="hover:text-[#DAA520]">Timelines</a>
+            <span>/</span>
+            <span class="font-bold text-[#2F4F4F]">{{ timeline.title }}</span>
+        </div>
+
+        <div class="bg-white p-8 rounded-2xl shadow-lg border border-[#2F4F4F]/10 relative overflow-hidden flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="absolute top-0 left-0 w-2 h-full bg-[#DAA520]"></div>
+            <div>
+                <h1 class="text-3xl font-bold text-[#2F4F4F] mb-2">{{ timeline.title }}</h1>
+                <p class="text-gray-600">{{ timeline.description|default:"(ไม่มีคำอธิบาย)" }}</p>
+                {% if timeline.related_project %}
+                    <div class="inline-flex items-center gap-1 mt-2 text-sm text-[#DAA520] font-bold">
+                        📖 โปรเจกต์: {{ timeline.related_project.title }}
+                    </div>
+                {% endif %}
+            </div>
+            <button @click="openAddModal()" class="px-6 py-2.5 bg-[#2F4F4F] text-[#FAEBD7] rounded-lg font-bold shadow-md hover:bg-[#1a3030] hover:scale-105 transition flex items-center gap-2">
+                <span>➕ เพิ่มเหตุการณ์</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="max-w-4xl mx-auto relative pb-20">
+        <div class="absolute left-6 md:left-1/2 top-0 bottom-0 w-1 bg-[#2F4F4F]/20 h-full rounded-full transform md:-translate-x-1/2"></div>
+
+        <div id="timeline-container" class="space-y-8 relative">
+            {% for event in events %}
+            <div class="timeline-item relative group cursor-pointer" 
+                 data-id="{{ event.id }}"
+                 @click="openViewModal({{ event.id }})"> 
+                
+                <script type="application/json" id="event-data-{{ event.id }}">
+                    {
+                        "id": {{ event.id }},
+                        "title": "{{ event.title|escapejs }}",
+                        "time_label": "{{ event.time_label|escapejs }}",
+                        "description": "{{ event.description|escapejs|linebreaksbr }}",
+                        "raw_description": "{{ event.description|escapejs }}",
+                        "order": {{ event.order }},
+                        "image_url": "{% if event.image %}{{ event.image.url }}{% endif %}",
+                        
+                        "related_scene_id": "{% if event.related_scene %}{{ event.related_scene.id }}{% endif %}",
+                        "scene_title": "{% if event.related_scene %}{{ event.related_scene.title|escapejs }}{% endif %}",
+                        
+                        {# --- 🔥 ส่วนลิงก์ฉาก (แก้ไขสมบูรณ์แล้ว) --- #}
+                        "scene_url": "{% if event.related_scene and event.related_scene.project %}{% url 'plotcraft:scene_list' %}?project={{ event.related_scene.project.id }}#scene-{{ event.related_scene.id }}{% endif %}",
+                        
+                        {# --- 🔥 ส่วนปุ่มเริ่มเขียน (ถ้าไม่มีฉาก) --- #}
+                        "create_scene_url": "{% url 'plotcraft:scene_create' %}",
+
+                        "characters": [
+                            {% for char in event.characters.all %}
+                            {
+                                "name": "{{ char.name|escapejs }}",
+                                "url": "{% url 'plotcraft:character_detail' char.id %}",
+                                "image": "{% if char.portrait %}{{ char.portrait.url }}{% endif %}"
+                            }{% if not forloop.last %},{% endif %}
+                            {% endfor %}
+                        ]
+                    }
+                </script>
+
+                <div class="flex flex-col md:flex-row items-center justify-between w-full {% if forloop.counter|divisibleby:2 %}md:flex-row-reverse{% endif %}">
+                    <div class="w-full md:w-[45%] pl-12 md:pl-0">
+                        <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden hover:shadow-2xl hover:border-[#DAA520]/50 transition duration-300 relative group-card">
+                            <div class="absolute top-2 right-2 text-gray-300 opacity-0 group-hover:opacity-100 cursor-grab hover:text-[#DAA520] z-20 handle-btn" onclick="event.stopPropagation()">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"></path></svg>
+                            </div>
+                            {% if event.image %}
+                            <div class="h-40 w-full overflow-hidden bg-gray-100 relative">
+                                <img src="{{ event.image.url }}" class="w-full h-full object-cover">
+                                <div class="absolute bottom-0 left-0 w-full h-1/2 bg-linear-to-t from-black/60 to-transparent"></div>
+                                <span class="absolute bottom-2 left-3 text-white font-bold text-shadow">{{ event.time_label }}</span>
+                            </div>
+                            {% endif %}
+                            <div class="p-5">
+                                {% if not event.image %}
+                                <div class="inline-block bg-[#2F4F4F]/10 text-[#2F4F4F] text-xs font-bold px-2 py-1 rounded mb-2">⏱ {{ event.time_label }}</div>
+                                {% endif %}
+                                <h3 class="text-lg font-bold text-[#2F4F4F] mb-2 leading-tight">{{ event.title }}</h3>
+                                <p class="text-sm text-gray-600 line-clamp-2">{{ event.description|default:"-" }}</p>
+                                <div class="pt-3 border-t border-gray-100 flex items-center justify-between mt-3">
+                                    <div class="flex -space-x-2">
+                                        {% for char in event.characters.all|slice:":3" %}
+                                            {% if char.portrait %}
+                                                <img src="{{ char.portrait.url }}" class="w-6 h-6 rounded-full border border-white object-cover">
+                                            {% else %}
+                                                <div class="w-6 h-6 rounded-full bg-gray-200 border border-white flex items-center justify-center text-[8px] font-bold">{{ char.name|slice:":1" }}</div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    <span class="text-xs font-bold text-gray-300 order-badge">#<span class="order-number">{{ forloop.counter }}</span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="absolute left-6 md:left-1/2 transform -translate-x-1/2 w-4 h-4 bg-[#DAA520] border-4 border-[#FAEBD7] rounded-full z-10 shadow-lg group-hover:scale-150 transition"></div>
+                    <div class="w-0 md:w-[45%]"></div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="text-center py-20 text-gray-400">ยังไม่มีเหตุการณ์ เริ่มสร้างได้เลย!</div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div x-show="isOpen" style="display: none;" 
+         class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 transition-opacity"
+         @keydown.escape.window="closeModal()">
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden relative flex flex-col max-h-[90vh] animate-fade-in-up">
+            <div class="bg-[#2F4F4F] p-4 flex justify-between items-center text-[#FAEBD7] shrink-0">
+                <h3 class="font-bold text-lg" x-text="getHeaderTitle()"></h3>
+                <button @click="closeModal()" class="text-[#FAEBD7]/70 hover:text-white text-2xl leading-none">&times;</button>
+            </div>
+            <div class="p-6 overflow-y-auto custom-scrollbar flex-1">
+                
+                <div x-show="mode === 'view'">
+                    <template x-if="currentEvent.image_url">
+                        <img :src="currentEvent.image_url" class="w-full h-48 object-cover rounded-xl mb-4 border border-gray-200">
+                    </template>
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="bg-[#DAA520] text-white px-3 py-1 rounded-full text-sm font-bold" x-text="currentEvent.time_label"></span>
+                        <span class="text-gray-400 text-sm">ลำดับที่ <span x-text="currentEvent.order"></span></span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-[#2F4F4F] mb-4" x-text="currentEvent.title"></h2>
+                    <div class="prose prose-sm text-gray-600 mb-6" x-html="currentEvent.description"></div>
+
+                    <div class="mb-6">
+                        <h4 class="font-bold text-[#2F4F4F] mb-3 border-b pb-1">🎬 ฉากที่เกี่ยวข้อง</h4>
+                        
+                        <template x-if="currentEvent.scene_title">
+                            <a :href="currentEvent.scene_url" class="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-[#FAEBD7]/50 border border-gray-200 hover:border-[#DAA520] transition group cursor-pointer">
+                                <div class="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-xl group-hover:scale-110 transition">📝</div>
+                                <div class="flex-1">
+                                    <h5 class="font-bold text-[#2F4F4F] group-hover:text-[#DAA520]" x-text="currentEvent.scene_title"></h5>
+                                    <p class="text-xs text-gray-500">คลิกเพื่อเปิดดูซีนในโปรเจกต์นี้</p>
+                                </div>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-300 group-hover:text-[#DAA520]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                            </a>
+                        </template>
+
+                        <template x-if="!currentEvent.scene_title">
+                            <a :href="currentEvent.create_scene_url" class="flex items-center justify-center gap-2 p-3 rounded-lg border-2 border-dashed border-gray-300 text-gray-400 hover:border-[#DAA520] hover:text-[#DAA520] hover:bg-[#DAA520]/5 transition cursor-pointer">
+                                <span>✍️ ยังไม่ได้เขียนฉากนี้... กดเพื่อเริ่มเขียน</span>
+                            </a>
+                        </template>
+                    </div>
+
+                    <div x-show="currentEvent.characters.length > 0">
+                        <h4 class="font-bold text-[#2F4F4F] mb-3 border-b pb-1">🎭 ตัวละครในเหตุการณ์</h4>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                            <template x-for="char in currentEvent.characters">
+                                <a :href="char.url" class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 border border-transparent hover:border-gray-200 transition">
+                                    <template x-if="char.image"><img :src="char.image" class="w-8 h-8 rounded-full object-cover"></template>
+                                    <template x-if="!char.image"><div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold" x-text="char.name.charAt(0)"></div></template>
+                                    <span class="text-sm font-medium text-[#2F4F4F]" x-text="char.name"></span>
+                                </a>
+                            </template>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 flex justify-between items-center pt-4 border-t border-gray-100">
+                        <button @click="deleteEvent()" class="text-red-400 hover:text-red-600 text-sm font-bold flex items-center gap-1">🗑️ ลบเหตุการณ์</button>
+                        <button @click="switchToEdit()" class="px-6 py-2 bg-[#2F4F4F] text-[#FAEBD7] rounded-lg font-bold hover:bg-[#1a3030]">✏️ แก้ไขข้อมูล</button>
+                    </div>
+                </div>
+
+                <div x-show="mode === 'add' || mode === 'edit'">
+                    <form method="post" :action="formAction" enctype="multipart/form-data" class="space-y-4" id="eventForm">
+                        {% csrf_token %}
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><label class="block text-xs font-bold text-[#2F4F4F] mb-1">ช่วงเวลา *</label>{{ event_form.time_label }}</div>
+                            <div><label class="block text-xs font-bold text-[#2F4F4F] mb-1">ลำดับ</label>{{ event_form.order }}</div>
+                        </div>
+                        <div><label class="block text-xs font-bold text-[#2F4F4F] mb-1">ชื่อเหตุการณ์ *</label>{{ event_form.title }}</div>
+                        <div><label class="block text-xs font-bold text-[#2F4F4F] mb-1">รายละเอียด</label>{{ event_form.description }}</div>
+                        <div><label class="block text-xs font-bold text-[#2F4F4F] mb-1">รูปประกอบ</label>{{ event_form.image }}</div>
+                        <div class="h-px bg-gray-100 my-2"></div>
+                        <div><label class="block text-xs font-bold text-[#2F4F4F] mb-1">เชื่อมฉาก</label>{{ event_form.related_scene }}</div>
+                        <div><label class="block text-xs font-bold text-[#2F4F4F] mb-1">ตัวละคร</label>{{ event_form.characters }}</div>
+                        <div class="pt-4 flex gap-3">
+                            <button type="submit" class="flex-1 py-3 bg-[#DAA520] text-white font-bold rounded-lg hover:bg-[#b8860b] shadow-md transition">บันทึก</button>
+                            <button type="button" @click="mode === 'edit' ? mode = 'view' : closeModal()" class="px-6 py-3 border border-gray-300 rounded-lg text-gray-500 font-bold hover:bg-gray-50">ยกเลิก</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <form id="deleteForm" method="post" action="" style="display:none;">{% csrf_token %}</form>
+    <div id="save-toast" class="fixed bottom-6 right-6 bg-[#2F4F4F] text-[#FAEBD7] px-6 py-3 rounded-lg shadow-xl transform translate-y-20 opacity-0 transition duration-500 font-bold flex items-center gap-2 z-50"><span>✅ บันทึกลำดับเรียบร้อย</span></div>
+</div>
+
+<script>
+    function timelineApp() {
+        return {
+            isOpen: false, mode: 'view', currentEvent: {}, formAction: '',
+            init() {
+                const container = document.getElementById('timeline-container');
+                if(container) {
+                    new Sortable(container, {
+                        animation: 150, handle: '.handle-btn', ghostClass: 'opacity-50',
+                        onEnd: (evt) => {
+                            this.updateOrderNumbers();
+                            let itemIds = [];
+                            document.querySelectorAll('.timeline-item').forEach(el => { itemIds.push(el.getAttribute('data-id')); });
+                            this.saveOrder(itemIds);
+                        }
+                    });
+                }
+            },
+            getHeaderTitle() {
+                if (this.mode === 'add') return '➕ เพิ่มเหตุการณ์ใหม่';
+                if (this.mode === 'edit') return '✏️ แก้ไขข้อมูล';
+                return '📜 รายละเอียดเหตุการณ์';
+            },
+            openAddModal() {
+                this.mode = 'add'; this.currentEvent = {};
+                this.formAction = "{% url 'plotcraft:timeline_event_create' timeline.id %}";
+                document.getElementById('eventForm').reset(); this.isOpen = true;
+            },
+            openViewModal(eventId) {
+                const dataScript = document.getElementById(`event-data-${eventId}`);
+                if (dataScript) {
+                    this.currentEvent = JSON.parse(dataScript.textContent);
+                    this.mode = 'view'; this.isOpen = true;
+                }
+            },
+            switchToEdit() {
+                this.mode = 'edit'; const id = this.currentEvent.id;
+                this.formAction = `/timeline/event/${id}/update/`;
+                document.querySelector('[name="time_label"]').value = this.currentEvent.time_label;
+                document.querySelector('[name="title"]').value = this.currentEvent.title;
+                document.querySelector('[name="description"]').value = this.currentEvent.raw_description;
+                document.querySelector('[name="order"]').value = this.currentEvent.order;
+                if(this.currentEvent.related_scene_id) {
+                     document.querySelector('[name="related_scene"]').value = this.currentEvent.related_scene_id;
+                }
+            },
+            deleteEvent() {
+                if(confirm('คุณแน่ใจหรือไม่ที่จะลบเหตุการณ์นี้?')) {
+                    const form = document.getElementById('deleteForm');
+                    form.action = `/timeline/event/${this.currentEvent.id}/delete/`;
+                    form.submit();
+                }
+            },
+            closeModal() { this.isOpen = false; },
+            updateOrderNumbers() {
+                document.querySelectorAll('.order-number').forEach((badge, index) => { badge.innerText = index + 1; });
+            },
+            saveOrder(ids) {
+                fetch("{% url 'plotcraft:update_event_order' %}", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json", "X-CSRFToken": "{{ csrf_token }}" },
+                    body: JSON.stringify({ ids: ids })
+                }).then(res => res.json()).then(data => { if(data.status === 'success') showToast(); });
+            }
+        }
+    }
+    function showToast() {
+        const toast = document.getElementById('save-toast');
+        toast.classList.remove('translate-y-20', 'opacity-0');
+        setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 2000);
+    }
+</script>
+
+<style>
+    .bg-white input[type="text"], .bg-white input[type="number"], .bg-white textarea, .bg-white select {
+        width: 100%; padding: 0.6rem; border-radius: 0.5rem; border: 1px solid #ddd; font-size: 0.9rem;
+    }
+    .bg-white textarea { min-height: 80px; }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .animate-fade-in-up { animation: fadeInUp 0.3s ease-out; }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { bg-color: #ccc; border-radius: 4px; }
+</style>
+{% endblock %}

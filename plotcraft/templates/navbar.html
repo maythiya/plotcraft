@@ -1,0 +1,136 @@
+<aside class="w-64 fixed top-0 left-0 h-screen border-r flex flex-col justify-between shadow-2xl bg-[#2F4F4F] text-[#FAEBD7] border-[#1a3030] z-50">
+  
+  <div class="flex flex-col h-full">
+    <div class="p-6 flex items-center gap-3 border-b border-[#FAEBD7]/10">
+      <div class="bg-[#DAA520] p-1.5 rounded-lg text-[#2F4F4F]">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+        </svg>
+      </div>
+      <span class="text-2xl font-bold tracking-wide text-white">PlotCraft</span>
+    </div>
+
+    <nav class="px-4 mt-6 space-y-2 grow overflow-y-auto custom-scrollbar">
+      
+      <a href="{% url 'plotcraft:home' %}" class="flex items-center gap-3 p-3 rounded-xl transition-all duration-200 hover:bg-[#FAEBD7]/10 hover:text-white group">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#DAA520] group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 001.061 1.06l8.69-8.69z" />
+            <path d="M12 5.432l8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 01-.75-.75v-4.5a.75.75 0 00-.75-.75h-3a.75.75 0 00-.75.75V21a.75.75 0 01-.75.75H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 5.43z" />
+        </svg>
+        <span class="font-medium">Home</span>
+      </a>
+
+      <a href="{% url 'plotcraft:profile' %}" class="flex items-center gap-3 p-3 rounded-xl transition-all duration-200 hover:bg-[#FAEBD7]/10 hover:text-white group">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#DAA520] group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+            d="M11.983 4.077l.204-.353a1 1 0 011.626 0l.204.353a1 1 0 00.607.455l.393.098a1 1 0 01.746.939v.413a1 1 0 00.293.707l.292.292a1 1 0 010 1.414l-.292.292a1 1 0 00-.293.707v.412a1 1 0 01-.746.94l-.393.097a1 1 0 00-.607.455l-.204.353a1 1 0 01-1.626 0l-.204-.353a1 1 0 00-.607-.455l-.393-.097a1 1 0 01-.746-.94v-.412a1 1 0 00-.293-.707l-.292-.292a1 1 0 010-1.414l.292-.292a1 1 0 00.293-.707v-.413a1 1 0 01.746-.939l.393-.098a1 1 0 00.607-.455z" />
+            <circle cx="12" cy="12" r="3" stroke-width="2"></circle>
+        </svg>
+        <span class="font-medium">Settings</span>
+      </a>
+
+      <a href="{% url 'plotcraft:profile' %}" class="flex items-center gap-3 p-3 rounded-xl transition-all duration-200 hover:bg-[#FAEBD7]/10 hover:text-white group">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#DAA520] group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+            d="M5 4a2 2 0 012-2h10a2 2 0 012 2v18l-7-4-7 4V4z" />
+        </svg>
+        <span class="font-medium">Bookmark</span>
+      </a>
+
+      
+      <div class="h-px bg-[#FAEBD7]/10 my-2 mx-2"></div>      
+      <div class="px-3 text-xs font-bold text-[#FAEBD7]/50 uppercase tracking-wider mb-1">World & Story</div>
+      
+      <a href="{% url 'plotcraft:novel_list' %}" class="flex items-center gap-3 p-3 rounded-xl transition-all duration-200 hover:bg-[#FAEBD7]/10 hover:text-white group">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#DAA520] group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32L19.513 8.2z" />
+        </svg>
+        <span class="font-medium">My Novels</span>
+      </a>
+      
+      <div x-data="{ open: false }">
+
+        <button @click="open = !open" class="w-full flex items-center justify-between gap-3 p-3 rounded-xl transition-all duration-200 hover:bg-[#FAEBD7]/10 hover:text-white group">
+            <div class="flex items-center gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#DAA520] group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="currentColor">
+                   <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM6.262 6.072a8.25 8.25 0 1010.562-.766 4.5 4.5 0 01-1.318 1.357L14.25 10.5a.75.75 0 000 1.5h.75a.75.75 0 000 1.5H12a.75.75 0 000 1.5h.25a2.25 2.25 0 012.25 2.25v1.194a6 6 0 00-6-6H5.86A8.25 8.25 0 016.262 6.072z" clip-rule="evenodd" />
+                </svg>
+                <span class="font-medium">Worldbuilding</span>
+            </div>
+            <svg :class="{'rotate-180': open}" class="w-4 h-4 transition-transform duration-200 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </button>
+
+        <div x-show="open" class="pl-10 pr-2 space-y-1 mt-1"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 -translate-y-2"
+             x-transition:enter-end="opacity-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100 translate-y-0"
+             x-transition:leave-end="opacity-0 -translate-y-2"
+
+             class="pl-11 pr-2 space-y-1 mt-1 border-l-2 border-[#FAEBD7]/10 ml-5">
+
+             <a href="{% url 'plotcraft:character_list' %}" class="flex items-center gap-2 p-2 text-sm rounded-lg hover:bg-[#FAEBD7]/10 hover:text-white text-[#FAEBD7]/80 transition">
+                <span class="text-xs">👤</span> Characters
+             </a>
+             <a href="{% url 'plotcraft:location_list' %}" class="flex items-center gap-2 p-2 text-sm rounded-lg hover:bg-[#FAEBD7]/10 hover:text-white text-[#FAEBD7]/80 transition">
+                <span class="text-xs">🏙️</span> Locations
+             </a>
+             <a href="{% url 'plotcraft:item_list' %}" class="flex items-center gap-2 p-2 text-sm rounded-lg hover:bg-[#FAEBD7]/10 hover:text-white text-[#FAEBD7]/80 transition">
+                <span class="text-xs">📦</span> Items & Artifacts
+             </a>
+
+        </div>
+
+      </div>
+
+      <a href="{% url 'plotcraft:scene_list' %}" class="flex items-center gap-3 p-3 rounded-xl transition-all duration-200 hover:bg-[#FAEBD7]/10 hover:text-white group">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#DAA520] group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="currentColor">
+           <path d="M19.873 3.49a.75.75 0 10-.246-1.48L16 2.693l-1.127-1.065a.75.75 0 10-1.033 1.094l1.554 1.468-2.618.436L9.15 1.093a.75.75 0 10-1.033 1.094l3.626 3.426-3.86.643-1.128-1.065a.75.75 0 10-1.033 1.094l1.554 1.468-.616.103a2.25 2.25 0 00-1.876 2.218v9.123c0 1.243 1.008 2.25 2.25 2.25h12a2.25 2.25 0 002.25-2.25v-9.123a2.25 2.25 0 00-1.876-2.218l-3.37-.562 1.956-2.071z" />
+        </svg>
+        <span class="font-medium">Scenes</span>
+      </a>
+
+      <a href="{% url 'plotcraft:timeline_list' %}" class="flex items-center gap-3 p-3 rounded-xl transition-all duration-200 hover:bg-[#FAEBD7]/10 hover:text-white group">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#DAA520] group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="currentColor">
+            <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 6a.75.75 0 00-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 000-1.5h-3.75V6z" clip-rule="evenodd" />
+        </svg>
+        <span class="font-medium">Timelines</span>
+      </a>
+
+    </nav>
+  </div>
+
+  <div class="p-4 border-t border-[#FAEBD7]/10 bg-[#1a3030]/30">
+    <a href="{% url 'plotcraft:profile' %}" class="flex items-center gap-3 p-2 rounded-xl hover:bg-[#FAEBD7]/10 transition mb-2">
+        <div class="w-10 h-10 rounded-full bg-[#DAA520] flex items-center justify-center text-[#2F4F4F] font-bold text-sm overflow-hidden ring-2 ring-transparent group-hover:ring-[#DAA520] transition">
+            {% if user.profile.image %}
+                <img src="{{ user.profile.image.url }}" class="w-full h-full object-cover">
+            {% else %}
+                {{ user.username|slice:":1"|upper }}
+            {% endif %}
+        </div>
+        
+        <div class="flex-1 min-w-0">
+            <p class="text-sm font-bold text-[#FAEBD7] truncate group-hover:text-[#DAA520] transition">{{ user.display_name|default:user.username }}</p>
+            <p class="text-xs text-[#FAEBD7]/50 truncate">Writer</p>
+        </div>
+    </a>
+  </div>
+
+</aside>
+
+<script src="https://unpkg.com/alpinejs" defer></script>
+
+<style>
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(218, 165, 32, 0.3);
+    border-radius: 20px;
+}
+</style>

@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}My Novels | PlotCraft{% endblock %}
+{% block content %}
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translate3d(0, 20px, 0); }
+        to { opacity: 1; transform: translate3d(0, 0, 0); }
+    }
+    .card-enter {
+        animation: fadeInUp 0.6s ease-out forwards;
+        opacity: 0; /* เริ่มต้นซ่อนไว้ก่อน */
+    }
+</style>
+
+<div class="min-h-screen bg-[#F8F9FA] font-sans pb-20 relative overflow-hidden">
+    
+    <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-[#DAA520]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
+    <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#2F4F4F]/5 rounded-full blur-3xl translate-y-1/3 -translate-x-1/4 pointer-events-none"></div>
+
+    <div class="h-1.5 w-full bg-gradient-to-r from-[#2F4F4F] via-[#2F4F4F] to-[#DAA520] relative z-10"></div>
+
+    <div class="container mx-auto px-4 py-12 max-w-6xl relative z-10">
+        
+        <div class="flex flex-col md:flex-row justify-between items-end mb-10 gap-4">
+            <div class="card-enter" style="animation-delay: 0.1s;">
+                <h1 class="text-4xl font-extrabold text-[#2F4F4F] tracking-tight flex items-center gap-3">
+                    <span class="inline-block hover:animate-bounce cursor-pointer">📚</span> 
+                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-[#2F4F4F] to-[#DAA520]">งานเขียนของฉัน</span>
+                </h1>
+                <p class="text-gray-500 mt-2 font-light flex items-center gap-2">
+                    จัดการโลกจินตนาการ 
+                    <span class="bg-[#DAA520] text-white text-[10px] px-2 py-0.5 rounded-full font-bold">{{ novels.count }} เรื่อง</span>
+                </p>
+            </div>
+            
+            <a href="{% url 'plotcraft:novel_create' %}" 
+               class="card-enter group relative bg-[#2F4F4F] text-[#FAEBD7] px-7 py-3 rounded-xl shadow-lg hover:shadow-2xl hover:shadow-[#2F4F4F]/40 transition-all duration-300 transform hover:-translate-y-1 overflow-hidden"
+               style="animation-delay: 0.2s;">
+                <div class="absolute inset-0 w-full h-full bg-white/20 skew-x-12 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+                
+                <div class="relative flex items-center gap-2 font-bold">
+                    <svg class="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    <span>สร้างเรื่องใหม่</span>
+                </div>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            {% for novel in novels %}
+            <div class="card-enter bg-white rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 flex flex-col h-full overflow-hidden group relative" style="animation-delay: {{ forloop.counter0|add:1 }}00ms">
+    
+                <div class="relative h-48 overflow-hidden bg-gray-100 group">
+                    {% if novel.cover_image %}
+                    <img src="{{ novel.cover_image.url }}" alt="{{ novel.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    {% else %}
+                    <div class="w-full h-full flex items-center justify-center bg-gray-50 text-gray-300">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="absolute top-3 right-3">
+                         <span class="px-3 py-1 bg-white/90 backdrop-blur-sm text-[#2F4F4F] text-xs font-bold rounded-full shadow-sm border border-gray-100">
+                            {{ novel.get_category_display|default:"General" }}
+                         </span>
+                    </div>
+                </div>
+            
+                <div class="p-5 flex flex-col grow">
+                    <h3 class="text-xl font-bold text-[#2F4F4F] mb-2 line-clamp-1 group-hover:text-[#DAA520] transition-colors">
+                        {{ novel.title }}
+                    </h3>
+                    
+                    <p class="text-gray-500 text-sm mb-4 line-clamp-2 h-10 leading-relaxed">
+                        {{ novel.synopsis|default:"ยังไม่มีคำโปรย..." }}
+                    </p>
+                
+                    <div class="mt-auto space-y-4">
+                        <div class="flex items-center gap-4 text-xs text-gray-400 border-t border-gray-100 pt-3">
+                            <span class="flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                                {{ novel.chapter_set.count }} ตอน
+                            </span>
+                            <span class="flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                {{ novel.updated_at|date:"d M Y" }}
+                            </span>
+                        </div>
+                    
+                        <div class="grid grid-cols-2 gap-3 pt-2">
+                            <a href="{% url 'plotcraft:novel_detail' novel.id %}" 
+                               class="flex items-center justify-center gap-2 py-2.5 bg-[#2F4F4F] text-white rounded-lg font-bold hover:bg-[#1a2f2f] transition shadow-md hover:shadow-lg text-sm">
+                                <span>✏️</span> เขียนต่อ
+                            </a>
+                            
+                            <a href="{% url 'plotcraft:novel_edit' novel.id %}" 
+                               class="flex items-center justify-center py-2.5 border-2 border-gray-200 text-gray-600 rounded-lg font-bold hover:border-[#DAA520] hover:text-[#DAA520] transition text-sm">
+                                ⚙️ จัดการ
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %} </div>
+        
+        {% if not novels %}
+        <div class="card-enter mt-12 text-center py-20 bg-white/50 backdrop-blur-sm rounded-3xl border-2 border-dashed border-gray-200 hover:border-[#DAA520] transition-colors duration-500 group cursor-pointer" onclick="location.href='{% url 'plotcraft:novel_create' %}'">
+            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-[#DAA520]/10 mb-6 group-hover:scale-110 group-hover:bg-[#DAA520] transition-all duration-500">
+                <span class="text-4xl group-hover:animate-spin">✨</span>
+            </div>
+            <h3 class="text-2xl font-bold text-[#2F4F4F] group-hover:text-[#DAA520] transition-colors">เริ่มเขียนนิยายเรื่องแรก</h3>
+            <p class="text-gray-400 mt-2 mb-8 group-hover:text-gray-600">กดตรงนี้เพื่อสร้างโลกจินตนาการของคุณ</p>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+<style>
+    @keyframes shimmer {
+        from { transform: translateX(-100%) skewX(12deg); }
+        to { transform: translateX(200%) skewX(12deg); }
+    }
+</style>
+{% endblock %}

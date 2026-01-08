@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block content %}
+<script src="https://cdn.tailwindcss.com"></script>
+
+<div class="min-h-screen py-8 px-4 sm:px-6 lg:px-8 font-sans text-[#2F4F4F]">
+  
+  <div class="max-w-7xl mx-auto">
+    <div class="flex items-center justify-between mb-8">
+      <div class="flex items-center gap-3">
+        <div class="p-2 bg-[#2F4F4F] rounded-lg text-[#FAEBD7]">
+           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+           </svg>
+        </div>
+        <h1 class="text-3xl font-bold text-[#2F4F4F]">ตัวละครทั้งหมด (Characters)</h1>
+      </div>
+      
+      <a href="{% url 'plotcraft:character_create' %}" class="px-5 py-2 bg-[#DAA520] hover:bg-[#b8860b] text-white rounded-lg shadow-md hover:shadow-lg transition font-semibold flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        เพิ่มตัวละครใหม่
+      </a>
+    </div>
+
+    {% if characters %}
+    
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {% for character in characters %}
+            <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transition duration-300 flex flex-col overflow-hidden border border-[#2F4F4F]/10 group">
+              
+              <div class="relative w-full h-64 overflow-hidden">
+                {% if character.portrait %}
+                  <img src="{{ character.portrait.url }}" alt="{{ character.name }}" class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
+                {% else %}
+                  <div class="w-full h-full bg-[#2F4F4F] flex items-center justify-center text-6xl text-[#FAEBD7]">
+                    <span>👤</span>
+                  </div>
+                {% endif %}
+                <div class="absolute inset-0 bg-linear-to-t from-[#2F4F4F]/80 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
+              </div>
+
+              <div class="p-6 flex-1 flex flex-col relative">
+                <div class="absolute top-0 left-0 w-full h-1 bg-[#DAA520]"></div>
+
+                {% if character.project %}
+                <div class="mb-2">
+                   <span class="inline-block px-2 py-1 bg-[#FAEBD7] text-[#2F4F4F] text-xs font-bold rounded-md border border-[#2F4F4F]/10">
+                     จากเรื่อง: {{ character.project }}
+                   </span>
+                </div>
+                {% endif %}
+                
+                <div class="flex justify-between items-start mb-1">
+                    <h2 class="text-2xl font-bold text-[#2F4F4F] group-hover:text-[#DAA520] transition">{{ character.name }}</h2>
+                    {% if character.age %}
+                    <span class="text-sm font-medium text-[#2F4F4F]/60 bg-gray-100 px-2 py-1 rounded">อายุ {{ character.age }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="text-gray-600 mb-6 text-sm line-clamp-3 leading-relaxed grow">
+                    <span>บทบาท: {{ character.alias|default:"ยังไม่มีคำอธิบาย" }}</span>
+                </div>
+
+                <div class="mt-auto flex items-center justify-between pt-4 border-t border-gray-100">
+                  <a href="{% url 'plotcraft:character_detail' character.id %}" class="px-4 py-2 border border-[#2F4F4F] rounded-lg text-[#2F4F4F] font-semibold text-sm flex items-center gap-2 hover:bg-[#2F4F4F] hover:text-[#FAEBD7] transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                    รายละเอียด
+                  </a>
+
+                  <a href="{% url 'plotcraft:character_edit' character.id %}" class="text-[#DAA520] hover:text-[#b8860b] font-medium text-sm flex items-center gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                    แก้ไข
+                  </a>
+                </div>
+
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
+    {% else %}
+        <div class="bg-white rounded-xl p-12 text-center border border-[#FAEBD7] shadow-sm flex flex-col items-center justify-center min-h-[300px]">
+            <div class="w-20 h-20 bg-[#FAEBD7] rounded-full flex items-center justify-center text-4xl mb-6 text-[#2F4F4F]">
+                👤
+            </div>
+            <h3 class="text-2xl font-bold text-[#2F4F4F] mb-2">ยังไม่มีตัวละคร</h3>
+            <p class="text-gray-500 mb-8 max-w-md">เริ่มสร้างตัวละครแรกของคุณ เพื่อเติมเต็มโลกใบนี้ให้สมบูรณ์</p>
+        </div>
+    {% endif %}
+    </div>
+</div>
+{% endblock %}

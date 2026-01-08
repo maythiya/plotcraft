@@ -1,0 +1,317 @@
+{% extends "base.html" %}
+{% block title %}Writing: {{ chapter.title }}{% endblock %}
+
+{% block content %}
+<script src="https://cdn.tailwindcss.com"></script>
+<style> 
+    body { overflow: hidden; background-color: #F0F2F5; }
+
+    [contenteditable]:empty:before { content: attr(placeholder); color: #9ca3af; display: block; font-style: italic; }
+    
+    /* Toolbar Button Styles */
+    .tool-btn { @apply p-2 rounded-lg text-gray-500 transition-all duration-200 hover:bg-[#DAA520]/10 hover:text-[#DAA520] hover:scale-110; }
+    .tool-btn.active { @apply bg-[#DAA520] text-white shadow-md transform scale-105; }
+
+    /* --- Scrollbar ขั้นเทพ --- */
+    .smart-scroll::-webkit-scrollbar { width: 4px; }
+    .smart-scroll::-webkit-scrollbar-track { background: transparent; margin: 4px 0; }
+    .smart-scroll::-webkit-scrollbar-thumb { 
+        background-color: transparent; 
+        border-radius: 20px; 
+        transition: background-color 0.3s ease; 
+    }
+    .smart-scroll.scrolling::-webkit-scrollbar-thumb { background-color: #cbd5e1; }
+    .smart-scroll:hover::-webkit-scrollbar-thumb { background-color: #e2e8f0; }
+
+    /* Animation */
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .paper-enter { animation: slideUp 0.7s ease-out forwards; opacity: 0; }
+</style>
+
+<div class="h-screen overflow-hidden bg-[#F0F2F5] flex flex-col font-sans relative" x-data="writerApp()">
+    
+    <header class="flex-none bg-white/80 backdrop-blur-md border-b border-gray-200/80 px-4 md:px-8 py-3 flex items-center justify-between z-50 shadow-sm">
+        <div class="flex items-center gap-4 flex-1">
+            <a href="{% url 'plotcraft:novel_detail' novel.id %}" class="group flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 text-gray-400 hover:text-[#2F4F4F] transition-all">
+                <svg class="w-6 h-6 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            </a>
+            <div class="h-8 w-px bg-gray-200 mx-2"></div>
+            <div class="flex-1 max-w-xl">
+                <div class="text-[10px] text-[#DAA520] font-bold uppercase tracking-wider mb-0.5">{{ novel.title }}</div>
+                <input type="text" x-model="title" @input="unsavedChanges = true" class="font-bold text-[#2F4F4F] text-xl bg-transparent w-full border-none p-0 focus:ring-0 placeholder-gray-300 hover:opacity-80 transition" placeholder="ตั้งชื่อตอน...">
+            </div>
+        </div>
+
+        <div class="flex items-center gap-4 md:gap-6">
+            <div class="text-right hidden sm:block mr-4">
+                <div class="text-xs text-gray-400 uppercase tracking-widest font-bold">Status</div>
+                <div class="flex items-center justify-end gap-1 text-xs">
+                    <span x-show="isSaving" class="text-[#DAA520] animate-pulse">Saving...</span>
+                    <span x-show="!isSaving && lastSaved" class="text-gray-500">Saved <span x-text="lastSaved"></span></span>
+                    <span x-show="!isSaving && unsavedChanges" class="text-red-400">Unsaved</span>
+                </div>
+            </div>
+
+            <a href="{% url 'plotcraft:chapter_preview' pk=chapter.id %}" target="_blank"
+               class="p-2 rounded-lg transition-colors border bg-white text-gray-400 border-gray-200 hover:border-[#DAA520] hover:text-[#DAA520] flex items-center gap-2"
+               title="ดูตัวอย่าง">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                <span class="text-xs font-bold hidden sm:inline">ดูตัวอย่าง</span>
+            </a>
+
+            <button @click="openSaveModal()" class="group relative overflow-hidden bg-[#2F4F4F] text-[#FAEBD7] px-6 py-2.5 rounded-full font-bold shadow-lg hover:shadow-xl hover:bg-[#1a3030] transition-all transform active:scale-95 flex items-center gap-2">
+                <span class="relative z-10 flex items-center gap-2">
+                    <svg x-show="!isSaving" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                    <span x-text="isSaving ? 'Saving...' : 'บันทึก'"></span>
+                </span>
+                <div class="absolute inset-0 bg-white/10 -translate-x-full group-hover:translate-x-full transition-transform duration-500 skew-x-12"></div>
+            </button>
+        </div>
+    </header>
+
+    <div class="flex-none z-40 flex justify-center py-4 pointer-events-none bg-[#F0F2F5]">
+        <div class="bg-white/90 backdrop-blur shadow-lg border border-gray-100 rounded-xl px-6 py-3 flex gap-3 pointer-events-auto transform hover:scale-105 transition-transform duration-300">
+            <button type="button" @click="format('bold')" class="tool-btn bold"><span class="font-bold">B</span></button>
+            <button type="button" @click="format('italic')" class="tool-btn italic"><span class="italic font-serif">I</span></button>
+            <button type="button" @click="format('underline')" class="tool-btn underline"><span class="underline">U</span></button>
+            <div class="w-px h-6 bg-gray-200 mx-2 self-center"></div>
+            <button type="button" @click="format('justifyLeft')" class="tool-btn justifyLeft"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h10M4 18h16"></path></svg></button>
+            <button type="button" @click="format('justifyCenter')" class="tool-btn justifyCenter"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M7 12h10M4 18h16"></path></svg></button>
+            <button type="button" @click="format('justifyRight')" class="tool-btn justifyRight"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M10 12h10M4 18h16"></path></svg></button>
+            <div class="w-px h-6 bg-gray-200 mx-2 self-center"></div>
+            <div class="text-[10px] text-gray-400 font-bold self-center uppercase">
+                <span x-text="wordCount">0</span> Words
+            </div>
+        </div>
+    </div>
+
+    <div class="flex-1 flex overflow-hidden relative">
+        <main class="flex-1 flex flex-col items-center justify-start overflow-hidden px-4 pb-8 w-full transition-all duration-300">
+            <div class="bg-white shadow-xl shadow-gray-200/50 rounded-lg w-full max-w-3xl h-full border border-gray-50 relative paper-enter flex flex-col transition-all duration-300">
+                <div x-ref="scrollContainer"
+                     @scroll="handleScroll"
+                     class="smart-scroll flex-1 overflow-y-auto px-8 md:px-16 py-12 relative"
+                     @click="$refs.editor.focus()">
+                     
+                     <div x-ref="editor"
+                          contenteditable="true"
+                          class="outline-none text-lg leading-loose text-gray-800 font-serif min-h-full selection:bg-[#DAA520]/30 break-word"
+                          placeholder="เริ่มบรรเลงจินตนาการของคุณที่นี่..."
+                          @input="updateStats(); unsavedChanges = true"
+                          @mouseup="checkActiveButtons()"
+                          @keyup="checkActiveButtons()"
+                          @keydown.cmd.b.prevent="format('bold')"
+                          @keydown.ctrl.b.prevent="format('bold')"
+                          @keydown.cmd.s.prevent="openSaveModal()"
+                          @keydown.ctrl.s.prevent="openSaveModal()">
+                          {{ chapter.content|safe }}
+                    </div>
+                    
+                    <div class="h-20"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div x-show="showSaveModal" 
+         style="display: none;"
+         class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0">
+        
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 translate-y-4 scale-95"
+             x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+             @click.away="showSaveModal = false">
+             
+            <div class="bg-[#2F4F4F] px-6 py-4 flex items-center justify-between">
+                <h3 class="text-[#FAEBD7] font-bold text-lg">บันทึกการเปลี่ยนแปลง</h3>
+                <button @click="showSaveModal = false" class="text-white/70 hover:text-white">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <div class="p-6 text-center">
+                <p class="text-gray-600 mb-6 text-sm">
+                    ต้องการบันทึกตอนนี้เป็นสถานะไหนดี? (สามารถแก้ไขได้ภายหลัง)
+                </p>
+
+                <div class="grid grid-cols-1 gap-3">
+                    <button @click="confirmSave('draft')" class="group relative flex items-center justify-center gap-3 p-3 rounded-xl border border-gray-200 hover:border-[#DAA520] hover:bg-[#DAA520]/5 transition-all">
+                        <div class="bg-gray-100 p-2 rounded-lg group-hover:bg-white text-gray-500 group-hover:text-[#DAA520]">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                        </div>
+                        <div class="text-left">
+                            <div class="font-bold text-gray-800">บันทึกเป็นแบบร่าง (Draft)</div>
+                        </div>
+                    </button>
+
+                    <button @click="confirmSave('finish')" class="group relative flex items-center justify-center gap-3 p-3 rounded-xl border border-gray-200 hover:border-[#2F4F4F] hover:bg-[#2F4F4F]/5 transition-all">
+                        <div class="bg-[#2F4F4F]/10 p-2 rounded-lg group-hover:bg-[#2F4F4F] text-[#2F4F4F] group-hover:text-white transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        </div>
+                        <div class="text-left">
+                            <div class="font-bold text-[#2F4F4F]">บันทึกเป็นเสร็จสมบูรณ์ (Finished)</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <div class="px-6 py-4 bg-gray-50 flex justify-center border-t border-gray-100">
+                <button @click="showSaveModal = false" class="text-gray-400 hover:text-gray-600 text-sm font-semibold transition-colors">
+                    อยู่หน้านี้ต่อดีกว่า
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <form id="saveForm" method="POST" class="hidden">
+        {% csrf_token %}
+        <input type="hidden" name="title" x-model="title">
+        <input type="hidden" name="content" x-model="content">
+        <input type="hidden" name="is_draft" x-model="isDraftStatus">
+    </form>
+</div>
+
+<script>
+    function writerApp() {
+        return {
+            title: "{{ chapter.title|escapejs }}",
+            content: `{{ chapter.content|safe }}`,
+            charCount: 0,
+            wordCount: 0,
+            isSaving: false,
+            lastSaved: null,
+            unsavedChanges: false,
+            scrollTimeout: null,
+            
+            // เพิ่มตัวแปรสำหรับ Modal
+            showSaveModal: false,
+            isDraftStatus: '{{ chapter.is_draft|yesno:"true,false" }}',
+
+            init() {
+                this.updateStats();
+                this.checkActiveButtons();
+                this.startAutoSave(); 
+            },
+
+            handleScroll() {
+                const container = this.$refs.scrollContainer;
+                container.classList.add('scrolling');
+                clearTimeout(this.scrollTimeout);
+                this.scrollTimeout = setTimeout(() => {
+                    container.classList.remove('scrolling');
+                }, 1000);
+            },
+            
+            format(cmd, val=null) {
+                document.execCommand(cmd, false, val);
+                this.$refs.editor.focus();
+                this.updateStats();
+                this.checkActiveButtons();
+                this.unsavedChanges = true;
+            },
+            
+            checkActiveButtons() {
+                const buttons = ['bold', 'italic', 'underline', 'justifyLeft', 'justifyCenter', 'justifyRight'];
+                buttons.forEach(cmd => {
+                    const btn = document.querySelector(`.tool-btn.${cmd}`);
+                    if (btn) document.queryCommandState(cmd) ? btn.classList.add('active') : btn.classList.remove('active');
+                });
+            },
+
+            updateStats() {
+                const el = this.$refs.editor;
+                this.content = el.innerHTML;
+                const text = el.innerText || "";
+                this.charCount = text.replace(/\s/g, '').length;
+                this.wordCount = text.trim() ? text.split(/\s+/).length : 0;
+            },
+
+            // เปิด Modal
+            openSaveModal() {
+                this.updateStats(); // อัปเดตเนื้อหาก่อนเปิด
+                this.showSaveModal = true;
+            },
+
+            // ยืนยันการบันทึกจาก Modal
+            confirmSave(status) {
+                this.isDraftStatus = (status === 'draft') ? 'true' : 'false';
+                this.saveContent(true); // true = force submit
+            },
+
+            saveContent(forceSubmit = false) {
+                if (this.isSaving) return;
+                this.isSaving = true;
+                
+                // อัปเดตค่าลง Input Hidden
+                document.querySelector('input[name="title"]').value = this.title;
+                document.querySelector('input[name="content"]').value = this.$refs.editor.innerHTML;
+                document.querySelector('input[name="is_draft"]').value = this.isDraftStatus;
+                
+                if (forceSubmit) {
+                    // ส่ง Form ปกติ (เปลี่ยนหน้า)
+                    document.getElementById('saveForm').submit();
+                } else {
+                    // กรณี Autosave หรือบันทึกเบื้องหลัง (ถ้าต้องการใช้อนาคต)
+                    // ตอนนี้ถ้ากดปุ่ม Save หลัก เราใช้ forceSubmit ผ่าน Modal อยู่แล้ว
+                }
+            },
+
+            startAutoSave() {
+                setInterval(() => {
+                    if (this.unsavedChanges && !this.isSaving && !this.showSaveModal) {
+                        this.autoSave();
+                    }
+                }, 10000); // 10 วินาที
+            },
+
+            autoSave() {
+                if (this.isSaving) return;
+                this.isSaving = true;
+                
+                const currentContent = this.$refs.editor.innerHTML;
+
+                fetch('#', { // URL ปัจจุบัน
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'X-Requested-With': 'XMLHttpRequest' // บอกว่าเป็น AJAX
+                    },
+                    // ส่งแบบ Form Data ปกติเพื่อให้ Django เข้าใจง่าย
+                    body: new URLSearchParams({
+                        'title': this.title,
+                        'content': currentContent,
+                        'is_draft': 'true' // Auto save ให้ถือเป็น draft เสมอ หรือไม่ส่งค่านี้ถ้าไม่อยากเปลี่ยนสถานะ
+                    })
+                })
+                .then(response => {
+                    if (response.redirected) {
+                        // ถ้า Django Redirect แปลว่าสำเร็จ (สำหรับ View ปัจจุบัน)
+                        // แต่จริงๆ ถ้า AutoSave ควรทำ API แยก หรือแก้ View ให้คืน JSON ได้
+                        // ในที่นี้สมมติว่าสำเร็จ
+                        return { status: 'success' };
+                    }
+                    return { status: 'success' }; 
+                })
+                .then(data => {
+                    this.isSaving = false;
+                    const now = new Date();
+                    this.lastSaved = now.toLocaleTimeString();
+                    this.unsavedChanges = false;
+                })
+                .catch(error => {
+                    console.error('Auto-save failed:', error);
+                    this.isSaving = false;
+                });
+            }
+        }
+    }
+</script>
+{% endblock %}

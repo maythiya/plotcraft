@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block content %}
+<script src="https://cdn.tailwindcss.com"></script>
+
+<div class="min-h-screen py-8 px-4 sm:px-6 lg:px-8 font-sans text-[#2F4F4F]">
+  <div class="max-w-5xl mx-auto">
+    
+    <div class="flex items-center justify-between mb-8">
+      <div class="flex items-center gap-3">
+        <div class="p-2 bg-[#2F4F4F] rounded-lg text-[#FAEBD7]">
+           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" /></svg>
+        </div>
+        <h1 class="text-3xl font-bold text-[#2F4F4F]">จัดการฉาก (Scenes)</h1>
+      </div>
+    <a href="{% url 'plotcraft:scene_create' %}" class="px-5 py-2 bg-[#DAA520] hover:bg-[#b8860b] text-white rounded-lg shadow-md transition font-bold flex items-center gap-2">
+        + เพิ่มฉากใหม่
+      </a>
+    </div>
+
+    <div class="mb-8 overflow-x-auto pb-2">
+        <div class="flex space-x-2">
+            <a href="{% url 'plotcraft:scene_list' %}" 
+               class="px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap transition border
+               {% if not selected_project %}
+                   bg-[#2F4F4F] text-[#FAEBD7] border-[#2F4F4F] shadow-md
+               {% else %}
+                   bg-white text-[#2F4F4F] border-[#2F4F4F]/30 hover:bg-[#FAEBD7]
+               {% endif %}">
+               ทั้งหมด
+            </a>
+
+            {% for project in projects %}
+            <a href="?project={{ project.id }}" 
+               class="px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap transition border flex items-center gap-2
+               {% if selected_project.id == project.id %}
+                   bg-[#DAA520] text-white border-[#DAA520] shadow-md
+               {% else %}
+                   bg-white text-[#2F4F4F] border-[#2F4F4F]/30 hover:border-[#DAA520] hover:text-[#DAA520]
+               {% endif %}">
+               <span>📖 {{ project.title }}</span>
+               <span class="bg-black/10 px-1.5 py-0.5 rounded-md text-[10px] opacity-70">
+                   {{ project.scenes.count }}
+               </span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    {% if selected_project %}
+    <div class="mb-6 border-b border-[#2F4F4F]/10 pb-2">
+        <h2 class="text-xl font-bold text-[#2F4F4F]">
+            ฉากในเรื่อง: <span class="text-[#DAA520]">{{ selected_project.title }}</span>
+        </h2>
+    </div>
+    {% endif %}
+
+    {% if scenes %}
+    <div class="space-y-4">
+        {% for scene in scenes %}
+        <div id="scene-{{ scene.id }}" class="bg-white p-6 rounded-xl shadow-md border-l-8 border-[#2F4F4F] hover:shadow-lg transition relative group">
+            
+            <div class="absolute -left-3 top-6 w-8 h-8 bg-[#DAA520] text-white rounded-full flex items-center justify-center font-bold shadow-sm border-2 border-[#FAEBD7]">
+                {{ scene.order }}
+            </div>
+
+            <div class="flex flex-col md:flex-row justify-between gap-4 pl-4">
+                <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-1">
+                        <h3 class="text-xl font-bold text-[#2F4F4F]">{{ scene.title }}</h3>
+                        <span class="px-2 py-0.5 text-[10px] rounded-full uppercase tracking-wide font-bold
+                            {% if scene.status == 'finished' %} bg-green-100 text-green-800
+                            {% elif scene.status == 'draft' %} bg-blue-100 text-blue-800
+                            {% else %} bg-gray-100 text-gray-600 {% endif %}">
+                            {{ scene.get_status_display }}
+                        </span>
+                    </div>
+                    
+                    <div class="text-sm text-gray-500 flex flex-wrap gap-4 mb-3">
+                        {% if scene.project %}
+                            <span class="flex items-center gap-1">📖 {{ scene.project.title }}</span>
+                        {% endif %}
+                        {% if scene.location %}
+                            <span class="flex items-center gap-1 text-[#DAA520]">📍 {{ scene.location.name }}</span>
+                        {% endif %}
+                        {% if scene.pov_character %}
+                            <span class="flex items-center gap-1">👀 POV: {{ scene.pov_character.name }}</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="bg-[#FAEBD7]/20 p-3 rounded-lg text-sm text-gray-600">
+                        <span class="font-bold text-[#2F4F4F]">เป้าหมาย:</span> {{ scene.goal|truncatechars:80|default:"-" }} 
+                        <span class="mx-2">|</span> 
+                        <span class="font-bold text-red-800">อุปสรรค:</span> {{ scene.conflict|truncatechars:80|default:"-" }}
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2 self-start md:self-center">
+                    <a href="{% url 'plotcraft:scene_edit' scene.id %}" class="text-[#DAA520] hover:text-[#b8860b] font-bold text-sm border border-[#DAA520] px-4 py-2 rounded-lg hover:bg-[#DAA520]/10 transition">
+                        แก้ไข / รายละเอียด
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-12 bg-white rounded-xl border border-[#FAEBD7]">
+        <div class="text-5xl mb-4">🎬</div>
+        <h3 class="text-xl font-bold text-[#2F4F4F]">ยังไม่มีฉาก</h3>
+        <p class="text-gray-500">เริ่มวางโครงเรื่องของคุณทีละฉาก</p>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

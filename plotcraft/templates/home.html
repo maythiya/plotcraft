@@ -1,0 +1,263 @@
+{% extends "base.html" %}
+{% block title %}Home | PlotCraft{% endblock %}
+{% block content %}
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+    /* Animation ให้เนื้อหาค่อยๆ โผล่ขึ้นมา */
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in-up { animation: fadeInUp 0.6s ease-out forwards; opacity: 0; }
+    
+    /* Delay ให้แต่ละส่วนโผล่มาไม่พร้อมกัน */
+    .delay-100 { animation-delay: 0.1s; }
+    .delay-200 { animation-delay: 0.2s; }
+    .delay-300 { animation-delay: 0.3s; }
+</style>
+
+<div class="min-h-screen font-sans text-[#2F4F4F] relative overflow-hidden">
+  
+  <section class="container mx-auto px-6 py-10 max-w-7xl relative z-10">
+
+    <div class="mb-12 flex justify-center fade-in-up">
+        <form action="{% url 'plotcraft:global_search' %}" method="GET" class="relative w-full max-w-2xl group">
+            <input type="text" 
+                   name="q" 
+                   placeholder="ค้นหาตัวละคร, ฉาก, หรือ Timeline..." 
+                   class="w-full pl-14 pr-6 py-4 rounded-full border-2 border-gray-100 shadow-lg bg-white text-[#2F4F4F] placeholder-gray-400 text-lg focus:border-[#DAA520]/50 focus:ring-4 focus:ring-[#DAA520]/10 focus:outline-none transition-all duration-300 transform group-hover:scale-[1.01]">
+            <div class="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-[#DAA520] transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+            </div>
+        </form>
+    </div>
+
+    <div class="mb-12 p-8 md:p-10 bg-white rounded-3xl shadow-xl border border-gray-100 relative overflow-hidden fade-in-up delay-100 group">
+        <div class="absolute top-0 -left-full w-full h-full bg-gradient-to-r from-transparent via-gray-50 to-transparent transform skew-x-12 transition-all duration-1000 group-hover:left-full"></div>
+        
+        <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div>
+                <h1 class="text-3xl md:text-4xl font-extrabold mb-3 tracking-tight text-gray-800">
+                    ยินดีต้อนรับ, 
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#DAA520] via-[#FCD34D] to-[#B8860B] drop-shadow-sm filter">
+                        {{ user.username|default:"นักเขียน" }}
+                    </span>
+                    <span class="animate-bounce inline-block origin-bottom ml-2">👋</span>
+                </h1>
+                <p class="text-gray-600 text-lg max-w-2xl leading-relaxed">
+                    พร้อมจะร้อยเรียงจินตนาการของคุณใน <span class="font-bold text-[#2F4F4F]">PlotCraft</span> หรือยัง?
+                </p>
+            </div>
+            <a href="{% url 'plotcraft:novel_create' %}" class="px-6 py-3 bg-[#2F4F4F] hover:bg-[#1a3030] text-[#FAEBD7] rounded-xl font-bold shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex items-center gap-2 whitespace-nowrap">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                สร้างนิยาย
+            </a>
+        </div>
+    </div>
+
+    <div class="mb-16 fade-in-up delay-200">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold flex items-center gap-3 text-[#2F4F4F]">
+                <span class="p-2 bg-[#2F4F4F]/10 rounded-lg text-2xl">📚</span> งานเขียนของคุณ
+            </h2>
+            {% if novels %}
+            <a href="{% url 'plotcraft:novel_list' %}" class="text-sm font-bold text-[#DAA520] hover:text-[#2F4F4F] transition flex items-center gap-1 group">
+                ดูทั้งหมด
+                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+            </a>
+            {% endif %}
+        </div>
+    
+        {% if novels and novels|length > 0 %}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            {% for novel in novels|slice:":4" %}
+            <a href="{% url 'plotcraft:novel_detail' novel.id %}" class="group flex bg-white rounded-2xl p-3 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-transparent hover:border-[#DAA520]/30 h-40">
+                
+                <div class="w-28 aspect-2/3 shrink-0 rounded-xl overflow-hidden relative shadow-inner bg-gray-100">
+                    {% if novel.cover_image %}
+                        <img src="{{ novel.cover_image.url }}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500">
+                    {% else %}
+                        <div class="w-full h-full bg-linear-to-br from-[#2F4F4F] to-[#1a3030] flex flex-col items-center justify-center text-[#FAEBD7] p-2 text-center">
+                            <div class="text-3xl mb-1">📖</div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="flex-1 ml-4 flex flex-col justify-between py-1">
+                    <div>
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full 
+                                {% if novel.status == 'ONGOING' %}bg-green-100 text-green-600{% else %}bg-blue-100 text-blue-600{% endif %}">
+                                {{ novel.get_status_display|default:'DRAFT' }}
+                            </span>
+                            <span class="text-[10px] text-gray-400">{{ novel.updated_at|timesince }} ago</span>
+                        </div>
+                        <h3 class="font-bold text-gray-800 text-lg leading-tight group-hover:text-[#DAA520] transition-colors line-clamp-1 mb-1">
+                            {{ novel.title }}
+                        </h3>
+                        <p class="text-xs text-gray-500 line-clamp-2 leading-relaxed">
+                            {{ novel.synopsis|default:"ยังไม่มีคำโปรย... คลิกเพื่อเริ่มเขียนรายละเอียดนิยายของคุณ" }}
+                        </p>
+                    </div>
+
+                    <div class="flex items-center gap-2 mt-2">
+                        <span class="text-xs font-bold text-[#2F4F4F] bg-gray-100 px-2 py-1 rounded-md border border-gray-200">
+                            {{ novel.get_category_display|default:'ทั่วไป' }}
+                        </span>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+            
+            <a href="{% url 'plotcraft:novel_create' %}" class="group flex items-center justify-center bg-gray-50 border-2 border-dashed border-[#DAA520]/30 rounded-2xl p-3 shadow-sm hover:shadow-md hover:bg-[#DAA520]/5 hover:border-[#DAA520] transition-all duration-300 h-40 cursor-pointer">
+                <div class="flex flex-col items-center gap-2 text-[#DAA520]">
+                    <div class="w-10 h-10 rounded-full bg-[#DAA520]/10 flex items-center justify-center group-hover:scale-110 group-hover:rotate-90 transition-all duration-500">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    </div>
+                    <span class="font-bold text-sm">สร้างนิยายเรื่องใหม่</span>
+                </div>
+            </a>
+        </div>
+        {% else %}
+        <div class="bg-white rounded-2xl p-10 text-center border-2 border-dashed border-[#2F4F4F]/10">
+            <div class="text-6xl mb-4 grayscale opacity-50">✍️</div>
+            <h3 class="text-xl font-bold text-[#2F4F4F] mb-2">เริ่มเขียนนิยายเรื่องแรก</h3>
+            <p class="text-gray-500 mb-6">จินตนาการของคุณกำลังรอการปลดปล่อย</p>
+            <a href="{% url 'plotcraft:novel_create' %}" class="inline-block px-6 py-2 bg-[#DAA520] text-white rounded-lg font-bold hover:bg-[#b8860b] transition shadow-md hover:-translate-y-0.5 transform">
+                + สร้างผลงานใหม่
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <hr class="border-[#2F4F4F]/10 mb-12">
+
+    <div class="mb-16 fade-in-up delay-300">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold flex items-center gap-3">
+                <span class="p-2 bg-blue-100 rounded-lg text-2xl">👤</span> ตัวละครของคุณ
+            </h2>
+            {% if characters %}
+            <a href="{% url 'plotcraft:character_list' %}" class="text-sm font-bold text-[#DAA520] hover:text-[#2F4F4F] transition flex items-center gap-1 group">
+                ดูทั้งหมด
+                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+            </a>
+            {% endif %}
+        </div>
+
+        {% if characters and characters|length > 0 %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for character in characters|slice:":4" %}
+            <a href="{% url 'plotcraft:character_detail' character.id %}" class="group bg-white rounded-2xl shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 overflow-hidden border border-gray-100 flex flex-col h-full">
+                <div class="h-56 overflow-hidden bg-gray-100 relative shrink-0">
+                    {% if character.portrait %}
+                        <img src="{{ character.portrait.url }}" alt="{{ character.name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                    {% else %}
+                        <div class="w-full h-full flex items-center justify-center bg-linear-to-t from-gray-200 to-gray-100 text-[#2F4F4F]/30 text-5xl">
+                            {{ character.name|slice:":1" }}
+                        </div>
+                    {% endif %}
+                    <div class="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent opacity-80"></div>
+                    <div class="absolute bottom-4 left-4 right-4 text-white">
+                         <h3 class="font-bold text-xl leading-tight truncate mb-1">{{ character.name }}</h3>
+                         {% if character.role %}
+                         <span class="inline-block text-[10px] bg-[#DAA520] text-white px-2 py-0.5 rounded shadow-sm font-medium tracking-wide">{{ character.role }}</span>
+                         {% endif %}
+                    </div>
+                </div>
+                <div class="p-5 flex-1 flex flex-col justify-between">
+                    <p class="text-sm text-gray-500 line-clamp-2 mb-3">
+                        {{ character.description|default:"ยังไม่มีคำอธิบาย" }}
+                    </p>
+                    <div class="text-xs text-[#2F4F4F]/60 flex justify-between items-center border-t border-gray-100 pt-3 mt-auto">
+                        <span class="text-[#DAA520] font-bold group-hover:underline flex items-center gap-1">
+                            ดูข้อมูล <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        </span>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+            <a href="{% url 'plotcraft:character_create' %}" class="border-2 border-dashed border-[#DAA520]/40 rounded-2xl flex flex-col items-center justify-center p-6 text-[#DAA520] hover:bg-[#DAA520]/5 hover:border-[#DAA520] transition-all duration-300 cursor-pointer min-h-[250px]">
+                <div class="w-12 h-12 rounded-full bg-[#DAA520]/10 flex items-center justify-center mb-3">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                </div>
+                <span class="font-bold">สร้างตัวละครเพิ่ม</span>
+            </a>
+        </div>
+        {% else %}
+        <div class="bg-white rounded-2xl p-10 text-center border-2 border-dashed border-[#2F4F4F]/10">
+            <div class="text-6xl mb-4 grayscale opacity-50">👤</div>
+            <h3 class="text-xl font-bold text-[#2F4F4F] mb-2">ยังไม่มีตัวละคร</h3>
+            <p class="text-gray-500 mb-6">เริ่มสร้างตัวละครแรกของคุณ เพื่อเติมเต็มโลกใบนี้</p>
+            <a href="{% url 'plotcraft:character_create' %}" class="inline-block px-6 py-2 bg-[#DAA520] text-white rounded-lg font-bold hover:bg-[#b8860b] transition shadow-md hover:-translate-y-0.5 transform">
+                + สร้างตัวละคร
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <hr class="border-[#2F4F4F]/10 mb-12">
+
+    <div class="mb-12 fade-in-up delay-300">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold flex items-center gap-3">
+                <span class="p-2 bg-[#DAA520]/10 rounded-lg text-2xl">🗺️</span> สถานที่ของคุณ
+            </h2>
+            {% if locations %}
+            <a href="{% url 'plotcraft:location_list' %}" class="text-sm font-bold text-[#DAA520] hover:text-[#2F4F4F] transition flex items-center gap-1 group">
+                ดูทั้งหมด
+                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+            </a>
+            {% endif %}
+        </div>
+        
+        {% if locations and locations|length > 0 %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for location in locations|slice:":4" %}
+            <a href="{% url 'plotcraft:location_detail' location.id %}" class="group bg-white rounded-2xl shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 overflow-hidden border border-gray-100 flex flex-col h-full"> 
+                <div class="h-44 overflow-hidden bg-gray-100 relative shrink-0">
+                    {% if location.map_image %}
+                        <img src="{{ location.map_image.url }}" alt="{{ location.name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                    {% else %}
+                        <div class="w-full h-full flex items-center justify-center bg-[#2F4F4F] text-[#FAEBD7]">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" /></svg>
+                        </div>
+                    {% endif %}
+                    <div class="absolute inset-0 bg-[#DAA520]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                </div>
+
+                <div class="p-5 flex-1 flex flex-col">
+                    <h3 class="font-bold text-lg text-[#2F4F4F] mb-1 group-hover:text-[#DAA520] transition-colors truncate">{{ location.name|default:'(ไม่มีชื่อ)' }}</h3>
+                    <div class="grow"></div>
+                    <div class="text-xs text-[#2F4F4F]/60 flex justify-between items-center border-t border-gray-100 pt-3 mt-4">
+                        <span class="text-[#DAA520] font-bold group-hover:underline text-xs flex items-center gap-1">
+                            สำรวจ <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </span>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+            <a href="{% url 'plotcraft:location_create' %}" class="border-2 border-dashed border-[#DAA520]/40 rounded-2xl flex flex-col items-center justify-center p-6 text-[#DAA520] hover:bg-[#DAA520]/5 hover:border-[#DAA520] transition-all duration-300 cursor-pointer min-h-[250px]">
+                <div class="w-12 h-12 rounded-full bg-[#DAA520]/10 flex items-center justify-center mb-3">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                </div>
+                <span class="font-bold">สร้างสถานที่เพิ่ม</span>
+            </a>
+        </div>
+        {% else %}
+        <div class="bg-white rounded-2xl p-10 text-center border-2 border-dashed border-[#2F4F4F]/10">
+            <div class="text-6xl mb-4 grayscale opacity-50">🗺️</div>
+            <h3 class="text-xl font-bold text-[#2F4F4F] mb-2">ยังไม่มีสถานที่</h3>
+            <p class="text-gray-500 mb-6">เริ่มสร้างสถานที่แรกของคุณ เพื่อเติมเต็มโลกใบนี้</p>
+            <a href="{% url 'plotcraft:location_create' %}" class="inline-block px-6 py-2 bg-[#DAA520] text-white rounded-lg font-bold hover:bg-[#b8860b] transition shadow-md hover:-translate-y-0.5 transform">
+                + สร้างสถานที่
+            </a>
+        </div>
+        {% endif %}
+
+  </section>
+</div>
+
+{% endblock %}

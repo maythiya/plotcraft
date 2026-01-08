@@ -1,0 +1,12 @@
+Django
+mysqlclient
+python-dotenv
+django-htmx
+django-tailwind
+django-browser-reload
+djangorestframework
+gunicorn
+Pillow
+EbookLib
+WeasyPrint
+whitenoise
