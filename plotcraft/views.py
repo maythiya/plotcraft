@@ -784,3 +784,25 @@ def ai_chat_general(request):
             return JsonResponse({'error': str(e)}, status=500)
     
     return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+@csrf_exempt
+@login_required
+def ai_generate_character(request):
+    """ API สำหรับ Gen ข้อมูลตัวละคร """
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            concept = data.get('concept', '')
+            
+            # เรียก AI
+            char_data = rag_service.generate_character_data(concept)
+            
+            if char_data:
+                return JsonResponse({'success': True, 'data': char_data})
+            else:
+                return JsonResponse({'success': False, 'error': 'AI นึกไม่ออก ลองเปลี่ยนคำสั่งดูครับ'})
+                
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
