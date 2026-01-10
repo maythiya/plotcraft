@@ -1,6 +1,7 @@
 import os
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -8,11 +9,12 @@ from django.http import JsonResponse, HttpResponseForbidden, HttpResponse
 from django.views.decorators.http import require_POST
 from django.conf import settings
 from django.conf.urls.static import static
+from django.urls import reverse
 import json
 
 import io
 from django.template.loader import render_to_string
-from django.utils.text import slugify
+from django.utils.encoding import escape_uri_path
 
 # Library สำหรับ Export (ต้องติดตั้งก่อน)
 from ebooklib import epub
@@ -21,7 +23,7 @@ from django.utils.encoding import escape_uri_path
 
 from .models import (
     Novel, Chapter, Character, Location, Item,
-    Scene, Timeline, TimelineEvent, Profile, User
+    Scene, Timeline, TimelineEvent, Bookmark
 )
 from .forms import (
     UserForm, RegisterForm, ProfileForm, NovelForm, ChapterForm,
@@ -162,7 +164,17 @@ def global_search(request):
 @login_required
 def novel_list(request):
     novels = Novel.objects.filter(author=request.user).order_by('-updated_at')
-    return render(request, 'notes/novel_list.html', {'novels': novels})
+
+    #ดึง ID ของนิยายที่ Bookmark ไว้
+    bookmarked_ids = Bookmark.objects.filter(
+        user=request.user,
+        content_type__model='novel' # ระบุชื่อ Model (ตัวเล็ก)
+    ).values_list('object_id', flat=True)
+
+    return render(request, 'notes/novel_list.html', {
+        'novels': novels,
+        'bookmarked_ids': bookmarked_ids, # ส่งไปที่ Template
+    })
 
 
 @login_required
@@ -324,8 +336,15 @@ def character_list(request):
     else:
         characters = base_characters.order_by('-created_at')
 
+    #ดึง ID ของตัวละครที่ Bookmark ไว้
+    bookmarked_ids = Bookmark.objects.filter(
+        user=request.user,
+        content_type__model='character'
+    ).values_list('object_id', flat=True)
+
     return render(request, 'worldbuilding/character_list.html', {
         'characters': characters,
+        'bookmarked_ids': bookmarked_ids, # ส่งไปที่ Template
     })
 
 
@@ -418,7 +437,17 @@ def location_create(request):
 @login_required
 def location_list(request):
     locations = Location.objects.filter(created_by=request.user).order_by('-created_at')
-    return render(request, 'worldbuilding/location_list.html', {'locations': locations})
+
+    #ดึง ID ของสถานที่ที่ Bookmark ไว้
+    bookmarked_ids = Bookmark.objects.filter(
+        user=request.user,
+        content_type__model='location'
+    ).values_list('object_id', flat=True)
+
+    return render(request, 'worldbuilding/location_list.html', {
+        'locations': locations,
+        'bookmarked_ids': bookmarked_ids, # ส่งไปที่ Template
+    })
 
 
 @login_required
@@ -485,7 +514,17 @@ def item_create(request):
 @login_required
 def item_list(request):
     items = Item.objects.filter(created_by=request.user).order_by('-created_at')
-    return render(request, 'worldbuilding/item_list.html', {'items': items})
+
+    #ดึง ID ของไอเท็มที่ Bookmark ไว้
+    bookmarked_ids = Bookmark.objects.filter(
+        user=request.user,
+        content_type__model='item'
+    ).values_list('object_id', flat=True)
+
+    return render(request, 'worldbuilding/item_list.html', {
+        'items': items,
+        'bookmarked_ids': bookmarked_ids, # ส่งไปที่ Template
+    })
 
 
 @login_required
@@ -541,10 +580,17 @@ def scene_list(request):
         if projects.filter(id=selected_project_id).exists():
             selected_project = projects.get(id=selected_project_id)
 
+    #ดึง ID ของฉากที่ Bookmark ไว้
+    bookmarked_ids = Bookmark.objects.filter(
+        user=request.user,
+        content_type__model='scene'
+    ).values_list('object_id', flat=True)
+
     context = {
         'scenes': scenes,
         'projects': projects,
         'selected_project': selected_project,
+        'bookmarked_ids': bookmarked_ids, # ส่งไปที่ Template
     }
     return render(request, 'scenes/scene_list.html', context)
 
@@ -558,13 +604,14 @@ def scene_create(request):
             obj.created_by = request.user
             obj.save()
             form.save_m2m()
+
             messages.success(request, f"สร้างฉาก '{obj.title}' เรียบร้อย")
-            return redirect(f"/plotcraft/scenes/?project={obj.project.id}")
+
+            url = reverse('plotcraft:scene_list')
+            return redirect(f"{url}?project={obj.project.id}")
+
     else:
-        initial = {}
-        if 'project' in request.GET:
-            pass
-        form = SceneForm(request.user, initial=initial)
+        form = SceneForm(request.user)
 
     return render(request, 'scenes/scene_form.html', {'form': form})
 
@@ -578,36 +625,76 @@ def scene_edit(request, pk):
         return redirect('plotcraft:scene_list')
 
     if request.method == 'POST':
-        project_id = scene.project.id if scene.project else None
-        
         if "scene_delete" in request.POST:
+            project_id = scene.project.id
             scene.delete()
             messages.success(request, "ลบฉากเรียบร้อย")
-            if project_id:
-                return redirect(f"/plotcraft/scenes/?project={project_id}")
-            return redirect('plotcraft:scene_list')
+
+            url = reverse('plotcraft:scene_list')
+            return redirect(f"{url}?project={project_id}")
 
         form = SceneForm(request.user, request.POST, instance=scene)
         if form.is_valid():
             form.save()
             messages.success(request, "บันทึกฉากเรียบร้อย")
-            if scene.project:
-                return redirect(f"/plotcraft/scenes/?project={scene.project.id}")
-            return redirect('plotcraft:scene_list')
+
+            url = reverse('plotcraft:scene_list')
+            return redirect(f"{url}?project={scene.project.id}")
+
     else:
         form = SceneForm(request.user, instance=scene)
 
     return render(request, 'scenes/scene_form.html', {'form': form, 'scene': scene})
 
+@login_required
+def scene_delete(request, pk):
+    scene = get_object_or_404(Scene, pk=pk)
+
+    if scene.created_by != request.user:
+        messages.error(request, "ไม่มีสิทธิ์ลบ")
+        return redirect('plotcraft:scene_list')
+
+    if request.method == 'POST':
+        project_id = scene.project.id
+        scene.delete()
+        messages.success(request, "ลบฉากเรียบร้อย")
+
+        url = reverse('plotcraft:scene_list')
+        return redirect(f"{url}?project={project_id}")
+
+    return render(request, 'scenes/scene_confirm_delete.html', {'scene': scene})
+
+@login_required
+def scene_detail(request, pk):
+    scene = get_object_or_404(Scene, id=pk)
+    # เช็คสิทธิ์ (optional: ป้องกันไม่ให้ดูของคนอื่นถ้าต้องการ)
+    if scene.created_by != request.user:
+         return HttpResponseForbidden()
+         
+    return render(request, 'scenes/scene_detail.html', {'scene': scene}) 
+
 
 # ==================== TIMELINE ====================
 
 def timeline_list(request):
+
+    # เตรียมตัวแปร bookmarked_ids ไว้ก่อน (เผื่อกรณีไม่ได้ login)
+    bookmarked_ids = []
+
     if request.user.is_authenticated:
         timelines = Timeline.objects.filter(created_by=request.user).order_by('-updated_at')
+
+        bookmarked_ids = Bookmark.objects.filter(
+            user=request.user,
+            content_type__model='timeline'
+        ).values_list('object_id', flat=True)
     else:
         timelines = Timeline.objects.all().order_by('-updated_at')
-    return render(request, 'timeline/timeline_list.html', {'timelines': timelines})
+
+    return render(request, 'timeline/timeline_list.html', {
+        'timelines': timelines,
+        'bookmarked_ids': bookmarked_ids, # ส่งไปที่ Template
+    })
 
 
 @login_required
@@ -723,3 +810,346 @@ def timeline_event_delete(request, pk):
     
     return render(request, 'timeline/event_confirm_delete.html', {'event': event})
 
+# ==================== EXPORT FUNCTIONALITY ====================
+
+def get_font_path():
+ # ฟังก์ชันช่วยหำ path ของไฟล์ฟอนต์
+ return os.path.join(settings.BASE_DIR, 'static/fonts/THSarabunNew.ttf')
+
+@login_required
+def export_novel_pdf(request, pk):
+    novel = get_object_or_404(Novel, pk=pk, author=request.user)
+    chapters = novel.chapters.filter(is_draft=False).order_by('order')
+    
+    font_path = get_font_path()
+
+    css_string = f'''
+        @font-face {{
+            font-family: 'THSarabunNew';
+            src: url('file://{font_path}');
+        }}
+        
+        /* ตั้งค่าหน้ากระดาษ A5 มาตรฐาน */
+        @page {{
+            size: A5;
+            margin: 2cm 1.5cm; /* บนล่าง 2cm, ซ้ายขวา 1.5cm */
+            
+            @top-right {{
+                content: counter(page);
+                font-family: 'THSarabunNew';
+                font-size: 12pt;
+                color: #888;
+                vertical-align: bottom;
+                padding-bottom: 10px;
+            }}
+        }}
+
+        /* === แก้ไข 1: หน้าปก (หน้าแรก) ต้องไม่มีขอบขาวเลย === */
+        @page :first {{
+            margin: 0cm; /* ลบขอบกระดาษออกทั้งหมด */
+            @top-right {{ content: none; }} /* ไม่เอาเลขหน้า */
+        }}
+
+        body {{
+            font-family: 'THSarabunNew', serif;
+            font-size: 14pt;
+            line-height: 1.4;
+            text-align: justify;
+        }}
+
+        /* สไตล์สำหรับรูปปกแบบเต็มจอ */
+        .cover-wrapper {{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }}
+
+        .cover-wrapper img {{
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* ขยายรูปให้เต็มพื้นที่ (อาจโดนตัดขอบบ้างเพื่อรักษาสัดส่วน) */
+            /* หรือใช้ object-fit: fill; ถ้าอยากให้ยืดเต็มโดยไม่ตัดขอบ (แต่รูปอาจเบี้ยว) */
+        }}
+
+        /* สไตล์หน้ารองปก */
+        .title-page {{
+            page-break-before: always; /* ขึ้นหน้าใหม่หลังจากปก */
+            page-break-after: always;
+            text-align: center;
+            padding-top: 30%;
+            padding-left: 1cm;  /* เพิ่มระยะกันตก */
+            padding-right: 1cm; /* เพิ่มระยะกันตก */
+        }}
+
+        h1 {{ font-size: 24pt; font-weight: bold; margin-bottom: 0.5cm; line-height: 1.2; }}
+        h2 {{ font-size: 18pt; font-weight: bold; margin-top: 1cm; }}
+        
+        /* เนื้อหา */
+        .chapter-content p {{
+            margin: 0;
+            text-indent: 2.5em;
+            padding-bottom: 0.5em; /* เว้นบรรทัดนิดหน่อยให้อ่านง่าย */
+        }}
+        
+        /* รูปภาพแทรกในเนื้อหา */
+        .chapter-content img {{
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0.5cm auto;
+        }}
+    '''
+
+    html_string = render_to_string('notes/export_pdf.html', {
+        'novel': novel,
+        'chapters': chapters,
+    })
+
+    # base_url สำคัญมากสำหรับการดึงรูป
+    pdf_file = HTML(string=html_string, base_url=request.build_absolute_uri()).write_pdf(stylesheets=[CSS(string=css_string)])
+
+    response = HttpResponse(pdf_file, content_type='application/pdf')
+    filename = f"{novel.title}.pdf"
+    response['Content-Disposition'] = f"attachment; filename*=UTF-8''{escape_uri_path(filename)}"
+    return response
+
+@login_required
+def export_novel_epub(request, pk):
+    novel = get_object_or_404(Novel, pk=pk, author=request.user)
+    chapters = novel.chapters.filter(is_draft=False).order_by('order')
+
+    # 1. ตั้งค่าหนังสือ
+    book = epub.EpubBook()
+    book.set_identifier(f'id_novel_{novel.id}') 
+    book.set_title(novel.title)
+    book.set_language('th')
+    book.add_author(novel.author.get_full_name() or novel.author.username)
+
+    # ==========================================
+    # 2. จัดการรูปปก (Cover Image)
+    # ==========================================
+    has_cover = False
+    cover_filename = "cover.jpg"
+    
+    if novel.cover_image:
+        try:
+            image_path = novel.cover_image.path
+            file_ext = os.path.splitext(image_path)[1].lower()
+            if file_ext:
+                cover_filename = f"cover{file_ext}"
+
+            with open(image_path, 'rb') as f:
+                cover_content = f.read()
+            
+            if len(cover_content) > 0:
+                book.set_cover(cover_filename, cover_content, create_page=False)
+                has_cover = True
+        except Exception as e:
+            print(f"Error adding cover: {e}")
+
+    # ==========================================
+    # 3. CSS Style
+    # ==========================================
+    style_css = '''
+    @font-face { font-family: 'THSarabunNew'; src: url('fonts/THSarabunNew.ttf'); }
+    body { font-family: 'THSarabunNew', sans-serif; font-size: 1.2em; line-height: 1.6; margin: 0; padding: 0; }
+    
+    /* ปกเต็มจอ */
+    .cover-container {
+        height: 100vh; width: 100vw;
+        display: flex; justify-content: center; align-items: center;
+        background-color: #ffffff;
+    }
+    .cover-img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+    /* หน้ารองปก */
+    .title-page-container {
+        height: 90vh;
+        display: flex; flex-direction: column;
+        justify-content: center; align-items: center; text-align: center;
+        padding: 20px;
+    }
+    .novel-title { font-size: 2.5em; font-weight: bold; margin-bottom: 0.5em; }
+    .author-name { font-size: 1.5em; color: #555; }
+    
+    /* เนื้อหา & เรื่องย่อ */
+    .chapter-content { margin: 5%; }
+    h1 { text-align: center; margin-bottom: 1em; border-bottom: 1px solid #ccc; padding-bottom: 0.5em;}
+    p { text-indent: 1.5em; margin-bottom: 1em; text-align: justify; }
+    '''
+    
+    nav_css = epub.EpubItem(uid="style_nav", file_name="nav.css", media_type="text/css", content=style_css)
+    book.add_item(nav_css)
+
+    # ฝังฟอนต์
+    font_path = get_font_path()
+    try:
+        with open(font_path, 'rb') as f:
+            font_data = f.read()
+            font_item = epub.EpubItem(uid="THSarabunNew", file_name="fonts/THSarabunNew.ttf", media_type="application/x-font-ttf", content=font_data)
+            book.add_item(font_item)
+    except Exception:
+        pass
+
+    # ==========================================
+    # 4. สร้างหน้าต่างๆ (Spine Items)
+    # ==========================================
+    spine_items = []
+
+    # --- 4.1 หน้าปก (Cover) ---
+    if has_cover:
+        cover_page = epub.EpubHtml(title="Cover", file_name="cover.xhtml", lang='th')
+        cover_page.add_item(nav_css)
+        cover_page.content = f'''<!DOCTYPE html>
+<html lang="th"><head><title>Cover</title><link rel="stylesheet" type="text/css" href="nav.css"/></head>
+<body>
+    <div class="cover-container"><img src="{cover_filename}" alt="Cover" class="cover-img"/></div>
+</body></html>'''
+        book.add_item(cover_page)
+        spine_items.append(cover_page)
+
+    # --- 4.2 หน้ารองปก (Title) ---
+    title_page = epub.EpubHtml(title="Title Page", file_name="title.xhtml", lang='th')
+    title_page.add_item(nav_css)
+    title_page.content = f'''<!DOCTYPE html>
+<html lang="th"><head><title>{novel.title}</title><link rel="stylesheet" type="text/css" href="nav.css"/></head>
+<body>
+    <div class="title-page-container">
+        <div class="novel-title">{novel.title}</div>
+        <div class="author-name">โดย {novel.author.get_full_name() or novel.author.username}</div>
+    </div>
+</body></html>'''
+    book.add_item(title_page)
+    spine_items.append(title_page)
+
+    # --- 4.3 หน้าเรื่องย่อ (Synopsis) ---
+    # แก้ไขตรงนี้: ใช้ novel.synopsis ตามใน Models.py
+    synopsis_page = None
+    if novel.synopsis: 
+        synopsis_page = epub.EpubHtml(title="เรื่องย่อ", file_name="synopsis.xhtml", lang='th')
+        synopsis_page.add_item(nav_css)
+        
+        # แปลง \n เป็น <br> เพื่อให้ขึ้นบรรทัดใหม่สวยงาม
+        desc_text = novel.synopsis.replace('\n', '<br/>')
+        
+        synopsis_page.content = f'''<!DOCTYPE html>
+<html lang="th"><head><title>เรื่องย่อ</title><link rel="stylesheet" type="text/css" href="nav.css"/></head>
+<body>
+    <div class="chapter-content">
+        <h1>เรื่องย่อ</h1>
+        <div>{desc_text}</div>
+    </div>
+</body></html>'''
+        book.add_item(synopsis_page)
+
+    # --- 4.4 เนื้อหา (Chapters) ---
+    chapters_list = []
+    for chapter in chapters:
+        c = epub.EpubHtml(title=chapter.title, file_name=f"chap_{chapter.id}.xhtml", lang='th')
+        c.add_item(nav_css)
+        safe_content = chapter.content if chapter.content else ""
+        c.content = f'''<!DOCTYPE html>
+<html lang="th"><head><title>{chapter.title}</title><link rel="stylesheet" type="text/css" href="nav.css"/></head>
+<body>
+    <div class="chapter-content">
+        <h1>{chapter.title}</h1>
+        <div>{safe_content}</div>
+    </div>
+</body></html>'''
+        book.add_item(c)
+        chapters_list.append(c)
+
+    # ==========================================
+    # 5. รวมเล่ม (TOC & Spine)
+    # ==========================================
+    
+    # TOC (สารบัญ): รองปก -> เรื่องย่อ -> บทต่างๆ
+    toc_list = [title_page]
+    if synopsis_page:
+        toc_list.append(synopsis_page)
+    toc_list.extend(chapters_list)
+    
+    book.toc = toc_list
+
+    # สร้างไฟล์ Nav
+    book.add_item(epub.EpubNcx())
+    nav_item = epub.EpubNav()
+    book.add_item(nav_item)
+
+    # Spine (ลำดับการเปิดอ่าน): ปก -> รองปก -> Nav -> เรื่องย่อ -> เนื้อหา
+    final_spine = []
+    if has_cover:
+        final_spine.append(spine_items[0]) # ปก
+    
+    final_spine.append(title_page) # รองปก
+    final_spine.append(nav_item)   # Nav (หน้าสารบัญ)
+    
+    if synopsis_page:
+        final_spine.append(synopsis_page) # เรื่องย่อ (อยู่หลังสารบัญ)
+
+    final_spine.extend(chapters_list) # เนื้อหา
+    
+    book.spine = final_spine
+
+    # ==========================================
+    # 6. Export
+    # ==========================================
+    epub_buffer = io.BytesIO()
+    epub.write_epub(epub_buffer, book, {})
+    epub_buffer.seek(0)
+
+    response = HttpResponse(epub_buffer, content_type='application/epub+zip')
+    filename = f"{novel.title}.epub"
+    # ใช้ escape_uri_path เพื่อรองรับชื่อไฟล์ภาษาไทย
+    response['Content-Disposition'] = f"attachment; filename*=UTF-8''{escape_uri_path(filename)}"
+    return response
+
+# ==================== Bookmark ====================
+
+# 1. ฟังก์ชันสำหรับกดปุ่ม Bookmark (Toggle: กดครั้งแรกเก็บ กดอีกทีลบ)
+@login_required
+def toggle_bookmark(request, model_name, pk):
+    # หา Model จากชื่อ (เช่น 'character', 'scene')
+    try:
+        content_type = ContentType.objects.get(model=model_name.lower())
+    except ContentType.DoesNotExist:
+        return redirect('plotcraft:home')
+
+    # เช็คว่ามีอยู่แล้วไหม
+    bookmark, created = Bookmark.objects.get_or_create(
+        user=request.user,
+        content_type=content_type,
+        object_id=pk
+    )
+
+    if not created:
+        # ถ้ามีอยู่แล้ว แปลว่า user กดซ้ำเพื่อ "ยกเลิก"
+        bookmark.delete()
+        messages.info(request, f'นำ {model_name} ออกจากรายการโปรดแล้ว')
+    else:
+        messages.success(request, f'บันทึก {model_name} ลงรายการโปรดแล้ว')
+
+    # เด้งกลับไปหน้าเดิมที่ user กดมา
+    return redirect(request.META.get('HTTP_REFERER', 'plotcraft:home'))
+
+# 2. หน้าแสดงรายการ Bookmark ทั้งหมด
+@login_required
+def bookmark_list(request):
+    # รับค่า type จาก URL (ถ้าไม่มีให้เป็น 'all')
+    filter_type = request.GET.get('type', 'all')
+    
+    # ดึงข้อมูลพื้นฐาน
+    bookmarks = Bookmark.objects.filter(user=request.user).select_related('content_type').order_by('-created_at')
+
+    # ถ้ามีการเลือก type ให้กรองตาม content_type model
+    if filter_type != 'all':
+        bookmarks = bookmarks.filter(content_type__model=filter_type)
+
+    return render(request, 'bookmark_list.html', {
+        'bookmarks': bookmarks,
+        'current_type': filter_type, # ส่งค่าปัจจุบันไปเพื่อทำ Highlight ปุ่มที่เลือกอยู่
+    })

@@ -2,233 +2,266 @@
 {% block content %}
 <script src="https://cdn.tailwindcss.com"></script>
 
-<div class="min-h-screen font-sans p-4 md:p-8 text-[#2F4F4F]">
-  
+<div class="min-h-screen font-sans p-4 md:p-8 text-[#2F4F4F] bg-[#f4f4f5]">
+
   <div class="max-w-7xl mx-auto flex flex-col md:flex-row gap-6">
-    
-    <div class="w-full md:w-80 shrink-0 flex flex-col gap-6">
-      
-      <div class="bg-[#2F4F4F] rounded-2xl p-6 shadow-xl relative overflow-hidden text-[#FAEBD7]">
+
+    <!-- ================= LEFT SIDEBAR ================= -->
+    <aside class="w-full md:w-80 shrink-0 flex flex-col gap-6">
+
+      <!-- Character Card -->
+      <section class="bg-[#2F4F4F] rounded-2xl p-6 shadow-xl relative overflow-hidden text-[#FAEBD7]">
         <div class="absolute top-0 left-0 w-full h-24 bg-[#DAA520] opacity-20"></div>
-        
+
+        <!-- Portrait -->
         <div class="relative z-10 flex justify-center mt-4">
           <div class="w-36 h-36 rounded-full p-1.5 bg-[#DAA520] shadow-lg">
             {% if character.portrait %}
-              <img src="{{ character.portrait.url }}" alt="{{ character.name }}" class="w-full h-full object-cover rounded-full border-4 border-[#2F4F4F]">
+              <img src="{{ character.portrait.url }}"
+                   alt="{{ character.name }}"
+                   class="w-full h-full object-cover rounded-full border-4 border-[#2F4F4F]">
             {% else %}
-              <div class="w-full h-full bg-[#FAEBD7] rounded-full flex items-center justify-center text-[#2F4F4F] font-bold">
+              <div class="w-full h-full bg-[#FAEBD7] rounded-full flex items-center justify-center text-[#2F4F4F] font-bold text-sm">
                 No Image
               </div>
             {% endif %}
           </div>
         </div>
 
+        <!-- Name / Project -->
         <div class="relative z-10 text-center mt-5">
           {% if character.project %}
-            <span class="inline-block px-3 py-1 bg-[#FAEBD7]/20 border border-[#FAEBD7]/30 text-[#FAEBD7] text-xs rounded-full mb-2 tracking-wide backdrop-blur-sm">
+            <span class="inline-block px-3 py-1 bg-[#FAEBD7]/20 border border-[#FAEBD7]/30
+                         text-[#FAEBD7] text-xs rounded-full mb-2 tracking-wide backdrop-blur-sm">
               📖 {{ character.project.title|default:character.project }}
             </span>
           {% endif %}
+
           <h1 class="text-2xl font-bold text-white">{{ character.name }}</h1>
+
           {% if character.alias %}
-            <p class="text-[#DAA520] text-sm mt-1 font-medium">{{ character.alias }}</p>
+            <p class="text-[#DAA520] text-sm mt-1 font-medium">
+              {{ character.alias }}
+            </p>
           {% endif %}
         </div>
 
+        <!-- Status -->
         {% if character.status %}
-         <div class="mt-4 flex justify-center">
-            <span class="px-3 py-1 bg-[#1a3030] border border-[#DAA520]/50 text-[#FAEBD7] rounded-full text-xs">
-                สถานะ: {{ character.status }}
-            </span>
-         </div>
+        <div class="mt-4 flex justify-center">
+          <span class="px-3 py-1 bg-[#1a3030] border border-[#DAA520]/50
+                       text-[#FAEBD7] rounded-full text-xs">
+            สถานะ: {{ character.status }}
+          </span>
+        </div>
         {% endif %}
 
         <hr class="border-[#FAEBD7]/20 my-6">
 
+        <!-- Basic Info -->
         <div class="space-y-3 text-sm">
           {% if character.age %}
-          <div class="flex justify-between items-center group hover:bg-white/5 p-1 rounded transition">
+          <div class="flex justify-between items-center hover:bg-white/5 p-1 rounded transition">
             <span class="text-[#FAEBD7]/70">อายุ</span>
             <span class="font-medium text-white">{{ character.age }}</span>
           </div>
           {% endif %}
-          
+
           {% if character.birth_date %}
-          <div class="flex justify-between items-center group hover:bg-white/5 p-1 rounded transition">
+          <div class="flex justify-between items-center hover:bg-white/5 p-1 rounded transition">
             <span class="text-[#FAEBD7]/70">วันเกิด</span>
             <span class="font-medium text-white">{{ character.birth_date }}</span>
           </div>
           {% endif %}
-          
-          {% if character.get_gender_display %}
-          <div class="flex justify-between items-center group hover:bg-white/5 p-1 rounded transition">
+
+          {% if character.gender %}
+          <div class="flex justify-between items-center hover:bg-white/5 p-1 rounded transition">
             <span class="text-[#FAEBD7]/70">เพศ</span>
-            <span class="font-medium text-white">{{ character.get_gender_display }}</span>
+            <span class="font-medium text-white">
+              {{ character.get_gender_display }}
+            </span>
           </div>
           {% endif %}
-          
+
           {% if character.species %}
-          <div class="flex justify-between items-center group hover:bg-white/5 p-1 rounded transition">
+          <div class="flex justify-between items-center hover:bg-white/5 p-1 rounded transition">
             <span class="text-[#FAEBD7]/70">เผ่าพันธุ์</span>
             <span class="font-medium text-white">{{ character.species }}</span>
           </div>
           {% endif %}
 
           {% if character.role %}
-          <div class="flex justify-between items-center group hover:bg-white/5 p-1 rounded transition">
+          <div class="flex justify-between items-center hover:bg-white/5 p-1 rounded transition">
             <span class="text-[#FAEBD7]/70">บทบาท</span>
             <span class="font-medium text-white">{{ character.role }}</span>
           </div>
           {% endif %}
         </div>
 
-        {% if character.relationships.all %}
+        <!-- Relationships -->
+        {% if character.relationships.exists %}
         <div class="mt-8 pt-6 border-t border-[#FAEBD7]/20">
-          <h4 class="text-xs font-bold text-[#DAA520] uppercase mb-3 tracking-wider">ความสัมพันธ์</h4>
+          <h4 class="text-xs font-bold text-[#DAA520] uppercase mb-3 tracking-wider">
+            ความสัมพันธ์
+          </h4>
           <div class="flex flex-wrap gap-2">
             {% for rel in character.relationships.all %}
-              <a href="{% url 'plotcraft:character_detail' rel.id %}" class="px-3 py-1 bg-[#FAEBD7] text-[#2F4F4F] rounded-md text-xs font-bold shadow-sm hover:bg-white hover:scale-105 transition transform cursor-pointer flex items-center gap-1">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-                {{ rel.name }}
+              <a href="{% url 'plotcraft:character_detail' rel.id %}"
+                 class="px-3 py-1 bg-[#FAEBD7] text-[#2F4F4F]
+                        rounded-md text-xs font-bold shadow-sm
+                        hover:bg-white hover:scale-105 transition flex items-center gap-1">
+                👤 {{ rel.name }}
               </a>
             {% endfor %}
           </div>
         </div>
         {% endif %}
-      </div>
+      </section>
 
-      <div class="bg-white rounded-2xl p-6 shadow-md border border-[#FAEBD7]">
+      <!-- Meta & Actions -->
+      <section class="bg-white rounded-2xl p-6 shadow-md border border-[#FAEBD7]">
         <div class="text-xs text-[#2F4F4F]/70 space-y-1 mb-4">
-            <p>สร้างเมื่อ: {{ character.created_at|date:"d/m/Y" }}</p>
-            {% if character.created_by %}
+          <p>สร้างเมื่อ: {{ character.created_at|date:"d/m/Y" }}</p>
+          {% if character.created_by %}
             <p>โดย: {{ character.created_by.username }}</p>
-            {% endif %}
+          {% endif %}
         </div>
-        
+
         <div class="flex flex-col gap-3">
-            <a href="{% url 'plotcraft:character_edit' character.id %}" class="w-full py-2.5 bg-[#DAA520] hover:bg-[#b8860b] text-white text-center rounded-lg transition text-sm font-bold shadow hover:shadow-lg">
-                แก้ไขตัวละคร
-            </a>
-            <a href="{% url 'plotcraft:character_list' %}" class="w-full py-2.5 bg-[#2F4F4F] hover:bg-[#1a3030] text-[#FAEBD7] text-center rounded-lg transition text-sm font.medium">
-                กลับไปหน้ารายการ
-            </a>
+          <a href="{% url 'plotcraft:character_edit' character.id %}"
+             class="w-full py-2.5 bg-[#DAA520] hover:bg-[#b8860b]
+                    text-white text-center rounded-lg transition
+                    text-sm font-bold shadow hover:shadow-lg">
+            แก้ไขตัวละคร
+          </a>
+
+          <a href="{% url 'plotcraft:character_list' %}"
+             class="w-full py-2.5 bg-[#2F4F4F] hover:bg-[#1a3030]
+                    text-[#FAEBD7] text-center rounded-lg transition
+                    text-sm font-medium">
+            กลับไปหน้ารายการ
+          </a>
         </div>
-      </div>
+      </section>
 
-    </div>
+    </aside>
 
-    <div class="flex-1 flex flex-col gap-6 overflow-y-auto">
-      
-      <div class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border-t-4 border-[#2F4F4F]">
-        <div class="flex items-center gap-3 mb-6 border-b border-[#FAEBD7] pb-4">
-            <div class="p-2 bg-[#FAEBD7] rounded-lg text-[#2F4F4F]">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-            </div>
-            <h2 class="text-xl font-bold text-[#2F4F4F]">ประวัติและข้อมูลทั่วไป</h2>
-        </div>
+    <!-- ================= MAIN CONTENT ================= -->
+    <main class="flex-1 flex flex-col gap-6 overflow-y-auto">
 
-        <div class="grid grid-cols-1 gap-8">
+      <!-- General Info -->
+      <section class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border-t-4 border-[#2F4F4F]">
+        <header class="flex items-center gap-3 mb-6 border-b border-[#FAEBD7] pb-4">
+          <div class="p-2 bg-[#FAEBD7] rounded-lg">👤</div>
+          <h2 class="text-xl font-bold">ประวัติและข้อมูลทั่วไป</h2>
+        </header>
+
+        <div class="space-y-8">
+          <div>
+            <h3 class="text-sm font-bold text-[#DAA520] uppercase mb-2">ลักษณะภายนอก</h3>
+            <p class="text-gray-700 whitespace-pre-line leading-relaxed">
+              {{ character.appearance|default:"-" }}
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-[#FAEBD7]/30 p-4 rounded-xl">
             <div>
-                <h3 class="text-sm font-bold text-[#DAA520] uppercase mb-2 tracking-wide">ลักษณะภายนอก</h3>
-                <p class="text-gray-700 whitespace-pre-line leading-relaxed">{{ character.appearance|default:"-" }}</p>
+              <h3 class="text-sm font-bold uppercase mb-2">อาชีพ</h3>
+              <p class="font-medium">
+                {{ character.occupation|default:"-" }}
+              </p>
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-[#FAEBD7]/30 p-4 rounded-xl">
-                <div>
-                    <h3 class="text-sm font-bold text-[#2F4F4F] uppercase mb-2">อาชีพ / การงาน</h3>
-                    <p class="text-gray-800 font-medium">{{ character.occupation|default:"-" }}</p>
-                </div>
-                <div>
-                    <h3 class="text-sm font-bold text-[#2F4F4F] uppercase mb-2">ที่อยู่ / สถานที่</h3>
-                    <p class="text-gray-800 font-medium">
-                        {% if character.location %}
-                            <a href="{% url 'plotcraft:location_detail' character.location.id %}" class="text-[#2F4F4F] hover:text-[#DAA520] underline decoration-dashed underline-offset-4 transition">
-                                📍 {{ character.location.name }}
-                            </a>
-                        {% else %}
-                            -
-                        {% endif %}
-                    </p>
-                </div>
-            </div>
-
             <div>
-                <h3 class="text-sm font-bold text-[#DAA520] uppercase mb-2 tracking-wide">พื้นหลัง / ประวัติย่อ</h3>
-                <div class="bg-[#F9FAFB] p-5 rounded-xl border border-gray-100">
-                    <p class="text-gray-700 whitespace-pre-line leading-relaxed">{{ character.background|default:"-" }}</p>
-                </div>
+              <h3 class="text-sm font-bold uppercase mb-2">บ้านเกิด</h3>
+              {% if character.location %}
+                <a href="{% url 'plotcraft:location_detail' character.location.id %}"
+                   class="hover:text-[#DAA520] underline decoration-dashed underline-offset-4 transition">
+                  📍 {{ character.location.name }}
+                </a>
+              {% else %}
+                <p>-</p>
+              {% endif %}
             </div>
-        </div>
-      </div>
+          </div>
 
-      <div class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border-t-4 border-[#DAA520]">
-        <div class="flex items-center gap-3 mb-6 border-b border-[#FAEBD7] pb-4">
-            <div class="p-2 bg-[#FAEBD7] rounded-lg text-[#DAA520]">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                </svg>
+          <div>
+            <h3 class="text-sm font-bold text-[#DAA520] uppercase mb-2">ภูมิหลังหลัง</h3>
+            <div class="bg-[#F9FAFB] p-5 rounded-xl border border-gray-100">
+              <p class="whitespace-pre-line">
+                {{ character.background|default:"-" }}
+              </p>
             </div>
-            <h2 class="text-xl font-bold text-[#2F4F4F]">บุคลิกและเป้าหมาย</h2>
+          </div>
         </div>
+      </section>
+
+      <!-- Personality & Goals -->
+      <section class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border-t-4 border-[#DAA520]">
+        <header class="flex items-center gap-3 mb-6 border-b border-[#FAEBD7] pb-4">
+          <div class="p-2 bg-[#FAEBD7] rounded-lg text-[#DAA520]">❤️</div>
+          <h2 class="text-xl font-bold">บุคลิกและเป้าหมาย</h2>
+        </header>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-                <h3 class="text-sm font-bold text-[#2F4F4F] uppercase mb-2">บุคลิกภาพ</h3>
-                <p class="text-gray-700 whitespace-pre-line leading-relaxed">{{ character.personality|default:"-" }}</p>
-            </div>
-            <div>
-                <h3 class="text-sm font-bold text-[#2F4F4F] uppercase mb-2">เป้าหมาย / แรงจูงใจ</h3>
-                <p class="text-gray-700 whitespace-pre-line leading-relaxed">{{ character.goals|default:"-" }}</p>
-            </div>
-        </div>
-      </div>
+          <div>
+            <h3 class="text-sm font-bold uppercase mb-2">บุคลิกภาพ</h3>
+            <p class="whitespace-pre-line">
+              {{ character.personality|default:"-" }}
+            </p>
+          </div>
 
-      <div class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border-t-4 border-[#2F4F4F] mb-8">
-        <div class="flex items-center gap-3 mb-6 border-b border-[#FAEBD7] pb-4">
-             <div class="p-2 bg-[#FAEBD7] rounded-lg text-[#2F4F4F]">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-            </div>
-            <h2 class="text-xl font-bold text-[#2F4F4F]">ความสามารถและทักษะ</h2>
+          <div>
+            <h3 class="text-sm font-bold uppercase mb-2">เป้าหมาย</h3>
+            <p class="whitespace-pre-line">
+              {{ character.goals|default:"-" }}
+            </p>
+          </div>
         </div>
+      </section>
+
+      <!-- Skills -->
+      <section class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border-t-4 border-[#2F4F4F] mb-8">
+        <header class="flex items-center gap-3 mb-6 border-b border-[#FAEBD7] pb-4">
+          <div class="p-2 bg-[#FAEBD7] rounded-lg">⚡</div>
+          <h2 class="text-xl font-bold">ความสามารถและทักษะ</h2>
+        </header>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div class="bg-green-50 border-l-4 border-green-600 p-4 rounded-r-xl">
-                <h3 class="text-green-800 font-bold mb-2 flex items-center gap-2">
-                    <span>+</span> ความแข็งแกร่ง
-                </h3>
-                <p class="text-gray-700 whitespace-pre-line text-sm">{{ character.strengths|default:"-" }}</p>
-            </div>
+          <div class="bg-green-50 border-l-4 border-green-600 p-4 rounded-r-xl">
+            <h3 class="font-bold mb-2">จุดแข็ง</h3>
+            <p class="whitespace-pre-line text-sm">
+              {{ character.strengths|default:"-" }}
+            </p>
+          </div>
 
-            <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-xl">
-                <h3 class="text-red-800 font-bold mb-2 flex items-center gap-2">
-                    <span>-</span> จุดอ่อน
-                </h3>
-                <p class="text-gray-700 whitespace-pre-line text-sm">{{ character.weaknesses|default:"-" }}</p>
-            </div>
+          <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-xl">
+            <h3 class="font-bold mb-2">จุดอ่อน</h3>
+            <p class="whitespace-pre-line text-sm">
+              {{ character.weaknesses|default:"-" }}
+            </p>
+          </div>
         </div>
 
         <div>
-            <h3 class="text-sm font-bold text-[#DAA520] uppercase mb-2 tracking-wide">ทักษะ (Skills)</h3>
-            <div class="bg-[#2F4F4F] text-[#FAEBD7] p-4 rounded-xl">
-                <p class="whitespace-pre-line">{{ character.skills|default:"-" }}</p>
-            </div>
+          <h3 class="text-sm font-bold text-[#DAA520] uppercase mb-2">ทักษะ</h3>
+          <div class="bg-[#2F4F4F] text-[#FAEBD7] p-4 rounded-xl">
+            <p class="whitespace-pre-line">
+              {{ character.skills|default:"-" }}
+            </p>
+          </div>
         </div>
 
         {% if character.notes %}
         <div class="mt-8 pt-6 border-t border-gray-200">
-            <h3 class="text-sm font-bold text-gray-500 uppercase mb-2">โน้ตเพิ่มเติม</h3>
-            <p class="text-gray-600 italic text-sm whitespace-pre-line bg-[#FAEBD7]/30 p-3 rounded-lg">{{ character.notes }}</p>
+          <h3 class="text-sm font-bold text-gray-500 uppercase mb-2">โน้ตเพิ่มเติม</h3>
+          <p class="italic text-sm whitespace-pre-line bg-[#FAEBD7]/30 p-3 rounded-lg">
+            {{ character.notes }}
+          </p>
         </div>
         {% endif %}
-      </div>
+      </section>
 
-    </div>
+    </main>
   </div>
 </div>
 {% endblock %}

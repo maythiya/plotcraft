@@ -29,6 +29,23 @@
         <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transition duration-300 flex flex-col overflow-hidden border border-[#2F4F4F]/10 group h-full">
           
           <div class="relative w-full aspect-square overflow-hidden bg-gray-100 border-b border-[#FAEBD7]">
+            
+            <div class="absolute top-2 left-2 z-20">
+                <span class="px-2 py-1 bg-black/60 text-[#DAA520] text-[10px] font-bold rounded-md backdrop-blur-sm border border-[#DAA520]/30 uppercase tracking-wider shadow-sm">
+                    {{ item.get_category_display }}
+                </span>
+            </div>
+
+            <a href="{% url 'plotcraft:toggle_bookmark' 'item' item.id %}"
+               class="absolute top-2 right-2 p-2 rounded-full shadow-md backdrop-blur-sm transition-all duration-200 hover:scale-110 z-20
+                      {% if item.id in bookmarked_ids %} bg-[#DAA520] text-white {% else %} bg-white/90 text-gray-400 hover:text-[#DAA520] {% endif %}"
+               title="{% if item.id in bookmarked_ids %}เลิกปักหมุด{% else %}ปักหมุดไอเทม{% endif %}">
+               <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" stroke="currentColor"
+                    fill="{% if item.id in bookmarked_ids %}currentColor{% else %}none{% endif %}">
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+               </svg>
+            </a>
+
             {% if item.image %}
               <img src="{{ item.image.url }}" alt="{{ item.name }}" class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
             {% else %}
@@ -38,11 +55,7 @@
                 </svg>
               </div>
             {% endif %}
-            <div class="absolute top-2 right-2">
-                <span class="px-2 py-1 bg-black/60 text-[#DAA520] text-[10px] font-bold rounded-md backdrop-blur-sm border border-[#DAA520]/30 uppercase tracking-wider">
-                    {{ item.get_category_display }}
-                </span>
-            </div>
+
           </div>
 
           <div class="p-5 flex-1 flex flex-col relative">
@@ -86,7 +99,7 @@
 
           </div>
         </div>
-      {% endfor %}
+      {% endfor %}      
     </div>
     
     {% else %}

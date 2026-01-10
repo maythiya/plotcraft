@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ novel.title }}</title>
+    <style>
+        /* === ตั้งค่าหน้ากระดาษ === */
+        @page {
+            size: A5;
+            margin: 2cm 1.5cm;
+            @top-right {
+                content: counter(page);
+                font-family: 'THSarabunNew';
+                font-size: 12pt;
+                color: #888;
+            }
+        }
+
+        /* หน้าแรก (ปก) ไร้ขอบ */
+        @page :first {
+            margin: 0; 
+            @top-right { content: none; }
+        }
+
+        /* === แก้ไขส่วนปก (Cover) === */
+        .cover-image-page {
+            /* 1. เปลี่ยนกลับเป็น relative เพื่อให้กินพื้นที่หน้ากระดาษ */
+            position: relative;
+            
+            /* 2. บังคับขนาดให้เท่ากับ A5 เป๊ะๆ (WeasyPrint จะรู้ว่าต้องจองพื้นที่ทั้งหน้านี้) */
+            width: 148mm;
+            height: 210mm;
+            
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            
+            /* 3. สั่งตัดหน้าจบที่นี่แน่นอน */
+            page-break-after: always;
+        }
+
+        .cover-image-page img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* ขยายรูปเต็มพื้นที่ */
+            display: block;
+        }
+
+        /* === หน้ารองปก === */
+        .title-page {
+            page-break-before: always; /* ย้ำอีกทีว่าต้องเริ่มหน้าใหม่ */
+            page-break-after: always;
+            text-align: center;
+            padding-top: 35%;
+        }
+
+        .novel-title { font-size: 30pt; font-weight: bold; margin-bottom: 0.5cm; line-height: 1.2; }
+        .author-name { font-size: 14pt; color: #555; }
+        .chapter-container { page-break-before: always; }
+        .chapter-header { text-align: center; margin-top: 1cm; margin-bottom: 1.5cm; }
+        .chapter-content { text-align: justify; }
+        
+        body {
+            font-family: 'THSarabunNew', serif;
+            font-size: 14pt;
+            line-height: 1.4;
+            margin: 0; /* Reset body margin */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ปกหนังสือ -->
+    {% if novel.cover_image %}
+    <div class="cover-image-page">
+        <img src="file://{{ novel.cover_image.path }}">
+    </div>
+    {% else %}
+    <div class="cover-image-page" style="display: flex; justify-content: center; align-items: center; background: #eee;">
+        <h1 style="font-size: 36pt;">{{ novel.title }}</h1>
+    </div>
+    {% endif %}
+
+    <div class="title-page">
+        <div class="novel-title">{{ novel.title }}</div>
+        <div class="author-name">โดย {{ novel.author.display_name|default:novel.author.username }}</div>
+    </div>
+
+    <!-- เนื้อหาบทต่างๆ -->
+    {% for chapter in chapters %}
+    <div class="chapter-container">
+        
+        <div class="chapter-header">
+            <div style="font-size: 18pt; font-weight: bold;">{{ chapter.title }}</div>
+        </div>
+
+        <div class="chapter-content">
+            {{ chapter.content|safe }}
+        </div>
+
+        <div style="text-align: center; margin-top: 1.5cm; color: #ccc;">* * *</div>
+
+    </div>
+    {% endfor %}
+
+</body>
+</html>

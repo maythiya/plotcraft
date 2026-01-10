@@ -36,195 +36,202 @@
     </div>
 
     <div class="flex-1 p-8 md:p-12 relative bg-white overflow-y-auto max-h-screen custom-scrollbar">
-        <div class="absolute top-0 left-0 w-full h-1.5 bg-linear-to-r from-[#2F4F4F] to-[#DAA520]"></div>
-
-        <h1 class="text-3xl font-bold text-[#2F4F4F] mb-2">คู่มือเริ่มต้นใช้งาน PlotCraft</h1>
-        <p class="text-gray-500 mb-8">เรียนรู้โครงสร้างและเครื่องมือที่จะช่วยให้คุณสร้างสรรค์นิยายได้อย่างไร้ขีดจำกัด</p>
-
-        <div class="bg-[#FAEBD7]/20 p-6 rounded-xl border border-[#FAEBD7] mb-10">
-            <div class="flex items-center gap-2 mb-3">
+        <div class="absolute top-0 left-0 w-full h-1.5 bg-linear-to-r from-[#2F4F4F] via-[#DAA520] to-[#2F4F4F]"></div>
+        
+        <div class="mb-10">
+            <h1 class="text-4xl font-bold text-[#2F4F4F] mb-3 flex items-center gap-3">
+                <span class="bg-[#2F4F4F] text-[#FAEBD7] p-2 rounded-lg">📖</span>
+                คู่มือการใช้งาน PlotCraft
+            </h1>
+            <p class="text-gray-500 text-lg">
+                ระบบจัดการงานเขียนนิยายครบวงจร: ตั้งแต่การวางโครงเรื่อง, สร้างโลก, ไปจนถึงการเขียนจริงและส่งออก
+            </p>
+        </div>
+    
+        <div class="bg-[#FAEBD7]/20 p-6 rounded-xl border border-[#FAEBD7] mb-12">
+            <div class="flex items-center gap-2 mb-4">
                 <span class="text-2xl">🧭</span>
-                <h2 class="text-xl font-bold text-[#2F4F4F]">ภาพรวมการทำงาน</h2>
+                <h2 class="text-xl font-bold text-[#2F4F4F]">ภาพรวมระบบ (System Overview)</h2>
             </div>
-            <p class="text-gray-700 mb-4">PlotCraft ถูกแบ่งออกเป็น 6 ฟีเจอร์ใหญ่ เพื่อครอบคลุมทุกมิติของการเขียนนิยาย:</p>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-[#2F4F4F]">
-                <div class="flex items-center gap-2"><span class="text-[#DAA520]">●</span> My Notes (สมุดจดไอเดีย)</div>
-                <div class="flex items-center gap-2"><span class="text-[#DAA520]">●</span> Worldbuilding (สร้างโลก/ตัวละคร/ไอเท็ม)</div>
-                <div class="flex items-center gap-2"><span class="text-[#DAA520]">●</span> Plot (จัดการโครงเรื่อง)</div>
-                <div class="flex items-center gap-2"><span class="text-[#DAA520]">●</span> Scenes (จัดการฉาก)</div>
-                <div class="flex items-center gap-2"><span class="text-[#DAA520]">●</span> Timeline (เส้นเวลาเหตุการณ์)</div>
-                <div class="flex items-center gap-2"><span class="text-[#DAA520]">●</span> Project Structure (จัดการโปรเจกต์)</div>
+            <p class="text-gray-700 mb-6 leading-relaxed">
+                PlotCraft ถูกออกแบบมาเพื่อแก้ปัญหา "ตัน" และ "ออกทะเล" ของนักเขียน โดยแบ่งการทำงานออกเป็นส่วนๆ ที่เชื่อมโยงกันอย่างเป็นระบบ:
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm font-medium text-[#2F4F4F]">
+                <div class="flex items-center gap-2 bg-white p-3 rounded-lg border border-[#2F4F4F]/10 shadow-sm">
+                    <span class="text-[#DAA520]">1.</span> 📝 My Notes (เขียนเนื้อหาหลัก)
+                </div>
+                <div class="flex items-center gap-2 bg-white p-3 rounded-lg border border-[#2F4F4F]/10 shadow-sm">
+                    <span class="text-[#DAA520]">2.</span> 🌍 Worldbuilding (ฐานข้อมูลโลก)
+                </div>
+                <div class="flex items-center gap-2 bg-white p-3 rounded-lg border border-[#2F4F4F]/10 shadow-sm">
+                    <span class="text-[#DAA520]">3.</span> 🎬 Scenes (การ์ดฉาก & โครงสร้าง)
+                </div>
+                <div class="flex items-center gap-2 bg-white p-3 rounded-lg border border-[#2F4F4F]/10 shadow-sm">
+                    <span class="text-[#DAA520]">4.</span> ⏳ Timeline (ลำดับเวลา)
+                </div>
+                <div class="flex items-center gap-2 bg-white p-3 rounded-lg border border-[#2F4F4F]/10 shadow-sm">
+                    <span class="text-[#DAA520]">5.</span> 📤 Export (ส่งออก EPUB และ PDF)
+                </div>
             </div>
         </div>
-
-        <section class="mb-12">
-            <div class="flex items-center gap-3 mb-4 border-b border-[#FAEBD7] pb-2">
-                <span class="text-2xl text-[#DAA520]">✍️</span>
-                <h2 class="text-2xl font-bold text-[#2F4F4F]">1. My Notes — บันทึกทุกไอเดียที่ไม่ควรหาย</h2>
+    
+        <section class="mb-14">
+            <div class="flex items-center gap-4 mb-6 border-b border-[#FAEBD7] pb-3">
+                <div class="w-10 h-10 rounded-full bg-[#2F4F4F] flex items-center justify-center text-white font-bold text-lg">1</div>
+                <div>
+                    <h2 class="text-2xl font-bold text-[#2F4F4F]">My Notes — การจัดการต้นฉบับ</h2>
+                    <p class="text-sm text-gray-500">พื้นที่สำหรับการเขียนเนื้อหาจริงและการจัดแบ่งตอน</p>
+                </div>
             </div>
-            <p class="text-gray-600 mb-4">พื้นที่อิสระเปรียบเสมือนกระดาษเปล่าสำหรับเก็บความคิดทุกอย่างที่ผุดขึ้นมา ออกแบบมาให้ยืดหยุ่นและไม่หายไปไหน</p>
             
-            <div class="bg-white border border-[#2F4F4F]/10 rounded-xl p-6 shadow-sm">
-                <h3 class="font-bold text-[#2F4F4F] mb-3">ฟีเจอร์เด่น:</h3>
-                <ul class="list-disc list-inside text-gray-700 space-y-1 mb-6 text-sm">
-                    <li><strong>Content Editor ครบเครื่อง:</strong> ตัวหนา, ตัวเอียง, รายการหัวข้อ, Blockquote, Heading</li>
-                    <li><strong>พื้นที่เขียน Scrollable:</strong> รองรับข้อความยาวหลายพันตัวอักษร แถบข้อความเลื่อนได้อิสระ</li>
-                    <li><strong>แยก Title / Content:</strong> ชื่อเรื่องอยู่บน เนื้อหาอยู่ล่าง ไม่ล้นออกด้านข้าง ตัดบรรทัดอัตโนมัติ</li>
-                    <li><strong>Undo / Redo:</strong> แก้ไขข้อผิดพลาดได้ทันที</li>
-                    <li><strong>เรียงตามล่าสุด:</strong> Note ที่แก้ไขล่าสุดจะอยู่บนสุดเสมอ</li>
+            <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:border-[#DAA520] transition-colors">
+                <h3 class="font-bold text-[#2F4F4F] mb-4 text-lg">ฟีเจอร์หลัก:</h3>
+                <ul class="space-y-3 text-gray-600">
+                    <li class="flex items-start gap-3">
+                        <svg class="w-5 h-5 text-[#DAA520] mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span><strong>Hierarchical Structure:</strong> จัดเก็บในรูปแบบ นิยาย (Project) > ตอน (Chapter) ทำให้หาง่ายและเป็นระเบียบ</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <svg class="w-5 h-5 text-[#DAA520] mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span><strong>EPUB Export:</strong> เมื่อเขียนจบ สามารถกดส่งออกเป็นไฟล์ E-Book (.epub) เพื่อนำไปลงขายหรืออ่านใน E-Reader ได้ทันที</span>
+                    </li>
                 </ul>
-                
-                <div class="bg-[#2F4F4F]/5 p-4 rounded-lg">
-                    <strong class="text-[#2F4F4F] text-sm block mb-2">💡 เหมาะสำหรับ:</strong>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="px-2 py-1 bg-white border border-[#2F4F4F]/20 rounded text-xs text-gray-600">จดพล็อตเร็วๆ</span>
-                        <span class="px-2 py-1 bg-white border border-[#2F4F4F]/20 rounded text-xs text-gray-600">ร่างบทสนทนา</span>
-                        <span class="px-2 py-1 bg-white border border-[#2F4F4F]/20 rounded text-xs text-gray-600">Research notes</span>
-                        <span class="px-2 py-1 bg-white border border-[#2F4F4F]/20 rounded text-xs text-gray-600">สรุป Chapter</span>
+            </div>
+        </section>
+    
+        <section class="mb-14">
+            <div class="flex items-center gap-4 mb-6 border-b border-[#FAEBD7] pb-3">
+                <div class="w-10 h-10 rounded-full bg-[#2F4F4F] flex items-center justify-center text-white font-bold text-lg">2</div>
+                <div>
+                    <h2 class="text-2xl font-bold text-[#2F4F4F]">Worldbuilding — ระบบสร้างโลก</h2>
+                    <p class="text-sm text-gray-500">คลังข้อมูลอ้างอิงสำหรับนิยายของคุณ แบ่งหมวดหมู่อย่างชัดเจน</p>
+                </div>
+            </div>
+        
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="bg-white border border-[#2F4F4F]/10 rounded-xl p-5 shadow-sm hover:shadow-md transition group">
+                    <h3 class="text-lg font-bold text-[#2F4F4F] mb-3 flex items-center gap-2 group-hover:text-[#DAA520] transition">
+                        👤 Characters (ตัวละคร)
+                    </h3>
+                    <p class="text-xs text-gray-500 mb-4 h-10">สร้างตัวละครที่มีมิติ ไม่ใช่แค่ชื่อ แต่รวมถึงปูมหลังและเป้าหมาย</p>
+                    <ul class="text-sm text-gray-600 space-y-2 list-disc list-inside bg-gray-50 p-3 rounded-lg">
+                        <li>รูปภาพประกอบ (Portrait)</li>
+                        <li>เป้าหมาย (Goals)</li>
+                        <li>จุดแข็ง/จุดอ่อน</li>
+                        <li>นิสัยและภูมิหลัง</li>
+                    </ul>
+                </div>
+            
+                <div class="bg-white border border-[#2F4F4F]/10 rounded-xl p-5 shadow-sm hover:shadow-md transition group">
+                    <h3 class="text-lg font-bold text-[#2F4F4F] mb-3 flex items-center gap-2 group-hover:text-[#DAA520] transition">
+                        🏙️ Locations (สถานที่)
+                    </h3>
+                    <p class="text-xs text-gray-500 mb-4 h-10">ออกแบบฉากหลังให้สมจริง ทั้งสภาพแวดล้อมและสังคม</p>
+                    <ul class="text-sm text-gray-600 space-y-2 list-disc list-inside bg-gray-50 p-3 rounded-lg">
+                        <li>ภูมิประเทศ & สภาพอากาศ</li>
+                        <li>การเมือง & เศรษฐกิจ</li>
+                        <li>ประวัติศาสตร์ & ตำนาน</li>
+                        <li>วัฒนธรรม</li>
+                    </ul>
+                </div>
+            
+                <div class="bg-white border border-[#2F4F4F]/10 rounded-xl p-5 shadow-sm hover:shadow-md transition group">
+                    <h3 class="text-lg font-bold text-[#2F4F4F] mb-3 flex items-center gap-2 group-hover:text-[#DAA520] transition">
+                        💎 Items (ไอเทม)
+                    </h3>
+                    <p class="text-xs text-gray-500 mb-4 h-10">วัตถุสำคัญในเรื่อง อาวุธ หรือของวิเศษ</p>
+                    <ul class="text-sm text-gray-600 space-y-2 list-disc list-inside bg-gray-50 p-3 rounded-lg">
+                        <li>ความสามารถพิเศษ</li>
+                        <li>ข้อจำกัด/เงื่อนไข</li>
+                        <li>ประวัติความเป็นมา</li>
+                        <li>ลักษณะภายนอก</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    
+        <section class="mb-14">
+            <div class="flex items-center gap-4 mb-6 border-b border-[#FAEBD7] pb-3">
+                <div class="w-10 h-10 rounded-full bg-[#2F4F4F] flex items-center justify-center text-white font-bold text-lg">3</div>
+                <div>
+                    <h2 class="text-2xl font-bold text-[#2F4F4F]">Scenes — หัวใจของการดำเนินเรื่อง</h2>
+                    <p class="text-sm text-gray-500">เครื่องมือสำหรับวางแผน "รายฉาก" เพื่อไม่ให้หลุดประเด็น</p>
+                </div>
+            </div>
+        
+            <div class="bg-[#F9FAFB] rounded-xl p-6 border border-gray-200">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="font-bold text-[#2F4F4F] mb-3 text-lg">องค์ประกอบของฉาก (Scene Elements)</h3>
+                        <p class="text-gray-600 text-sm mb-4">ในหน้าจัดการฉาก (Scenes) เราได้เตรียมช่องกรอกข้อมูลสำคัญตามหลักการเขียนนิยายไว้ให้:</p>
+                        <ul class="space-y-3">
+                            <li class="flex items-center gap-3 bg-white p-2 rounded border border-gray-100 shadow-sm">
+                                <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-1 rounded">Goal</span>
+                                <span class="text-sm text-gray-700">เป้าหมายของตัวละครในฉากนี้คืออะไร?</span>
+                            </li>
+                            <li class="flex items-center gap-3 bg-white p-2 rounded border border-gray-100 shadow-sm">
+                                <span class="bg-red-100 text-red-800 text-xs font-bold px-2 py-1 rounded">Conflict</span>
+                                <span class="text-sm text-gray-700">อุปสรรคหรือความขัดแย้งที่เกิดขึ้น?</span>
+                            </li>
+                            <li class="flex items-center gap-3 bg-white p-2 rounded border border-gray-100 shadow-sm">
+                                <span class="bg-green-100 text-green-800 text-xs font-bold px-2 py-1 rounded">Outcome</span>
+                                <span class="text-sm text-gray-700">ผลลัพธ์ (ชนะ/แพ้) และส่งผลอย่างไรต่อฉากหน้า?</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-[#2F4F4F] mb-3 text-lg">การเชื่อมโยง (Linking)</h3>
+                        <div class="bg-white p-4 rounded-xl border border-dashed border-[#DAA520] text-center">
+                            <p class="text-gray-600 text-sm mb-2">คุณสามารถดึงข้อมูลจาก Worldbuilding มาใช้ในฉากได้:</p>
+                            <div class="flex flex-wrap justify-center gap-2 mt-2">
+                                <span class="text-xs bg-[#2F4F4F] text-white px-2 py-1 rounded">Link Characters</span>
+                                <span class="text-xs bg-[#2F4F4F] text-white px-2 py-1 rounded">Link Location</span>
+                                <span class="text-xs bg-[#2F4F4F] text-white px-2 py-1 rounded">Link Items</span>
+                                <span class="text-xs bg-[#DAA520] text-white px-2 py-1 rounded">POV Character</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
-
-        <section class="mb-12">
-            <div class="flex items-center gap-3 mb-6 border-b border-[#FAEBD7] pb-2">
-                <span class="text-2xl text-[#DAA520]">🌍</span>
-                <h2 class="text-2xl font-bold text-[#2F4F4F]">2. Worldbuilding — ระบบสร้างโลกนิยาย</h2>
-            </div>
-            <p class="text-gray-600 mb-6">ช่วยคุณตั้งแต่งานเขียนธรรมดาไปจนถึงโลกแฟนตาซีขนาดใหญ่ แบ่งเป็น 4 ส่วนสำคัญ:</p>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-white border border-[#2F4F4F]/10 rounded-xl p-6 shadow-sm hover:shadow-md transition">
-                    <h3 class="text-lg font-bold text-[#2F4F4F] mb-2 flex items-center gap-2">
-                        <span>👤</span> 2.1 Characters (ตัวละคร)
-                    </h3>
-                    <p class="text-gray-600 text-xs mb-3">แกนกลางของเรื่องราว รองรับรายละเอียดตั้งแต่ตัวหลักจนถึงตัวประกอบ</p>
-                    <ul class="list-disc list-inside text-gray-500 text-xs space-y-1 mb-3">
-                        <li><strong>ข้อมูลพื้นฐาน:</strong> ชื่อ, อายุ, เพศ, เผ่าพันธุ์, อาชีพ</li>
-                        <li><strong>บทบาท:</strong> Protagonist, Antagonist, Supporting</li>
-                        <li><strong>เชิงลึก:</strong> บุคลิก, จุดแข็ง/จุดอ่อน, เป้าหมาย, ความกลัว</li>
-                        <li><strong>รูปลักษณ์:</strong> หน้าตา, ส่วนสูง, การแต่งกาย</li>
-                        <li><strong>ความสัมพันธ์ & ภูมิหลัง:</strong> เชื่อมโยงตัวละครและประวัติ</li>
-                        <li><strong>รูปภาพ:</strong> อัปโหลดรูปพร้อม Preview real-time</li>
-                    </ul>
-                </div>
-
-                <div class="bg-white border border-[#2F4F4F]/10 rounded-xl p-6 shadow-sm hover:shadow-md transition">
-                    <h3 class="text-lg font-bold text-[#2F4F4F] mb-2 flex items-center gap-2">
-                        <span>🏙️</span> 2.2 Locations (สถานที่)
-                    </h3>
-                    <p class="text-gray-600 text-xs mb-3">รองรับสถานที่ทุกประเภท ตั้งแต่ร้านกาแฟไปจนถึงปราสาทต่างมิติ</p>
-                    <ul class="list-disc list-inside text-gray-500 text-xs space-y-1">
-                        <li>ชื่อและคำอธิบายบรรยากาศ</li>
-                        <li>ภูมิประเทศและวัฒนธรรม</li>
-                        <li>ผู้อยู่อาศัยและเหตุการณ์สำคัญ</li>
-                        <li>ใช้งานร่วมกับ Scene และ Timeline ได้</li>
-                    </ul>
-                </div>
-
-                <div class="bg-white border border-[#2F4F4F]/10 rounded-xl p-6 shadow-sm hover:shadow-md transition">
-                    <h3 class="text-lg font-bold text-[#2F4F4F] mb-2 flex items-center gap-2">
-                        <span>🧱</span> 2.3 Items (ไอเท็ม)
-                    </h3>
-                    <p class="text-gray-600 text-xs mb-3">ของที่มีบทบาทสำคัญ เช่น เครื่องราง, หนังสือ, สิ่งประดิษฐ์</p>
-                    <ul class="list-disc list-inside text-gray-500 text-xs space-y-1">
-                        <li>ลักษณะภายนอกและพลังพิเศษ</li>
-                        <li>ประวัติความเป็นมาและผู้ครอบครอง</li>
-                        <li>ความสำคัญต่อพล็อตเรื่อง</li>
-                    </ul>
-                </div>
-
-                <div class="bg-white border border-[#2F4F4F]/10 rounded-xl p-6 shadow-sm hover:shadow-md transition">
-                    <h3 class="text-lg font-bold text-[#2F4F4F] mb-2 flex items-center gap-2">
-                        <span>⚔️</span> 2.4 Weapons (อาวุธ)
-                    </h3>
-                    <p class="text-gray-600 text-xs mb-3">ฟีเจอร์สำคัญสำหรับแนวแฟนตาซีหรือแอคชั่น</p>
-                    <ul class="list-disc list-inside text-gray-500 text-xs space-y-1">
-                        <li>ประเภทอาวุธ (ดาบ, ปืน, เวทมนตร์)</li>
-                        <li>ค่าความเสียหายและความสามารถพิเศษ</li>
-                        <li>ผู้ใช้งานประจำและตำนานของอาวุธ</li>
-                    </ul>
+    
+        <section class="mb-14">
+            <div class="flex items-center gap-4 mb-6 border-b border-[#FAEBD7] pb-3">
+                <div class="w-10 h-10 rounded-full bg-[#2F4F4F] flex items-center justify-center text-white font-bold text-lg">4</div>
+                <div>
+                    <h2 class="text-2xl font-bold text-[#2F4F4F]">Timeline — เส้นเวลา</h2>
+                    <p class="text-sm text-gray-500">ดูภาพรวมลำดับเหตุการณ์ ป้องกัน Timeline สับสน (Plot Hole)</p>
                 </div>
             </div>
+            <p class="text-gray-600 mb-4">
+                สร้าง Event เหตุการณ์สำคัญ และจัดเรียงตามลำดับเวลา สามารถเชื่อมโยง Event เข้ากับ Scene ที่เกี่ยวข้องได้ เพื่อดูว่า "เหตุการณ์นี้ เกิดขึ้นในฉากไหนของนิยาย"
+            </p>
         </section>
-
-        <div class="grid grid-cols-1 gap-6 mb-12">
-            <section class="bg-[#F9FAFB] rounded-xl p-6 border border-gray-200">
-                <div class="flex items-center gap-3 mb-3">
-                    <span class="text-2xl text-[#DAA520]">🧩</span>
-                    <h2 class="text-xl font-bold text-[#2F4F4F]">3. Plot — จัดโครงสร้างตามธีม & อารมณ์</h2>
-                </div>
-                <p class="text-gray-600 text-sm mb-3">เลิกเขียนพล็อตใส่กระดาษที่กระจัดกระจาย จัดระเบียบให้เป็นระบบที่สุด</p>
-                <ul class="text-sm text-gray-700 space-y-1 ml-2">
-                    <li>• สร้าง "กล่องพล็อต" และแบ่งตามหมวด (พล็อตหลัก, พล็อตรอง, จุดหักมุม)</li>
-                    <li>• เชื่อมโยงพล็อตเข้ากับ Scene หรือ Timeline</li>
-                    <li>• เหมาะสำหรับนิยายหลายเส้นเรื่อง หรือต้องการคุมอารมณ์เรื่อง (เศร้า/ตื่นเต้น)</li>
-                </ul>
-            </section>
-
-            <section class="bg-[#F9FAFB] rounded-xl p-6 border border-gray-200">
-                <div class="flex items-center gap-3 mb-3">
-                    <span class="text-2xl text-[#DAA520]">🎬</span>
-                    <h2 class="text-xl font-bold text-[#2F4F4F]">4. Scenes — ฉากนิยายแบบลึก</h2>
-                </div>
-                <p class="text-gray-600 text-sm mb-3">แยกเนื้อหาออกเป็นฉากย่อย เพื่อควบคุมความสมดุลและความไหลลื่น</p>
-                <ul class="text-sm text-gray-700 space-y-1 ml-2">
-                    <li>• ระบุสถานที่, เวลา (กลางวัน/กลางคืน), และตัวละครในฉาก</li>
-                    <li>• อธิบาย Mood & Tone ของฉาก</li>
-                    <li>• ใส่ Note ส่วนตัวเพื่อเตือนความจำ (เช่น "ต้องแก้บทพูดตรงนี้")</li>
-                </ul>
-            </section>
-
-            <section class="bg-[#F9FAFB] rounded-xl p-6 border border-gray-200">
-                <div class="flex items-center gap-3 mb-3">
-                    <span class="text-2xl text-[#DAA520]">⏳</span>
-                    <h2 class="text-xl font-bold text-[#2F4F4F]">5. Timeline — เส้นเรื่องภาพรวม</h2>
-                </div>
-                <p class="text-gray-600 text-sm mb-3">เห็นภาพรวมของเหตุการณ์ทั้งหมดตามลำดับเวลา ป้องกันความสับสน</p>
-                <ul class="text-sm text-gray-700 space-y-1 ml-2">
-                    <li>• เพิ่ม Event สำคัญและจุดพีกของเรื่อง</li>
-                    <li>• รองรับหลายเส้นเรื่อง (Timeline A / Timeline B)</li>
-                    <li>• เหมาะมากสำหรับนิยายสืบสวน, พีเรียด, หรือเรื่องที่มีการย้อนเวลา</li>
-                </ul>
-            </section>
-        </div>
-
-        <hr class="my-8 border-[#FAEBD7]">
-
-        <section class="mb-10" id="section-tech">
-            <div class="flex items-center gap-3 mb-6 pb-2 border-b border-[#FAEBD7]">
-                <span class="text-2xl text-[#DAA520]">⚡</span>
-                <h2 class="text-2xl font-bold text-[#2F4F4F]">โครงสร้างระบบและเทคนิค</h2>
+    
+        <hr class="border-[#FAEBD7] mb-10">
+    
+        <section id="tech-stack">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="text-2xl">⚡</span>
+                <h2 class="text-2xl font-bold text-[#2F4F4F]">เบื้องหลังระบบ (Tech Stack)</h2>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="p-6 rounded-xl bg-white border border-[#2F4F4F]/10 shadow-sm">
-                    <h3 class="text-lg font-bold text-[#2F4F4F] mb-2 flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-[#DAA520]"></span> Backend
-                    </h3>
-                    <p class="text-gray-600 text-sm leading-relaxed">Django Framework (Python) ที่มีความปลอดภัยและเสถียรภาพสูง</p>
+                <div class="p-5 rounded-xl bg-white border border-gray-100 shadow-sm">
+                    <h3 class="text-[#DAA520] font-bold mb-2">Backend & Database</h3>
+                    <p class="text-gray-600 text-sm">
+                        ขับเคลื่อนด้วย <strong>Django Framework (Python)</strong> ที่มีความปลอดภัยสูง และใช้ฐานข้อมูล <strong>MySQL</strong> รองรับการเชื่อมโยงข้อมูลที่ซับซ้อน
+                    </p>
                 </div>
-                <div class="p-6 rounded-xl bg-white border border-[#2F4F4F]/10 shadow-sm">
-                    <h3 class="text-lg font-bold text-[#2F4F4F] mb-2 flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-[#DAA520]"></span> Frontend
-                    </h3>
-                    <p class="text-gray-600 text-sm leading-relaxed">HTML5 + Tailwind CSS พร้อม Alpine.js/HTMX เพื่อการโต้ตอบที่ลื่นไหล</p>
-                </div>
-                <div class="p-6 rounded-xl bg-white border border-[#2F4F4F]/10 shadow-sm">
-                    <h3 class="text-lg font-bold text-[#2F4F4F] mb-2 flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-[#DAA520]"></span> Database
-                    </h3>
-                    <p class="text-gray-600 text-sm leading-relaxed">Mysql ออกแบบ Schema รองรับความสัมพันธ์ซับซ้อน</p>
-                </div>
-                 <div class="p-6 rounded-xl bg-white border border-[#2F4F4F]/10 shadow-sm">
-                    <h3 class="text-lg font-bold text-[#2F4F4F] mb-2 flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-[#DAA520]"></span> Security
-                    </h3>
-                    <p class="text-gray-600 text-sm leading-relaxed">Authentication รัดกุม, CSRF Protection และการจัดการ Media ที่ปลอดภัย</p>
+                <div class="p-5 rounded-xl bg-white border border-gray-100 shadow-sm">
+                    <h3 class="text-[#DAA520] font-bold mb-2">Frontend</h3>
+                    <p class="text-gray-600 text-sm">
+                        ใช้ <strong>HTML5</strong> ร่วมกับ <strong>Tailwind CSS</strong> เพื่อความสวยงาม และเสริมด้วย <strong>Alpine.js</strong> เพื่อการตอบสนองที่ลื่นไหลโดยไม่ต้องรีโหลดหน้า
+                    </p>
                 </div>
             </div>
         </section>
-        
+            
         <div class="mt-8 p-6 bg-[#2F4F4F] rounded-xl text-[#FAEBD7] text-center">
             <h3 class="font-bold text-lg mb-2">ต้องการความช่วยเหลือเพิ่มเติม?</h3>
             <p class="text-sm opacity-80 mb-4">หากพบปัญหาการใช้งาน หรือมีข้อเสนอแนะ สามารถติดต่อทีมผู้พัฒนาได้ตลอดเวลา</p>
@@ -232,7 +239,6 @@
                 ติดต่อเรา
             </a>
         </div>
-
     </div>
   </div>
 </div>

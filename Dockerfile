@@ -24,6 +24,8 @@ RUN apt-get update \
         libpangoft2-1.0-0 \
         libpangocairo-1.0-0 \
         libgdk-pixbuf-2.0-0 \
+        fontconfig \
+        fonts-thai-tlwg \
     && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y --no-install-recommends nodejs \
     && apt-get clean \

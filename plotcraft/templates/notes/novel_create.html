@@ -3,6 +3,7 @@
 
 {% block content %}
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
 
 <style>
     @keyframes fadeInUp { from { opacity: 0; transform: translate3d(0, 20px, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
@@ -27,7 +28,7 @@
         </div>
 
         <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 hover:shadow-2xl transition-shadow duration-500">
-            <div class="h-2 w-full bg-gradient-to-r from-[#2F4F4F] via-[#2F4F4F] to-[#DAA520]"></div>
+            <div class="h-2 w-full bg-linear-to-r from-[#2F4F4F] via-[#2F4F4F] to-[#DAA520]"></div>
 
             <form method="post" enctype="multipart/form-data" class="p-8 md:p-10 space-y-8" x-data="{ imagePreview: '{% if form.instance.cover_image %}{{ form.instance.cover_image.url }}{% endif %}' }">
                 {% csrf_token %}
@@ -37,7 +38,7 @@
                     <div class="md:col-span-4 flex flex-col items-center">
                         <label class="block text-sm font-bold text-gray-700 mb-3 self-start">รูปปกนิยาย</label>
                                         
-                        <div class="relative w-full aspect-[2/3] min-h-[300px] bg-gray-50 rounded-xl border-2 border-dashed border-gray-300 hover:border-[#DAA520] transition-colors duration-300 group cursor-pointer overflow-hidden shadow-inner dashed-border flex items-center justify-center">
+                        <div class="relative w-full aspect-2/3 min-h-[300px] bg-gray-50 rounded-xl border-2 border-dashed border-gray-300 hover:border-[#DAA520] transition-colors duration-300 group cursor-pointer overflow-hidden shadow-inner dashed-border flex items-center justify-center">
                             
                             <template x-if="imagePreview">
                                 <img :src="imagePreview" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
@@ -85,20 +86,55 @@
                     </div>
                 </div>
 
-                <div class="pt-6 flex justify-end gap-4 border-t border-gray-100">
-                    <a href="{% url 'plotcraft:novel_list' %}" class="px-6 py-2.5 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 hover:text-gray-800 transition font-bold">ยกเลิก</a>
-                    <button type="submit" class="px-8 py-2.5 bg-gradient-to-r from-[#DAA520] to-[#b8860b] text-white rounded-lg font-bold shadow-md hover:shadow-lg hover:shadow-[#DAA520]/40 transform hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden group">
-                        <span class="relative z-10 flex items-center gap-2">
-                            {% if is_edit %}💾 บันทึกการแก้ไข{% else %}🚀 สร้างนิยาย{% endif %}
-                        </span>
-                        <div class="absolute inset-0 bg-white/20 -translate-x-full group-hover:translate-x-full transition-transform duration-500 skew-x-12"></div>
-                    </button>
+                <div class="pt-6 flex items-center justify-between border-t border-gray-100">
+
+                    <div>
+                        {% if form.instance.pk %}
+                            <a href="{% url 'plotcraft:novel_delete' form.instance.pk %}"
+                               onclick="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบนิยายเรื่องนี้? หากลบแล้วตอนทั้งหมดที่มีก็จะถูกลบด้วยนะคะ!');"
+                               class="text-red-500 font-bold hover:text-red-700
+                                     hover:bg-red-50 px-4 py-2.5 rounded-lg transition 
+                                     flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                                ลบนิยาย
+                            </a>
+                        {% endif %}
+                    </div>
+
+                    <div class="flex gap-4">
+                        <!-- ยกเลิก -->
+                        <a href="{% url 'plotcraft:novel_list' %}"
+                           class="px-6 py-2.5 rounded-lg border border-gray-300
+                                  text-gray-600 hover:bg-gray-50 hover:text-gray-800
+                                  transition font-bold">
+                            ยกเลิก
+                        </a>
+                    
+                        <!-- ปุ่มหลัก -->
+                        <button type="submit"
+                            class="px-8 py-2.5 rounded-lg font-bold
+                                   bg-[#DAA520] text-white
+                                   shadow-md
+                                   transform transition-all duration-200
+                                   hover:scale-105
+                                   hover:shadow-lg
+                                   active:scale-95
+                                   focus:outline-none focus:ring-2 focus:ring-[#DAA520]/40">
+
+                            {% if form.instance.pk %}
+                                💾 บันทึกการแก้ไข
+                            {% else %}
+                                🚀 สร้างนิยาย
+                            {% endif %}
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
     </div>
 </div>
-
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const inputs = document.querySelectorAll('input[type="text"], textarea, select');

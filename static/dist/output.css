@@ -132,6 +132,9 @@
 .aspect-\[2\/3\] {
   aspect-ratio: 2/3;
 }
+.aspect-\[3\/4\] {
+  aspect-ratio: 3/4;
+}
 .aspect-square {
   aspect-ratio: 1 / 1;
 }
@@ -314,6 +317,9 @@
 }
 .resize {
   resize: both;
+}
+.resize-y {
+  resize: vertical;
 }
 .list-inside {
   list-style-position: inside;
@@ -629,6 +635,10 @@
   --tw-gradient-via: transparent;
   --tw-gradient-via-stops: var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-via) var(--tw-gradient-via-position), var(--tw-gradient-to) var(--tw-gradient-to-position);
   --tw-gradient-stops: var(--tw-gradient-via-stops);
+}
+.to-\[\#1a2e2e\] {
+  --tw-gradient-to: #1a2e2e;
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
 }
 .to-\[\#1a3030\] {
   --tw-gradient-to: #1a3030;
@@ -1085,6 +1095,13 @@
   &:is(:where(.group):hover *) {
     @media (hover: hover) {
       --tw-ring-color: color-mix(in oklab, #DAA520 30%, transparent);
+    }
+  }
+}
+.group-hover\/image\:opacity-100 {
+  &:is(:where(.group\/image):hover *) {
+    @media (hover: hover) {
+      opacity: 100%;
     }
   }
 }

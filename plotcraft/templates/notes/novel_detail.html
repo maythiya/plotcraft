@@ -7,7 +7,7 @@
 
 <div class="min-h-screen bg-[#F8F9FA] font-sans pb-12">
     
-    <div class="h-1.5 w-full bg-gradient-to-r from-[#2F4F4F] via-[#2F4F4F] to-[#DAA520]"></div>
+    <div class="h-1.5 w-full bg-linear-to-r from-[#2F4F4F] via-[#2F4F4F] to-[#DAA520]"></div>
 
     <div class="container mx-auto px-4 py-8 max-w-6xl">
         
@@ -26,7 +26,7 @@
             <div class="p-6 md:p-10 flex flex-col md:flex-row gap-8 relative z-10">
                 
                 <div class="w-full md:w-52 shrink-0">
-                    <div class="aspect-[2/3] rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden bg-gray-100 border border-gray-200 relative">
+                    <div class="aspect-2/3 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden bg-gray-100 border border-gray-200 relative">
                         {% if novel.cover_image %}
                             <img src="{{ novel.cover_image.url }}" class="w-full h-full object-cover">
                         {% else %}
@@ -85,7 +85,7 @@
                             </a>
                             {% endif %}
 
-                            <a href="{% url 'plotcraft:novel_edit' pk=novel.id %}" 
+                            <a href="{% url 'plotcraft:novel_edit' pk=novel.id %}?next={{ request.path }}" 
                                class="text-sm font-bold text-[#2F4F4F] hover:text-[#DAA520] transition flex items-center gap-1 px-4 py-2 hover:bg-gray-50 rounded-lg">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                 แก้ไขข้อมูลเรื่อง
@@ -104,7 +104,7 @@
             </div>
 
             <div class="flex flex-wrap justify-center gap-4 pb-4 px-1">
-                <a href="{% url 'plotcraft:character_create' %}" class="flex-shrink-0 w-20 flex flex-col items-center group">
+                <a href="{% url 'plotcraft:character_create' %}" class="shrink-0 w-20 flex flex-col items-center group">
                     <div class="w-16 h-16 rounded-full border-2 border-dashed border-[#DAA520]/40 flex items-center justify-center bg-[#DAA520]/5 group-hover:bg-[#DAA520]/10 transition-all">
                         <svg class="w-6 h-6 text-[#DAA520]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                     </div>
@@ -112,8 +112,8 @@
                 </a>
 
                 {% for char in novel.characters.all %}
-                <a href="{% url 'plotcraft:character_detail' char.id %}" class="flex-shrink-0 w-20 flex flex-col items-center group">
-                    <div class="w-16 h-16 rounded-full p-0.5 bg-gradient-to-tr from-[#2F4F4F] to-[#DAA520] group-hover:-translate-y-1 transition-transform">
+                <a href="{% url 'plotcraft:character_detail' char.id %}" class="shrink-0 w-20 flex flex-col items-center group">
+                    <div class="w-16 h-16 rounded-full p-0.5 bg-linear-to-tr from-[#2F4F4F] to-[#DAA520] group-hover:-translate-y-1 transition-transform">
                         <div class="w-full h-full rounded-full overflow-hidden bg-white border-2 border-white">
                             {% if char.portrait %}
                                 <img src="{{ char.portrait.url }}" class="w-full h-full object-cover">
@@ -160,11 +160,11 @@
                              class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden"
                              style="display: none;">
 
-                            <a href="#" class="flex px-4 py-3 text-gray-700 hover:bg-[#DAA520]/10 hover:text-[#DAA520] transition text-sm font-bold items-center gap-2">
+                            <a href="{% url 'plotcraft:export_novel_epub' novel.id %}" class="flex px-4 py-3 text-gray-700 hover:bg-[#DAA520]/10 hover:text-[#DAA520] transition text-sm font-bold items-center gap-2">
                                 <span class="text-xl">📱</span> Export as EPUB
                             </a>
                             <div class="h-px bg-gray-100"></div>
-                            <a href="#" target="_blank" class="flex px-4 py-3 text-gray-700 hover:bg-[#DAA520]/10 hover:text-[#DAA520] transition text-sm font-bold items-center gap-2">
+                            <a href="{% url 'plotcraft:export_novel_pdf' novel.id %}" target="_blank" class="flex px-4 py-3 text-gray-700 hover:bg-[#DAA520]/10 hover:text-[#DAA520] transition text-sm font-bold items-center gap-2">
                                 <span class="text-xl">📄</span> Export as PDF
                             </a>
                         </div>
@@ -281,7 +281,8 @@
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                             </a>
                             
-                            <form action="{% url 'plotcraft:chapter_delete' chapter.id %}" method="POST" onsubmit="return confirm('ยืนยันลบตอน {{ chapter.title }}?');">
+                            <form action="{% url 'plotcraft:chapter_delete' chapter.id %}" method="POST" onsubmit="return confirm(
+                            'แน่ใจแล้วใช่ไหมว่าจะลบ "{{ chapter.title }}" ? หากลบแล้วไม่สามารถกู้คืนได้นะคะ!');">
                                 {% csrf_token %}
                                 <button type="submit" class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition" title="ลบ">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>

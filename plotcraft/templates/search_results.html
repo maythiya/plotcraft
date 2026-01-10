@@ -2,13 +2,16 @@
 {% block title %}ผลการค้นหา: {{ query }} | PlotCraft{% endblock %}
 
 {% block content %}
+<script src="https://cdn.tailwindcss.com"></script>
+
 <style>
-    src="https://cdn.tailwindcss.com"
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     .fade-in-up { animation: fadeInUp 0.6s ease-out forwards; opacity: 0; }
     .delay-100 { animation-delay: 0.1s; }
     .delay-200 { animation-delay: 0.2s; }
     .delay-300 { animation-delay: 0.3s; }
+    .delay-400 { animation-delay: 0.4s; }
+    .delay-500 { animation-delay: 0.5s; }
 </style>
 
 <div class="min-h-screen py-12 px-4 font-sans text-[#2F4F4F] bg-[#F8F9FA]">
@@ -18,7 +21,7 @@
             <span class="text-6xl mb-4 block">🔍</span>
             <h1 class="text-3xl md:text-4xl font-extrabold mb-3">ผลการค้นหาสำหรับ "<span class="text-[#DAA520]">{{ query }}</span>"</h1>
             <p class="text-gray-500">
-                {% if results.projects or results.characters or results.scenes or results.timeline_events %}
+                {% if results.projects or results.characters or results.scenes or results.locations or results.items or results.timeline_events %}
                     พบข้อมูลในจักรวาลของคุณดังนี้...
                 {% else %}
                     จักรวาลเงียบเหงา... ไม่พบข้อมูลที่ตรงกัน
@@ -34,7 +37,6 @@
                     <span class="bg-[#2F4F4F]/10 p-2 rounded-lg">📚</span> นิยาย / โปรเจกต์ 
                     <span class="bg-[#DAA520] text-white text-xs px-2 py-1 rounded-full">{{ results.projects.count }}</span>
                 </h2>
-                
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {% for project in results.projects %}
                     <a href="{% url 'plotcraft:novel_detail' project.id %}" class="flex bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all border border-gray-100 group h-32">
@@ -61,15 +63,16 @@
                     <span class="bg-blue-100 text-blue-600 p-2 rounded-lg">👤</span> ตัวละคร
                     <span class="bg-[#DAA520] text-white text-xs px-2 py-1 rounded-full">{{ results.characters.count }}</span>
                 </h2>
-                
                 <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
                     {% for char in results.characters %}
-                    <a href="{{ char.get_absolute_url }}" class="bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition-all hover:-translate-y-1 border border-gray-100 flex flex-col items-center text-center group">
+                    <a href="{% url 'plotcraft:character_detail' char.id %}" class="bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition-all hover:-translate-y-1 border border-gray-100 flex flex-col items-center text-center group">
                         <div class="w-16 h-16 rounded-full bg-gray-100 mb-3 overflow-hidden ring-2 ring-transparent group-hover:ring-[#DAA520]/30 transition-all">
-                             {% if char.image %}
+                             {% if char.portrait %}
+                                <img src="{{ char.portrait.url }}" class="w-full h-full object-cover">
+                            {% elif char.image %}
                                 <img src="{{ char.image.url }}" class="w-full h-full object-cover">
                             {% else %}
-                                <div class="w-full h-full flex items-center justify-center text-gray-300 text-xl">{{ char.name|slice:":1" }}</div>
+                                <div class="w-full h-full flex items-center justify-center text-gray-300 text-xl font-bold bg-gray-50">{{ char.name|slice:":1" }}</div>
                             {% endif %}
                         </div>
                         <h4 class="font-bold text-[#2F4F4F] text-sm group-hover:text-[#DAA520] line-clamp-1">{{ char.name }}</h4>
@@ -80,21 +83,68 @@
             </section>
             {% endif %}
 
-            {% if results.scenes %} <section class="fade-in-up delay-300">
+            {% if results.locations %}
+            <section class="fade-in-up delay-300">
                 <h2 class="text-2xl font-bold text-[#2F4F4F] mb-6 flex items-center gap-3">
                     <span class="bg-green-100 text-green-600 p-2 rounded-lg">🗺️</span> สถานที่
-                    <span class="bg-[#DAA520] text-white text-xs px-2 py-1 rounded-full">{{ results.scenes.count }}</span>
+                    <span class="bg-[#DAA520] text-white text-xs px-2 py-1 rounded-full">{{ results.locations.count }}</span>
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {% for scene in results.scenes %}
-                    <a href="{{ scene.get_absolute_url }}" class="block group relative rounded-xl overflow-hidden h-40 shadow-sm hover:shadow-lg transition-all">
-                        {% if scene.image %}
-                            <img src="{{ scene.image.url }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                    {% for location in results.locations %}
+                    <a href="{% url 'plotcraft:location_detail' location.id %}" class="block group relative rounded-xl overflow-hidden h-40 shadow-sm hover:shadow-lg transition-all">
+                        {% if location.map_image %}
+                            <img src="{{ location.map_image.url }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
                         {% else %}
-                            <div class="w-full h-full bg-[#2F4F4F] flex items-center justify-center text-[#FAEBD7] opacity-80">🗺️</div>
+                            <div class="w-full h-full bg-[#f0fdf4] flex items-center justify-center text-green-200 text-4xl">🗺️</div>
                         {% endif %}
-                        <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors flex items-end p-4">
-                            <h4 class="text-white font-bold text-lg shadow-black drop-shadow-md">{{ scene.name }}</h4>
+                        <div class="absolute inset-0 bg-linear-to-t from-black/60 to-transparent flex items-end p-4">
+                            <h4 class="text-white font-bold text-lg shadow-black drop-shadow-md">{{ location.name }}</h4>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </section>
+            {% endif %}
+
+             {% if results.items %}
+             <section class="fade-in-up delay-400">
+                 <h2 class="text-2xl font-bold text-[#2F4F4F] mb-6 flex items-center gap-3">
+                     <span class="bg-purple-100 text-purple-600 p-2 rounded-lg">🔮</span> ไอเทม
+                     <span class="bg-[#DAA520] text-white text-xs px-2 py-1 rounded-full">{{ results.items.count }}</span>
+                 </h2>
+                 <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                     {% for item in results.items %}
+                     <a href="{% url 'plotcraft:item_detail' item.id %}" class="bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-100 group">
+                        <div class="aspect-square rounded-lg bg-purple-50 mb-3 overflow-hidden flex items-center justify-center">
+                            {% if item.image %}
+                                <img src="{{ item.image.url }}" class="w-full h-full object-cover">
+                            {% else %}
+                                <span class="text-2xl">📦</span>
+                            {% endif %}
+                        </div>
+                         <h4 class="font-bold text-[#2F4F4F] text-sm group-hover:text-purple-600 line-clamp-1">{{ item.name }}</h4>
+                         <p class="text-xs text-gray-400 mt-1 line-clamp-1">{{ item.type|default:"Item" }}</p>
+                     </a>
+                     {% endfor %}
+                 </div>
+             </section>
+             {% endif %}
+
+            {% if results.scenes %} 
+            <section class="fade-in-up delay-500">
+                <h2 class="text-2xl font-bold text-[#2F4F4F] mb-6 flex items-center gap-3">
+                    <span class="bg-indigo-100 text-indigo-600 p-2 rounded-lg">🎬</span> ฉาก
+                    <span class="bg-[#DAA520] text-white text-xs px-2 py-1 rounded-full">{{ results.scenes.count }}</span>
+                </h2>
+                <div class="space-y-4">
+                    {% for scene in results.scenes %}
+                    <a href="{% url 'plotcraft:scene_detail' scene.id %}" class="block bg-white p-5 rounded-xl border border-gray-100 hover:border-indigo-200 hover:shadow-md transition group">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h4 class="font-bold text-[#2F4F4F] group-hover:text-indigo-600 text-lg">{{ scene.title }}</h4>
+                                <p class="text-sm text-gray-500 mt-1 line-clamp-2">{{ scene.content|striptags|truncatechars:150 }}</p>
+                            </div>
+                            <span class="text-xs bg-gray-100 text-gray-500 px-2 py-1 rounded">Scene</span>
                         </div>
                     </a>
                     {% endfor %}
@@ -104,7 +154,7 @@
 
         </div>
 
-        {% if not results.projects and not results.characters and not results.scenes and not results.timeline_events %}
+        {% if not results.projects and not results.characters and not results.scenes and not results.locations and not results.items and not results.timeline_events %}
         <div class="text-center py-20 fade-in-up delay-100">
             <div class="inline-block p-6 rounded-full bg-[#2F4F4F]/5 mb-6 animate-bounce">
                 <span class="text-5xl grayscale opacity-50">🌌</span>

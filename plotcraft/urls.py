@@ -52,6 +52,8 @@ urlpatterns = [
     path('scenes/', views.scene_list, name='scene_list'),
     path('scenes/create/', views.scene_create, name='scene_create'),
     path('scenes/<int:pk>/edit/', views.scene_edit, name='scene_edit'),
+    path('scenes/<int:pk>/', views.scene_detail, name='scene_detail'),
+    path('scenes/<int:pk>/delete/', views.scene_delete, name='scene_delete'),
 
     # ==================== TIMELINE ====================
     path('timeline/', views.timeline_list, name='timeline_list'),
@@ -62,4 +64,12 @@ urlpatterns = [
     path('timeline/event/<int:pk>/update/', views.timeline_event_update, name='timeline_event_update'),
     path('timeline/event/<int:pk>/delete/', views.timeline_event_delete, name='timeline_event_delete'),
     path('timeline/reorder/', views.update_event_order, name='update_event_order'),
+
+    # ==================== EXPORT ====================
+    path('export/novel/<int:pk>/pdf/', views.export_novel_pdf, name='export_novel_pdf'),
+    path('export/novel/<int:pk>/epub/', views.export_novel_epub, name='export_novel_epub'),
+
+    # ==================== BOOKMARKS ====================
+    path('bookmarks/', views.bookmark_list, name='bookmark_list'),
+    path('bookmark/<str:model_name>/<int:pk>/', views.toggle_bookmark, name='toggle_bookmark'),
 ]

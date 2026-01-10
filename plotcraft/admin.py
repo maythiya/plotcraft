@@ -1,92 +1,117 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-
+from django.contrib.auth.admin import UserAdmin
+from django.utils.html import format_html
 from .models import (
-	User,
-	Profile,
-	Project,
-	Novel,
-	Chapter,
-	Character,
-	Location,
-	Item,
-	Scene,
-	Timeline,
-	TimelineEvent,
+    User, Profile, Novel, Chapter, Character, Location, Item,
+    Scene, Timeline, TimelineEvent, Bookmark
 )
 
+# ============================================
+# 1. Utility
+# ============================================
+def show_image_preview(obj, field_name):
+    if hasattr(obj, field_name):
+        image_field = getattr(obj, field_name)
+        if image_field:
+            return format_html('<img src="{}" style="width: 50px; height:auto; border-radius: 5px;" />', image_field.url)
+    return "-"
 
-class ProfileInline(admin.StackedInline):
-	model = Profile
-	can_delete = False
-	verbose_name_plural = 'profiles'
+# ============================================
+# 2. Inlines
+# ============================================
+class ChapterInline(admin.TabularInline):
+    model = Chapter
+    extra = 0
+    # ตัด created_at ออกจาก Inline เพราะบางที Model อาจจะไม่มี หรือไม่ได้โชว์ใน Inline
+    fields = ('order', 'title', 'is_draft', 'is_finished')
+    ordering = ('order',)
+    show_change_link = True
 
+class TimelineEventInline(admin.StackedInline):
+    model = TimelineEvent
+    extra = 0
+    fields = ('order', 'time_label', 'title', 'description', 'image')
+    ordering = ('order',)
 
-class UserAdmin(BaseUserAdmin):
-	inlines = (ProfileInline,)
-	list_display = ('username', 'email', 'display_name', 'is_staff', 'is_active')
-	search_fields = ('username', 'email', 'display_name')
+# ============================================
+# 3. Model Admins
+# ============================================
 
+@admin.register(User)
+class CustomUserAdmin(UserAdmin):
+    fieldsets = UserAdmin.fieldsets + (
+        ('PlotCraft Custom Fields', {'fields': ('display_name', 'phone', 'birthdate', 'user_status', 'role')}),
+    )
+    list_display = ('username', 'email', 'display_name', 'role', 'user_status', 'is_staff', 'created_at')
+    list_filter = ('role', 'user_status', 'is_staff', 'is_superuser', 'created_at')
+    search_fields = ('username', 'email', 'display_name', 'phone')
 
-class ProjectAdmin(admin.ModelAdmin):
-	list_display = ('name', 'owner', 'created_at')
-	search_fields = ('name', 'owner__username')
-
-
+@admin.register(Novel)
 class NovelAdmin(admin.ModelAdmin):
-	list_display = ('title', 'author', 'category', 'rating', 'status', 'created_at')
-	search_fields = ('title', 'author__username')
-	list_filter = ('category', 'rating', 'status')
+    list_display = ('title_preview', 'author', 'category', 'rating', 'status', 'created_at', 'updated_at')
+    list_filter = ('status', 'category', 'rating', 'created_at')
+    search_fields = ('title', 'synopsis', 'author__username')
+    inlines = [ChapterInline]
+    readonly_fields = ('created_at', 'updated_at')
+    
+    def title_preview(self, obj):
+        img_html = show_image_preview(obj, 'cover_image')
+        return format_html('{} <b>{}</b>', img_html, obj.title)
+    title_preview.short_description = "Novel"
 
-
-class ChapterAdmin(admin.ModelAdmin):
-	list_display = ('title', 'novel', 'order', 'created_at')
-	list_filter = ('novel',)
-
-
+@admin.register(Character)
 class CharacterAdmin(admin.ModelAdmin):
-	list_display = ('name', 'alias', 'project', 'created_by')
-	search_fields = ('name', 'alias')
+    # Model Character ปกติจะมี created_by/created_at ถ้าไม่มีให้ลบออก
+    list_display = ('name_preview', 'project', 'created_by', 'role', 'occupation', 'species', 'created_at')
+    list_filter = ('project', 'gender', 'role', 'created_at')
+    search_fields = ('name', 'alias', 'occupation')
 
+    def name_preview(self, obj):
+        img_html = show_image_preview(obj, 'portrait')
+        return format_html('{} {}', img_html, obj.name)
+    name_preview.short_description = "Character"
 
-class LocationAdmin(admin.ModelAdmin):
-	list_display = ('name', 'project', 'created_by')
-	search_fields = ('name',)
-
-
-class ItemAdmin(admin.ModelAdmin):
-	list_display = ('name', 'category', 'project', 'created_by')
-	search_fields = ('name',)
-	list_filter = ('category',)
-
-
+@admin.register(Scene)
 class SceneAdmin(admin.ModelAdmin):
-	list_display = ('title', 'project', 'order', 'status', 'created_by')
-	list_filter = ('status', 'project')
-	search_fields = ('title', 'content')
+    list_display = ('title', 'project', 'created_by', 'order', 'status', 'created_at')
+    list_filter = ('project', 'status', 'created_at')
+    search_fields = ('title', 'goal', 'conflict')
+    ordering = ('project', 'order')
 
-
+@admin.register(Timeline)
 class TimelineAdmin(admin.ModelAdmin):
-	list_display = ('title', 'related_project', 'created_by')
-	search_fields = ('title',)
+    # แก้ไข: ตัด created_at ออก (ตาม Error Log)
+    list_display = ('title', 'related_project', 'description')
+    list_filter = ('related_project',) 
+    inlines = [TimelineEventInline]
 
+# ============================================
+# 4. New Registered Admins
+# ============================================
 
-class TimelineEventAdmin(admin.ModelAdmin):
-	list_display = ('time_label', 'title', 'timeline', 'order')
-	list_filter = ('timeline',)
-	search_fields = ('title', 'time_label')
+@admin.register(Location)
+class LocationAdmin(admin.ModelAdmin):
+    # แก้ไข: เหลือเฉพาะฟิลด์พื้นฐานเพื่อป้องกัน Error
+    list_display = ('name', 'project', 'created_by') 
+    list_filter = ('project',)
+    search_fields = ('name', 'description')
 
+@admin.register(Item)
+class ItemAdmin(admin.ModelAdmin):
+    # แก้ไข: เหลือเฉพาะฟิลด์พื้นฐาน
+    list_display = ('name', 'project', 'created_by')
+    list_filter = ('project',)
+    search_fields = ('name', 'description')
 
-# Register models
-admin.site.register(User, UserAdmin)
-admin.site.register(Profile)
-admin.site.register(Project, ProjectAdmin)
-admin.site.register(Novel, NovelAdmin)
-admin.site.register(Chapter, ChapterAdmin)
-admin.site.register(Character, CharacterAdmin)
-admin.site.register(Location, LocationAdmin)
-admin.site.register(Item, ItemAdmin)
-admin.site.register(Scene, SceneAdmin)
-admin.site.register(Timeline, TimelineAdmin)
-admin.site.register(TimelineEvent, TimelineEventAdmin)
+@admin.register(Bookmark)
+class BookmarkAdmin(admin.ModelAdmin):
+    # Bookmark มักจะมี created_at แต่ถ้า error ให้ลบออก
+    list_display = ('user', 'content_object', 'content_type')
+    # list_filter = ('created_at',) 
 
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    # แก้ไข: ตัด pen_name และ created_at ออก (ตาม Error Log)
+    # Profile มักจะลิงก์กับ User โดยตรง ให้โชว์แค่ User ก็พอ
+    list_display = ('user',) 
+    search_fields = ('user__username', 'user__email')
