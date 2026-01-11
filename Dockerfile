@@ -38,6 +38,9 @@ COPY . /code/
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
+# แก้ปัญหา Line Endings (Windows -> Linux) ที่ทำให้เกิด Error 255
+RUN sed -i 's/\r$//' /entrypoint.sh && chmod +x /entrypoint.sh
+
 # Build Tailwind CSS inside the image (theme static_src)
 RUN if [ -d /code/theme/static_src ]; then \
             cd /code/theme/static_src && npm install --no-audit --no-fund && npm run build || true; \

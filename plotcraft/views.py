@@ -30,6 +30,7 @@ from .forms import (
     CharacterForm, LocationForm, ItemForm, SceneForm, TimelineForm, EventForm
 )
 
+from .rag_service import rag_service
 
 # ==================== AUTHENTICATION & PROFILE (from myapp) ====================
 
@@ -1153,3 +1154,70 @@ def bookmark_list(request):
         'bookmarks': bookmarks,
         'current_type': filter_type, # ส่งค่าปัจจุบันไปเพื่อทำ Highlight ปุ่มที่เลือกอยู่
     })
+
+# ==================== RAG SERVICE INTEGRATION ====================
+
+@csrf_exempt
+@login_required
+def ai_generate_scene(request, scene_id):
+    """ API สำหรับกดปุ่ม 'Generate Draft' """
+    if request.method == "POST":
+        # 1. ดึงข้อมูล Scene มา (ต้องเป็นเจ้าของเท่านั้น)
+        # หมายเหตุ: ใน models.py ของคุณ Scene ไม่ได้ผูกกับ User โดยตรง แต่ผูกผ่าน Project -> Owner
+        # ดังนั้นต้องเช็คผ่าน project__owner
+        scene = get_object_or_404(Scene, pk=scene_id, project__author=request.user)
+        
+        # 2. เรียก AI ให้ร่างให้
+        draft_content = rag_service.generate_scene_draft(scene)
+        
+        # 3. ส่งเนื้อหากลับไป
+        try:
+             draft_content = rag_service.generate_scene_draft(scene)
+             return JsonResponse({'draft': draft_content})
+        except Exception as e:
+             return JsonResponse({'error': str(e)}, status=500)
+
+    return JsonResponse({'error': 'Invalid method'}, status=405)
+
+@csrf_exempt
+@login_required
+def ai_chat_general(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            user_message = data.get('message', '')
+            novel_id = data.get('novel_id')
+            
+            reply = rag_service.chat_with_editor(
+                user_message, 
+                novel_id=novel_id, 
+                user_id=request.user.id
+            )
+            
+            return JsonResponse({'reply': reply})
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+@csrf_exempt
+@login_required
+def ai_generate_character(request):
+    """ API สำหรับ Gen ข้อมูลตัวละคร """
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            concept = data.get('concept', '')
+            
+            # เรียก AI
+            char_data = rag_service.generate_character_data(concept)
+            
+            if char_data:
+                return JsonResponse({'success': True, 'data': char_data})
+            else:
+                return JsonResponse({'success': False, 'error': 'AI นึกไม่ออก ลองเปลี่ยนคำสั่งดูครับ'})
+                
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    
+    return JsonResponse({'error': 'Method not allowed'}, status=405)

@@ -72,4 +72,9 @@ urlpatterns = [
     # ==================== BOOKMARKS ====================
     path('bookmarks/', views.bookmark_list, name='bookmark_list'),
     path('bookmark/<str:model_name>/<int:pk>/', views.toggle_bookmark, name='toggle_bookmark'),
+
+    # ==================== RAG-ASSISTED WRITING ====================
+    path('api/chat/general/', views.ai_chat_general, name='ai_chat_general'),
+    path('api/generate-scene/<int:scene_id>/', views.ai_generate_scene, name='ai_generate_scene'),
+    path('api/generate-character/', views.ai_generate_character, name='ai_generate_character'),
 ]
