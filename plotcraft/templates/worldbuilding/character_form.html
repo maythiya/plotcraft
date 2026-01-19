@@ -226,22 +226,60 @@
             </div>
 
             <div class="flex items-center gap-2 mb-4 border-b border-[#FAEBD7] pb-2 pt-4">
-                <span class="text-[#DAA520]">🗺️</span>
+                <span class="text-[#DAA520]">🕸️</span>
                 <h2 class="text-xl font-bold text-[#2F4F4F]">ความสัมพันธ์และอื่นๆ</h2>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="grid grid-cols-1 gap-6 mb-6">
                 <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
                     <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ที่อยู่ / บ้านเกิด (Location)</label>
                     {{ form.location }}
                 </div>
-                <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ความสัมพันธ์ (Relationships)</label>
-                    {{ form.relationships }}
-                    <p class="text-xs text-[#2F4F4F]/60 mt-1">กด Ctrl (หรือ Command) ค้างไว้เพื่อเลือกหลายคน</p>
+
+                <div class="rounded-lg border border-[#FAEBD7] p-4 bg-[#FAEBD7]/10">
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-3">
+                        ความสัมพันธ์ (Relationships) 
+                        <span class="text-xs font-normal text-gray-500 ml-2">* กดบันทึกเพื่อเพิ่มแถวใหม่</span>
+                    </label>
+
+                    {{ formset.management_form }}
+                    
+                    <div class="space-y-3">
+                        {% for rel_form in formset %}
+                            <div class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm flex flex-col md:flex-row gap-3 items-start md:items-center">
+                                
+                                {% for hidden in rel_form.hidden_fields %}
+                                    {{ hidden }}
+                                {% endfor %}
+
+                                <div class="flex-1 w-full">
+                                    <label class="text-xs text-gray-400 font-bold mb-1 block">คู่กรณี</label>
+                                    {{ rel_form.to_character }}
+                                </div>
+                                
+                                <div class="w-full md:w-1/4">
+                                    <label class="text-xs text-gray-400 font-bold mb-1 block">สถานะ</label>
+                                    {{ rel_form.status }}
+                                </div>
+                                
+                                <div class="flex-1 w-full">
+                                    <label class="text-xs text-gray-400 font-bold mb-1 block">รายละเอียดเพิ่มเติม</label>
+                                    {{ rel_form.note }}
+                                </div>
+
+                                {% if rel_form.instance.pk %}
+                                <div class="flex items-center pt-5">
+                                    <label class="text-red-500 text-xs font-bold cursor-pointer hover:bg-red-50 px-2 py-1 rounded transition flex items-center gap-1">
+                                        {{ rel_form.DELETE }} 
+                                        <span>ลบออก</span>
+                                    </label>
+                                </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
-
             <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10 mb-8">
                 <label class="block text-sm font-bold text-[#2F4F4F] mb-1">โน้ตเพิ่มเติม</label>
                 {{ form.notes }}
@@ -353,7 +391,7 @@
                 setVal('id_background', d.background);
 
                 // 4. ความสามารถและเป้าหมาย
-                setVal('id_goals', d.goals); // ของคุณใช้ id_goals (มี s)
+                setVal('id_goals', d.goals);
                 setVal('id_skills', d.skills);
                 setVal('id_strengths', d.strengths);
                 setVal('id_weaknesses', d.weaknesses);

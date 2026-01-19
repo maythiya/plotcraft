@@ -6,14 +6,11 @@
 
   <div class="max-w-7xl mx-auto flex flex-col md:flex-row gap-6">
 
-    <!-- ================= LEFT SIDEBAR ================= -->
     <aside class="w-full md:w-80 shrink-0 flex flex-col gap-6">
 
-      <!-- Character Card -->
       <section class="bg-[#2F4F4F] rounded-2xl p-6 shadow-xl relative overflow-hidden text-[#FAEBD7]">
         <div class="absolute top-0 left-0 w-full h-24 bg-[#DAA520] opacity-20"></div>
 
-        <!-- Portrait -->
         <div class="relative z-10 flex justify-center mt-4">
           <div class="w-36 h-36 rounded-full p-1.5 bg-[#DAA520] shadow-lg">
             {% if character.portrait %}
@@ -28,11 +25,10 @@
           </div>
         </div>
 
-        <!-- Name / Project -->
         <div class="relative z-10 text-center mt-5">
           {% if character.project %}
             <span class="inline-block px-3 py-1 bg-[#FAEBD7]/20 border border-[#FAEBD7]/30
-                         text-[#FAEBD7] text-xs rounded-full mb-2 tracking-wide backdrop-blur-sm">
+                          text-[#FAEBD7] text-xs rounded-full mb-2 tracking-wide backdrop-blur-sm">
               📖 {{ character.project.title|default:character.project }}
             </span>
           {% endif %}
@@ -46,11 +42,10 @@
           {% endif %}
         </div>
 
-        <!-- Status -->
         {% if character.status %}
         <div class="mt-4 flex justify-center">
           <span class="px-3 py-1 bg-[#1a3030] border border-[#DAA520]/50
-                       text-[#FAEBD7] rounded-full text-xs">
+                        text-[#FAEBD7] rounded-full text-xs">
             สถานะ: {{ character.status }}
           </span>
         </div>
@@ -58,7 +53,6 @@
 
         <hr class="border-[#FAEBD7]/20 my-6">
 
-        <!-- Basic Info -->
         <div class="space-y-3 text-sm">
           {% if character.age %}
           <div class="flex justify-between items-center hover:bg-white/5 p-1 rounded transition">
@@ -97,33 +91,14 @@
           </div>
           {% endif %}
         </div>
+        
+        </section>
 
-        <!-- Relationships -->
-        {% if character.relationships.exists %}
-        <div class="mt-8 pt-6 border-t border-[#FAEBD7]/20">
-          <h4 class="text-xs font-bold text-[#DAA520] uppercase mb-3 tracking-wider">
-            ความสัมพันธ์
-          </h4>
-          <div class="flex flex-wrap gap-2">
-            {% for rel in character.relationships.all %}
-              <a href="{% url 'plotcraft:character_detail' rel.id %}"
-                 class="px-3 py-1 bg-[#FAEBD7] text-[#2F4F4F]
-                        rounded-md text-xs font-bold shadow-sm
-                        hover:bg-white hover:scale-105 transition flex items-center gap-1">
-                👤 {{ rel.name }}
-              </a>
-            {% endfor %}
-          </div>
-        </div>
-        {% endif %}
-      </section>
-
-      <!-- Meta & Actions -->
       <section class="bg-white rounded-2xl p-6 shadow-md border border-[#FAEBD7]">
         <div class="text-xs text-[#2F4F4F]/70 space-y-1 mb-4">
           <p>สร้างเมื่อ: {{ character.created_at|date:"d/m/Y" }}</p>
           {% if character.created_by %}
-            <p>โดย: {{ character.created_by.username }}</p>
+            <p>โดย: {{ character.created_by.display_name|default:character.created_by.username }}</p>
           {% endif %}
         </div>
 
@@ -146,10 +121,8 @@
 
     </aside>
 
-    <!-- ================= MAIN CONTENT ================= -->
     <main class="flex-1 flex flex-col gap-6 overflow-y-auto">
 
-      <!-- General Info -->
       <section class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border-t-4 border-[#2F4F4F]">
         <header class="flex items-center gap-3 mb-6 border-b border-[#FAEBD7] pb-4">
           <div class="p-2 bg-[#FAEBD7] rounded-lg">👤</div>
@@ -185,7 +158,7 @@
           </div>
 
           <div>
-            <h3 class="text-sm font-bold text-[#DAA520] uppercase mb-2">ภูมิหลังหลัง</h3>
+            <h3 class="text-sm font-bold text-[#DAA520] uppercase mb-2">ภูมิหลัง</h3>
             <div class="bg-[#F9FAFB] p-5 rounded-xl border border-gray-100">
               <p class="whitespace-pre-line">
                 {{ character.background|default:"-" }}
@@ -195,7 +168,54 @@
         </div>
       </section>
 
-      <!-- Personality & Goals -->
+      <section class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border-t-4 border-[#2F4F4F]">
+        <header class="flex items-center gap-3 mb-6 border-b border-[#FAEBD7] pb-4">
+          <div class="p-2 bg-[#FAEBD7] rounded-lg">🕸️</div>
+          <h2 class="text-xl font-bold">ความสัมพันธ์</h2>
+        </header>
+
+        {% if character.relationships_from.exists %}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {% for rel in character.relationships_from.all %}
+                <div class="flex items-start gap-4 p-4 rounded-xl border transition hover:shadow-md
+                            {% if rel.status == 'ENEMY' %}bg-red-50 border-red-100{% elif rel.status == 'FAMILY' %}bg-blue-50 border-blue-100{% else %}bg-[#FAEBD7]/20 border-[#FAEBD7]/50{% endif %}">
+                    
+                    <a href="{% url 'plotcraft:character_detail' rel.to_character.id %}" class="shrink-0">
+                        <div class="w-12 h-12 rounded-full bg-gray-200 overflow-hidden shadow-sm border-2 border-white">
+                            {% if rel.to_character.portrait %}
+                                <img src="{{ rel.to_character.portrait.url }}" class="w-full h-full object-cover">
+                            {% else %}
+                                <div class="w-full h-full flex items-center justify-center text-xs font-bold text-gray-400">No Pic</div>
+                            {% endif %}
+                        </div>
+                    </a>
+
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start">
+                            <a href="{% url 'plotcraft:character_detail' rel.to_character.id %}" class="font-bold text-[#2F4F4F] hover:underline">
+                                {{ rel.to_character.name }}
+                            </a>
+                            <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full
+                                        {% if rel.status == 'ENEMY' %}bg-red-200 text-red-800{% else %}bg-[#2F4F4F]/10 text-[#2F4F4F]{% endif %}">
+                                {{ rel.get_status_display }}
+                            </span>
+                        </div>
+                        
+                        {% if rel.note %}
+                        <p class="text-sm text-gray-600 mt-1 italic">
+                            "{{ rel.note }}"
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-8 bg-gray-50 rounded-xl border border-dashed border-gray-300">
+                <p class="text-gray-400 italic">ยังไม่มีความสัมพันธ์กับใครในเรื่อง...</p>
+            </div>
+        {% endif %}
+      </section>
       <section class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border-t-4 border-[#DAA520]">
         <header class="flex items-center gap-3 mb-6 border-b border-[#FAEBD7] pb-4">
           <div class="p-2 bg-[#FAEBD7] rounded-lg text-[#DAA520]">❤️</div>
@@ -219,7 +239,6 @@
         </div>
       </section>
 
-      <!-- Skills -->
       <section class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border-t-4 border-[#2F4F4F] mb-8">
         <header class="flex items-center gap-3 mb-6 border-b border-[#FAEBD7] pb-4">
           <div class="p-2 bg-[#FAEBD7] rounded-lg">⚡</div>

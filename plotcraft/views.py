@@ -22,15 +22,16 @@ from weasyprint import HTML, CSS
 from django.utils.encoding import escape_uri_path
 
 from .models import (
-    Novel, Chapter, Character, Location, Item,
+    CharacterRelationship, Novel, Chapter, Character, Location, Item,
     Scene, Timeline, TimelineEvent, Bookmark
 )
 from .forms import (
     UserForm, RegisterForm, ProfileForm, NovelForm, ChapterForm,
-    CharacterForm, LocationForm, ItemForm, SceneForm, TimelineForm, EventForm
+    CharacterForm, LocationForm, ItemForm, SceneForm, TimelineForm, EventForm, RelationshipFormSet
 )
 
 from .rag_service import rag_service
+from django.views.decorators.csrf import csrf_exempt
 
 # ==================== AUTHENTICATION & PROFILE (from myapp) ====================
 
@@ -351,25 +352,50 @@ def character_list(request):
 
 @login_required
 def character_create(request):
+    # 1. เช็คว่าบน URL มี ?project=... ไหม (เกิดจากตอนUserเลือก Dropdown)
+    project_id = request.GET.get('project') 
+    project = None
+    
+    if project_id:
+        try:
+            project = Novel.objects.get(id=project_id, author=request.user)
+        except Novel.DoesNotExist:
+            pass
+
     if request.method == 'POST':
-        form = CharacterForm(request.user, request.POST, request.FILES)
+        # (ส่วนบันทึกข้อมูล เหมือนเดิมทุกอย่างครับ ไม่ต้องแก้)
+        form = CharacterForm(request.user, request.POST, request.FILES, project=project)
+        formset = RelationshipFormSet(request.POST, form_kwargs={'user': request.user, 'project': project})
+
         if form.is_valid():
             character = form.save(commit=False)
-            if request.user.is_authenticated:
-                character.created_by = request.user
+            character.created_by = request.user
             character.save()
             form.save_m2m()
+
+            formset = RelationshipFormSet(request.POST, instance=character, form_kwargs={'user': request.user, 'project': project, 'current_char': character})
+            if formset.is_valid():
+                formset.save()
+            
             return redirect('plotcraft:character_detail', pk=character.id)
+            
     else:
+        # GET Request
         initial = {}
-        project_id = request.GET.get('project')
-        if project_id:
-            try:
-                initial['project'] = Novel.objects.get(id=project_id, author=request.user)
-            except Novel.DoesNotExist:
-                pass
-        form = CharacterForm(request.user, initial=initial)
-    return render(request, 'worldbuilding/character_form.html', {'form': form})
+        if project:
+            initial['project'] = project
+            
+        form = CharacterForm(request.user, initial=initial, project=project)
+        
+        # ✅ ส่ง project ไปให้ forms.py ใช้กรองข้อมูล
+        formset = RelationshipFormSet(queryset=CharacterRelationship.objects.none(), 
+                                      form_kwargs={'user': request.user, 'project': project})
+
+    return render(request, 'worldbuilding/character_form.html', {
+        'form': form, 
+        'formset': formset,
+        'selected_project_id': project_id,  # ส่งไปให้ template ใช้ตั้งค่า dropdown
+    })
 
 
 @login_required
@@ -381,27 +407,42 @@ def character_edit(request, pk):
         return redirect('plotcraft:character_detail', pk=pk)
 
     if request.method == 'POST':
-        
+        # ปุ่มลบตัวละคร
         if "character_delete" in request.POST:
             character_name = character.name
             character.delete()
             messages.success(request, f"ลบตัวละคร '{character_name}' เรียบร้อยแล้ว")
             return redirect('plotcraft:character_list')
-        
+
+        # การบันทึกแก้ไขปกติ
         form = CharacterForm(request.user, request.POST, request.FILES, instance=character)
-        if form.is_valid():
+        
+        # ✅ ส่ง project และ current_char (ตัวมันเอง) เข้าไปเพื่อกรอง
+        formset = RelationshipFormSet(request.POST, instance=character, 
+                                      form_kwargs={'user': request.user, 'project': character.project, 'current_char': character})
+
+        if form.is_valid() and formset.is_valid():
             obj = form.save(commit=False)
             obj.created_by = request.user
             obj.save()
             form.save_m2m()
-            messages.success(request, f"บันทึกตัวละคร '{obj.name}' เรียบร้อยแล้ว")
+            
+            # บันทึกความสัมพันธ์
+            formset.save()
+            
+            messages.success(request, f"บันทึกข้อมูลเรียบร้อยแล้ว")
             return redirect('plotcraft:character_detail', pk=obj.id)
-        
+            
     else:
         form = CharacterForm(request.user, instance=character)
+        
+        # ✅ โหลดความสัมพันธ์เดิม พร้อมส่งตัวกรองเข้าไป
+        formset = RelationshipFormSet(instance=character, 
+                                      form_kwargs={'user': request.user, 'project': character.project, 'current_char': character})
 
     return render(request, 'worldbuilding/character_form.html', {
         'form': form,
+        'formset': formset,
         'character': character,
     })
 
@@ -598,21 +639,26 @@ def scene_list(request):
 
 @login_required
 def scene_create(request):
+    # 1. รับค่า project จาก URL (เช่น ?project=1)
+    project_id = request.GET.get('project')
+
     if request.method == 'POST':
-        form = SceneForm(request.user, request.POST)
+        # 2. ส่ง project_id เข้าไปใน Form ตอน POST ด้วย เพื่อให้ Form รู้ว่า Project อะไร (เผื่อ validation fail)
+        form = SceneForm(request.user, request.POST, project_id=project_id)
         if form.is_valid():
             obj = form.save(commit=False)
             obj.created_by = request.user
             obj.save()
-            form.save_m2m()
+            form.save_m2m() # สำคัญมากสำหรับ ManyToMany Field (characters, items)
 
             messages.success(request, f"สร้างฉาก '{obj.title}' เรียบร้อย")
 
+            # Redirect ไปหน้ารายการโดยระบุ Project เดิม
             url = reverse('plotcraft:scene_list')
             return redirect(f"{url}?project={obj.project.id}")
-
     else:
-        form = SceneForm(request.user)
+        # 3. ส่ง project_id เข้าไปใน Form ตอน GET (เพื่อกรอง Dropdown)
+        form = SceneForm(request.user, project_id=project_id)
 
     return render(request, 'scenes/scene_form.html', {'form': form})
 
@@ -1114,13 +1160,14 @@ def export_novel_epub(request, pk):
 # 1. ฟังก์ชันสำหรับกดปุ่ม Bookmark (Toggle: กดครั้งแรกเก็บ กดอีกทีลบ)
 @login_required
 def toggle_bookmark(request, model_name, pk):
-    # หา Model จากชื่อ (เช่น 'character', 'scene')
+    # หา ContentType จากชื่อ Model (เช่น 'character', 'novel')
     try:
         content_type = ContentType.objects.get(model=model_name.lower())
     except ContentType.DoesNotExist:
+        messages.error(request, "ไม่พบประเภทข้อมูลที่ต้องการบันทึก")
         return redirect('plotcraft:home')
 
-    # เช็คว่ามีอยู่แล้วไหม
+    # เช็คว่ามีอยู่แล้วไหม (ถ้ามีดึงมา ถ้าไม่มีสร้างใหม่)
     bookmark, created = Bookmark.objects.get_or_create(
         user=request.user,
         content_type=content_type,
@@ -1128,11 +1175,12 @@ def toggle_bookmark(request, model_name, pk):
     )
 
     if not created:
-        # ถ้ามีอยู่แล้ว แปลว่า user กดซ้ำเพื่อ "ยกเลิก"
+        # ถ้ามีอยู่แล้ว แปลว่า user กดซ้ำเพื่อ "ยกเลิก" -> ลบทิ้ง
         bookmark.delete()
-        messages.info(request, f'นำ {model_name} ออกจากรายการโปรดแล้ว')
+        messages.info(request, f'นำออกจากรายการโปรดแล้ว')
     else:
-        messages.success(request, f'บันทึก {model_name} ลงรายการโปรดแล้ว')
+        # ถ้าเพิ่งสร้าง -> แจ้งเตือน
+        messages.success(request, f'บันทึกลงรายการโปรดแล้ว')
 
     # เด้งกลับไปหน้าเดิมที่ user กดมา
     return redirect(request.META.get('HTTP_REFERER', 'plotcraft:home'))
@@ -1140,19 +1188,20 @@ def toggle_bookmark(request, model_name, pk):
 # 2. หน้าแสดงรายการ Bookmark ทั้งหมด
 @login_required
 def bookmark_list(request):
-    # รับค่า type จาก URL (ถ้าไม่มีให้เป็น 'all')
+    # รับค่า type จาก URL (เช่น ?type=novel) ถ้าไม่มีให้เป็น 'all'
     filter_type = request.GET.get('type', 'all')
     
-    # ดึงข้อมูลพื้นฐาน
+    # ดึงข้อมูล Bookmark ของ User นี้ เรียงตามล่าสุด
+    # select_related('content_type') ช่วยให้ query เร็วขึ้น
     bookmarks = Bookmark.objects.filter(user=request.user).select_related('content_type').order_by('-created_at')
 
-    # ถ้ามีการเลือก type ให้กรองตาม content_type model
+    # ถ้ามีการเลือกหมวดหมู่ ให้กรองตามชื่อ Model
     if filter_type != 'all':
         bookmarks = bookmarks.filter(content_type__model=filter_type)
 
     return render(request, 'bookmark_list.html', {
         'bookmarks': bookmarks,
-        'current_type': filter_type, # ส่งค่าปัจจุบันไปเพื่อทำ Highlight ปุ่มที่เลือกอยู่
+        'current_type': filter_type, 
     })
 
 # ==================== RAG SERVICE INTEGRATION ====================
@@ -1163,7 +1212,7 @@ def ai_generate_scene(request, scene_id):
     """ API สำหรับกดปุ่ม 'Generate Draft' """
     if request.method == "POST":
         # 1. ดึงข้อมูล Scene มา (ต้องเป็นเจ้าของเท่านั้น)
-        # หมายเหตุ: ใน models.py ของคุณ Scene ไม่ได้ผูกกับ User โดยตรง แต่ผูกผ่าน Project -> Owner
+        # ใน models.py Scene ไม่ได้ผูกกับ User โดยตรง แต่ผูกผ่าน Project -> Owner
         # ดังนั้นต้องเช็คผ่าน project__owner
         scene = get_object_or_404(Scene, pk=scene_id, project__author=request.user)
         
@@ -1215,7 +1264,7 @@ def ai_generate_character(request):
             if char_data:
                 return JsonResponse({'success': True, 'data': char_data})
             else:
-                return JsonResponse({'success': False, 'error': 'AI นึกไม่ออก ลองเปลี่ยนคำสั่งดูครับ'})
+                return JsonResponse({'success': False, 'error': 'แป๋ว... AI นึกไม่ออก ลองเปลี่ยนคำสั่งดูนะคะ'})
                 
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)

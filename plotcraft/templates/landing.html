@@ -33,7 +33,7 @@
           <span class="text-[#DAA520]">สร้างโลกในแบบของคุณ</span>
         </h1>
         <p class="text-lg md:text-xl mb-8 text-[#FAEBD7]/80 leading-relaxed max-w-lg mx-auto md:mx-0">
-          PlotCraft คือพื้นที่สำหรับนักเขียนในการจดบันทึก สร้างตัวละคร และจัดการโครงเรื่องที่ซับซ้อน ให้เป็นระบบและสวยงาม
+          PlotCraft คือพื้นที่สำหรับนักเขียนในการเขียนนิยาย สร้างตัวละคร และจัดการโครงเรื่องที่ซับซ้อน ให้เป็นระบบและสวยงาม
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
           <a href="{% url 'plotcraft:register' %}" 
@@ -59,36 +59,84 @@
     </div>
   </section>
 
-  <section class="py-16 container mx-auto px-6">
+  <section class="py-20 container mx-auto px-6 relative z-10">
     <div class="text-center mb-16">
-        <h2 class="text-3xl font-bold text-[#2F4F4F] mb-4">ฟีเจอร์เด่น</h2>
-        <div class="w-20 h-1 bg-[#DAA520] mx-auto rounded-full"></div>
+        <span class="text-[#DAA520] font-bold tracking-wider uppercase text-sm">Features</span>
+        <h2 class="text-4xl font-extrabold text-[#2F4F4F] mt-2 mb-6">เครื่องมือครบ จบในที่เดียว</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto text-lg">
+            PlotCraft ไม่ใช่แค่สมุดจด แต่คือ "Workshop" ส่วนตัวของนักเขียน <br>
+            ที่ผสานพลัง AI เข้ากับการจัดการข้อมูลอย่างเป็นระบบ
+        </p>
     </div>
     
-    <div class="grid md:grid-cols-3 gap-8">
-      <div class="bg-white rounded-2xl p-8 text-center hover:shadow-xl transition border border-[#2F4F4F]/10 group">
-        <div class="w-16 h-16 bg-[#FAEBD7] rounded-full flex items-center justify-center text-3xl mb-6 mx-auto group-hover:scale-110 transition">
-            ✍️
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      
+      <div class="bg-white rounded-2xl p-8 hover:shadow-2xl transition duration-300 border border-[#2F4F4F]/5 group relative overflow-hidden">
+        <div class="absolute top-0 right-0 bg-[#FAEBD7] w-24 h-24 rounded-bl-full -mr-4 -mt-4 opacity-50 transition group-hover:scale-110"></div>
+        <div class="w-14 h-14 bg-[#2F4F4F] rounded-xl flex items-center justify-center text-2xl mb-6 text-[#FAEBD7] shadow-lg group-hover:rotate-6 transition">
+            📚
         </div>
-        <h3 class="text-xl font-bold mb-3 text-[#2F4F4F]">My Notes</h3>
-        <p class="text-gray-600 leading-relaxed">จดบันทึกไอเดียอิสระ รองรับการจัดรูปแบบข้อความครบครัน ไม่พลาดทุกความคิดที่แล่นเข้ามา</p>
+        <h3 class="text-xl font-bold mb-3 text-[#2F4F4F]">Story Structure</h3>
+        <p class="text-gray-600 leading-relaxed">
+            จัดระเบียบ <strong>นิยาย, ตอนย่อย, และฉาก</strong> อย่างเป็นระบบ เขียนลื่นไหลไม่มีสะดุด
+        </p>
       </div>
 
-      <div class="bg-white rounded-2xl p-8 text-center hover:shadow-xl transition border border-[#2F4F4F]/10 group">
-        <div class="w-16 h-16 bg-[#FAEBD7] rounded-full flex items-center justify-center text-3xl mb-6 mx-auto group-hover:scale-110 transition">
+      <div class="bg-white rounded-2xl p-8 hover:shadow-2xl transition duration-300 border border-[#2F4F4F]/5 group relative overflow-hidden">
+        <div class="absolute top-0 right-0 bg-[#FAEBD7] w-24 h-24 rounded-bl-full -mr-4 -mt-4 opacity-50 transition group-hover:scale-110"></div>
+        <div class="w-14 h-14 bg-[#2F4F4F] rounded-xl flex items-center justify-center text-2xl mb-6 text-[#FAEBD7] shadow-lg group-hover:rotate-6 transition">
             🌍
         </div>
-        <h3 class="text-xl font-bold mb-3 text-[#2F4F4F]">Worldbuilding</h3>
-        <p class="text-gray-600 leading-relaxed">สร้างฐานข้อมูลตัวละคร สถานที่ และไอเท็มอย่างละเอียด เชื่อมโยงทุกสิ่งในนิยายของคุณ</p>
+        <h3 class="text-xl font-bold mb-3 text-[#2F4F4F]">Deep Worldbuilding</h3>
+        <p class="text-gray-600 leading-relaxed">
+            สร้างฐานข้อมูล <strong>ตัวละคร, สถานที่, ไอเทม</strong> พร้อมระบบระบุความสัมพันธ์ (Relationships) เชื่อมโยงทุกสิ่งในโลกของคุณ
+        </p>
       </div>
 
-      <div class="bg-white rounded-2xl p-8 text-center hover:shadow-xl transition border border-[#2F4F4F]/10 group">
-        <div class="w-16 h-16 bg-[#FAEBD7] rounded-full flex items-center justify-center text-3xl mb-6 mx-auto group-hover:scale-110 transition">
+      <div class="bg-white rounded-2xl p-8 hover:shadow-2xl transition duration-300 border border-[#2F4F4F]/5 group relative overflow-hidden">
+        <div class="absolute top-4 right-4 bg-[#DAA520] text-xs font-bold px-2 py-1 rounded text-[#2F4F4F]">HOT 🔥</div>
+        <div class="w-14 h-14 bg-white/10 rounded-xl flex items-center justify-center text-2xl mb-6 shadow-lg backdrop-blur-sm group-hover:scale-110 transition">
+            🤖
+        </div>
+        <h3 class="text-xl font-bold mb-3 text-[#f5b35d]">AI Assistant</h3>
+        <p class="text-gray-600 leading-relaxed">
+            พี่บก. ส่วนตัวที่ <strong>"จำเนื้อเรื่องของคุณได้"</strong> (RAG System) ปรึกษาพล็อต ถามข้อมูลย้อนหลัง หรือขอไอเดียได้ทันที
+        </p>
+      </div>
+
+      <div class="bg-white rounded-2xl p-8 hover:shadow-2xl transition duration-300 border border-[#2F4F4F]/5 group relative overflow-hidden">
+        <div class="absolute top-0 right-0 bg-[#FAEBD7] w-24 h-24 rounded-bl-full -mr-4 -mt-4 opacity-50 transition group-hover:scale-110"></div>
+        <div class="w-14 h-14 bg-[#2F4F4F] rounded-xl flex items-center justify-center text-2xl mb-6 text-[#FAEBD7] shadow-lg group-hover:rotate-6 transition">
+            ✍️
+        </div>
+        <h3 class="text-xl font-bold mb-3 text-[#2F4F4F]">AI Scene Drafter</h3>
+        <p class="text-gray-600 leading-relaxed">
+            ตันตรงไหนให้บอก AI ช่วย <strong>"ร่างเนื้อหา"</strong> จากโครงเรื่อง (Goal/Conflict) ให้คุณนำไปเกลาต่อได้ทันที ประหยัดเวลาขึ้น 2 เท่า
+        </p>
+      </div>
+
+      <div class="bg-white rounded-2xl p-8 hover:shadow-2xl transition duration-300 border border-[#2F4F4F]/5 group relative overflow-hidden">
+        <div class="absolute top-0 right-0 bg-[#FAEBD7] w-24 h-24 rounded-bl-full -mr-4 -mt-4 opacity-50 transition group-hover:scale-110"></div>
+        <div class="w-14 h-14 bg-[#2F4F4F] rounded-xl flex items-center justify-center text-2xl mb-6 text-[#FAEBD7] shadow-lg group-hover:rotate-6 transition">
             ⏳
         </div>
-        <h3 class="text-xl font-bold mb-3 text-[#2F4F4F]">Timeline & Plot</h3>
-        <p class="text-gray-600 leading-relaxed">จัดการเส้นเวลาและโครงเรื่อง ไม่ให้เกิดความสับสน แม้เนื้อเรื่องจะซับซ้อนแค่ไหน</p>
+        <h3 class="text-xl font-bold mb-3 text-[#2F4F4F]">Visual Timeline</h3>
+        <p class="text-gray-600 leading-relaxed">
+            เห็นภาพรวมของเวลา จัดลำดับเหตุการณ์ก่อน-หลังไม่ให้สับสน เหมาะสำหรับนิยายที่มีปมซับซ้อน
+        </p>
       </div>
+
+      <div class="bg-white rounded-2xl p-8 hover:shadow-2xl transition duration-300 border border-[#2F4F4F]/5 group relative overflow-hidden">
+        <div class="absolute top-0 right-0 bg-[#FAEBD7] w-24 h-24 rounded-bl-full -mr-4 -mt-4 opacity-50 transition group-hover:scale-110"></div>
+        <div class="w-14 h-14 bg-[#2F4F4F] rounded-xl flex items-center justify-center text-2xl mb-6 text-[#FAEBD7] shadow-lg group-hover:rotate-6 transition">
+            📤
+        </div>
+        <h3 class="text-xl font-bold mb-3 text-[#2F4F4F]">Export & Bookmarks</h3>
+        <p class="text-gray-600 leading-relaxed">
+            ระบบปักหมุดข้อมูลสำคัญ (Bookmarks) และรองรับการส่งออกเป็นไฟล์ <strong>PDF และ ePub</strong> พร้อมสำหรับ E-book
+        </p>
+      </div>
+
     </div>
   </section>
 

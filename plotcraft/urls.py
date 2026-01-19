@@ -75,6 +75,6 @@ urlpatterns = [
 
     # ==================== RAG-ASSISTED WRITING ====================
     path('api/chat/general/', views.ai_chat_general, name='ai_chat_general'),
-    path('api/generate-scene/<int:scene_id>/', views.ai_generate_scene, name='ai_generate_scene'),
+    path('api/generate-scene/', views.ai_generate_scene, name='ai_generate_scene'),
     path('api/generate-character/', views.ai_generate_character, name='ai_generate_character'),
 ]

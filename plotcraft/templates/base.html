@@ -1,31 +1,208 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <title>{% block title %}My App{% endblock %}</title>
-  {% load tailwind_tags %}
-  {% tailwind_css %}
-  <!-- CDN fallback for Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <title>{% block title %}My App{% endblock %}</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 min-h-screen flex">
+<body class="bg-gray-100 min-h-screen flex font-sans">
 
-  <!-- Sidebar / Navbar -->
     {% include "navbar.html" %}
 
-  <!-- เนื้อหาหลัก -->
-  <main class="ml-64 flex-1 p-6">
-    {% block content %}
-    {% endblock %}
-  </main>
+    <main class="ml-64 flex-1 p-6">
+        {% block content %}
+        {% endblock %}
+    </main>
 
-  <!-- AI Chat Button -->
-  <div class="fixed bottom-10 right-10">
-    <button class="w-16 h-16 rounded-full shadow-lg bg-white border 
-                   flex items-center justify-center hover:scale-105 transition">
-      <img src="#" alt="Chat AI" class="w-10 h-10">
-    </button>
-  </div>
+    <div id="ai-chat-window" class="fixed bottom-28 right-10 w-96 bg-white rounded-2xl shadow-2xl border border-gray-200 hidden flex-col z-50 overflow-hidden transition-all duration-300 transform scale-95 opacity-0">
+        
+        <div class="bg-[#2F4F4F] text-white p-4 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <span class="text-xl">🤖</span>
+                <h3 class="font-bold">Plotcraft Assistant</h3>
+            </div>
+            <button onclick="toggleChat()" class="hover:bg-white/20 rounded-full p-1 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+            </button>
+        </div>
+
+        <div id="chat-messages" class="flex-1 p-4 h-80 overflow-y-auto bg-gray-50 space-y-3">
+            <div class="flex justify-start">
+                <div class="bg-white border border-gray-200 rounded-lg rounded-tl-none p-3 max-w-[85%] text-sm shadow-sm text-gray-700">
+                    สวัสดีค่ะ! เราคือ AI ผู้ช่วยนักเขียนที่แสนน่ารัก มีอะไรให้เราช่วยหรือตรวจสอบไหมคะ? 👋
+                </div>
+            </div>
+        </div>
+
+        <div class="p-3 bg-white border-t border-gray-100">
+            <form id="chat-form" onsubmit="sendMessage(event)" class="flex gap-2">
+                <input type="text" id="chat-input" 
+                       class="flex-1 border border-gray-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-[#2F4F4F] focus:ring-1 focus:ring-[#2F4F4F]"
+                       placeholder="พิมพ์ข้อความ..." autocomplete="off">
+                <button type="submit" class="bg-[#2F4F4F] text-white p-2 rounded-full hover:bg-[#1a3030] disabled:opacity-50 transition shadow-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform rotate-90" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                    </svg>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="fixed bottom-10 right-10 z-50">
+        <button onclick="toggleChat()" 
+                class="w-16 h-16 rounded-full shadow-lg bg-[#2F4F4F] border-4 border-white text-white flex items-center justify-center hover:scale-110 transition duration-200 hover:bg-[#1a3030]">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+            </svg>
+        </button>
+    </div>
+
+    <script>
+        // ฟังก์ชันเปิด/ปิด Chat
+        function toggleChat() {
+            const chatWindow = document.getElementById('ai-chat-window');
+            
+            // เช็คว่าตอนนี้ "ซ่อน" อยู่หรือเปล่า?
+            if (chatWindow.classList.contains('hidden')) {
+                // === ถ้าซ่อนอยู่ ให้เปิด ===
+
+                // เอา class hidden ออกเพื่อให้มันมีตัวตนในหน้าเว็บ
+                chatWindow.classList.remove('hidden');
+
+                // ใช้ setTimeout เล็กน้อยเพื่อให้ Animation ทำงาน (Transition จาก Opacity 0 -> 100)
+                setTimeout(() => {
+                    chatWindow.classList.remove('opacity-0', 'scale-95');
+                    chatWindow.classList.add('opacity-100', 'scale-100');
+                    document.getElementById('chat-input').focus();
+                }, 10);
+            } else {
+                // === ถ้าเปิดอยู่ ให้ปิด ===
+
+                // ทำให้จางและย่อลงก่อน (Animation กลับ)
+                chatWindow.classList.remove('opacity-100', 'scale-100');
+                chatWindow.classList.add('opacity-0', 'scale-95');
+
+                // รอ 300ms (เท่ากับเวลา Transition) แล้วค่อยใส่ hidden เพื่อซ่อนถาวร
+                setTimeout(() => {
+                    chatWindow.classList.add('hidden');
+                }, 300);
+            }
+        }
+
+        // ฟังก์ชันส่งข้อความ
+        async function sendMessage(e) {
+            // ห้ามไม่ให้หน้าเว็บ Refresh เมื่อกด Submit
+            e.preventDefault();
+
+            const input = document.getElementById('chat-input');
+            const messagesDiv = document.getElementById('chat-messages');
+            const message = input.value.trim();
+            
+            // ถ้าไม่ได้พิมพ์อะไรมา ก็จบการทำงาน
+            if (!message) return;
+
+            // แสดงข้อความฝั่ง User
+            appendMessage(message, 'user');
+            input.value = ''; // เคลียร์ช่องพิมพ์
+
+            // แสดง Loading "กำลังพิมพ์..."
+            const loadingId = 'loading-' + Date.now();
+            appendLoading(loadingId);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            // ตรวจสอบว่าอยู่ในหน้านิยายหรือเปล่า? เป็น Novel ID จาก URL (สำหรับส่ง Context นิยายให้ AI)
+            // รูปแบบ URL : /notes/1/edit/ หรือ /scenes/?project=1
+            let novelId = null;
+            const path = window.location.pathname;
+            const searchParams = new URLSearchParams(window.location.search);
+            
+            // กรณี 1: หน้า /notes/<id>/...
+            const notesMatch = path.match(/\/notes\/(\d+)\//);
+            if (notesMatch) {
+                novelId = notesMatch[1];
+            }
+
+            // กรณี 2: หน้า /scenes/?project=<id>
+            if (!novelId && searchParams.has('project')) {
+                novelId = searchParams.get('project');
+            }
+
+            console.log("Context Novel ID:", novelId); // ไปเช็คใน Console ได้
+
+            try {
+                // ยิง API ไปหา Backend
+                const response = await fetch('/api/chat/general/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}' // ต้องส่ง CSRF Token ไปด้วย ไม่งั้น Django จะตีกลับว่าไม่ปลอดภัย
+                    },
+                    // ส่ง novel_id ไปด้วย (ถ้ามี)
+                    body: JSON.stringify({
+                        message: message,   // ข้อความที่เราพิมพ์
+                        novel_id: novelId   // ID นิยาย (ถ้ามี)
+                    })
+                });
+
+                const data = await response.json();
+                
+                // ลบ Loading ออกเมื่อได้คำตอบ
+                document.getElementById(loadingId).remove();
+
+                if (data.reply) {
+                    // แสดงข้อความตอบกลับจาก AI
+                    appendMessage(data.reply, 'bot');
+                } else {
+                    appendMessage('เกิดข้อผิดพลาดในการประมวลผล', 'bot', true);
+                }
+            
+            // กรณีเน็ตหลุด หรือ Server พัง
+            } catch (error) {
+                if (document.getElementById(loadingId)) {
+                    document.getElementById(loadingId).remove();
+                }
+                appendMessage('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้', 'bot', true);
+                console.error(error);
+            }
+
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        // Helper: สร้างกล่องข้อความ
+        function appendMessage(text, sender, isError = false) {
+            const messagesDiv = document.getElementById('chat-messages');
+            const div = document.createElement('div');
+
+            if (sender === 'user') {
+                div.className = 'flex justify-end';
+                div.innerHTML = `<div class="bg-[#2F4F4F] text-white rounded-lg rounded-tr-none p-3 max-w-[85%] text-sm shadow-md">${text}</div>`;
+            } else {
+                div.className = 'flex justify-start';
+                // แปลง \n เป็น <br> เพื่อการแสดงผลที่ถูกต้อง
+                const formattedText = text.replace(/\n/g, '<br>');
+                div.innerHTML = `<div class="bg-white border border-gray-200 rounded-lg rounded-tl-none p-3 max-w-[85%] text-sm shadow-sm ${isError ? 'text-red-600 bg-red-50 border-red-200' : 'text-gray-700'}">${formattedText}</div>`;
+            }
+            messagesDiv.appendChild(div);
+        }
+
+        // Helper: สร้างตัวโหลด (Loading Dots)
+        function appendLoading(id) {
+            const messagesDiv = document.getElementById('chat-messages');
+            const div = document.createElement('div');
+            div.id = id;
+            div.className = 'flex justify-start animate-pulse';
+            div.innerHTML = `
+                <div class="bg-white border border-gray-200 rounded-lg rounded-tl-none p-3 shadow-sm flex gap-1">
+                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                </div>`;
+            messagesDiv.appendChild(div);
+        }
+    </script>
 
 </body>
 </html>

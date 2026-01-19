@@ -30,7 +30,22 @@
                 </div>
                 <div class="md:col-span-2">
                     <label class="block font-bold text-sm mb-1">อยู่ในเรื่อง (Project)</label>
-                    {{ form.project }}
+                                
+                    {% if scene %}
+                        {{ form.project }}
+                    {% else %}
+                        <select name="project" 
+                                onchange="if(this.value) window.location.href='?project=' + this.value"
+                                class="w-full px-4 py-2 bg-white border border-[#FAEBD7] rounded-lg focus:ring-2 focus:ring-[#DAA520] outline-none transition">
+                            <option value="">-- กรุณาเลือกนิยาย --</option>
+                            {% for novel in form.fields.project.queryset %}
+                                <option value="{{ novel.id }}" 
+                                    {% if form.initial.project.id == novel.id or request.GET.project|add:"0" == novel.id %}selected{% endif %}>
+                                    {{ novel.title }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    {% endif %}
                 </div>
             </div>
 
@@ -79,17 +94,100 @@
                 {{ form.content }}
             </div>
 
+            <div class="mb-6 p-4 bg-purple-50 rounded-xl border border-purple-200">
+                <h3 class="font-bold text-purple-800 mb-2">✨ ให้ AI ช่วยร่างเนื้อหาฉาก</h3>
+                <div class="flex gap-2">
+                    <input type="text" id="ai-scene-concept" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-purple-500" 
+                           placeholder="เช่น: พระเอกเดินเข้าไปในถ้ำมังกรด้วยความกลัว แต่ต้องแกล้งทำเป็นเก่ง">
+                    <button type="button" onclick="generateSceneContent()" 
+                            class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 font-bold whitespace-nowrap shadow-sm transition">
+                        🔮 เสกเนื้อหา
+                    </button>
+                </div>
+                <p id="ai-loading" class="text-sm text-gray-500 mt-2 hidden items-center gap-2">
+                    <svg class="animate-spin h-4 w-4 text-purple-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    กำลังร่ายเวทมนตร์ร่างฉาก...
+                </p>
+                <p id="ai-error" class="text-sm text-red-500 mt-2 hidden"></p>
+            </div>
+
             <div class="flex gap-3 pt-4 border-t border-[#FAEBD7]">
-                <button type="submit" class="bg-[#2F4F4F] text-white px-6 py-2 rounded-lg font-bold hover:bg-[#1a3030]">
-                    บันทึกฉาก</button>
-                <a href="{% url 'plotcraft:scene_list' %}" class="border border-gray-300 px-6 py-2 rounded-lg hover:bg-gray-50">
-                    ยกเลิก</a>
+                <button type="submit" class="bg-[#2F4F4F] text-white px-6 py-2 rounded-lg font-bold hover:bg-[#1a3030] shadow-md transition">
+                    บันทึกฉาก
+                </button>
+                <a href="{% url 'plotcraft:scene_list' %}" class="border border-gray-300 px-6 py-2 rounded-lg hover:bg-gray-50 text-gray-600 font-medium transition">
+                    ยกเลิก
+                </a>
                 
                 {% if scene %}
-                <button type="submit" name="scene_delete" class="ml-auto text-red-600 hover:text-red-800 text-sm font-bold" onclick="return confirm('ยืนยันการลบฉากนี้?');">ลบฉาก</button>
+                <button type="submit" name="scene_delete" class="ml-auto text-red-600 hover:text-red-800 text-sm font-bold bg-red-50 px-4 py-2 rounded-lg hover:bg-red-100 transition" onclick="return confirm('ยืนยันการลบฉากนี้?');">
+                    ลบฉาก
+                </button>
                 {% endif %}
             </div>
         </form>
     </div>
 </div>
+
+<script>
+    function generateSceneContent() {
+        const conceptInput = document.getElementById('ai-scene-concept');
+        const concept = conceptInput.value.trim();
+        const loadingText = document.getElementById('ai-loading');
+        const errorText = document.getElementById('ai-error');
+        // หา field content (Django มักจะใช้ id_content)
+        const contentField = document.getElementById('id_content') || document.querySelector('textarea[name="content"]');
+
+        if (!concept) {
+            alert("กรุณาใส่ไอเดียของฉากก่อนร่ายเวทมนตร์!");
+            return;
+        }
+
+        loadingText.classList.remove('hidden');
+        errorText.classList.add('hidden');
+
+        // เรียก API (สมมติว่าใช้ endpoint เดียวกัน หรือสร้างใหม่)
+        // หมายเหตุ: คุณอาจต้องไปเพิ่ม logic ฝั่ง backend ให้รองรับการเจนฉาก
+        fetch("{% url 'plotcraft:ai_generate_scene' %}", { // ⚠️ ตรวจสอบ URL นี้ใน urls.py ของคุณ
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({ concept: concept })
+        })
+        .then(response => response.json())
+        .then(data => {
+            loadingText.classList.add('hidden');
+            if (data.success) {
+                // พิมพ์เนื้อหาลงในช่อง Content
+                // ถ้ามีข้อมูลเดิมอยู่แล้ว ให้ต่อท้าย หรือ ขึ้นบรรทัดใหม่
+                const currentContent = contentField.value;
+                const newContent = data.data.content || data.data; // ขึ้นกับ structure ที่ส่งกลับ
+                
+                if(currentContent) {
+                    contentField.value = currentContent + "\n\n" + newContent;
+                } else {
+                    contentField.value = newContent;
+                }
+                
+                // เอฟเฟกต์เล็กน้อยว่าเสร็จแล้ว
+                conceptInput.value = ''; 
+                alert("✨ ร่างฉากเรียบร้อยแล้ว!");
+            } else {
+                errorText.textContent = "เกิดข้อผิดพลาด: " + (data.error || "AI ไม่ตอบสนอง");
+                errorText.classList.remove('hidden');
+            }
+        })
+        .catch(err => {
+            loadingText.classList.add('hidden');
+            errorText.textContent = "เชื่อมต่อเซิร์ฟเวอร์ไม่ได้: " + err;
+            errorText.classList.remove('hidden');
+            console.error(err);
+        });
+    }
+</script>
 {% endblock %}

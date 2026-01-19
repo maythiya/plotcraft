@@ -165,7 +165,14 @@ class Character(models.Model):
 
     # Location & relationships
     location = models.ForeignKey('Location', null=True, blank=True, on_delete=models.CASCADE)
-    relationships = models.ManyToManyField('self', blank=True, symmetrical=False, related_name='related_to')
+
+    relationships = models.ManyToManyField(
+        'self', 
+        blank=True, 
+        symmetrical=False, 
+        related_name='related_to',  # เพื่อให้ Django ไม่งงเวลาย้อนกลับ
+        verbose_name="ความสัมพันธ์กับตัวละครอื่น"
+    )
 
     # Extra
     notes = models.TextField(blank=True)
@@ -182,6 +189,31 @@ class Character(models.Model):
 
     def __str__(self):
         return self.name
+    
+class CharacterRelationship(models.Model):
+    RELATIONSHIP_TYPES = [
+        ('FAMILY', 'ครอบครัว/ญาติ'),
+        ('LOVER', 'คนรัก/คู่ครอง'),
+        ('FRIEND', 'เพื่อน/พันธมิตร'),
+        ('ENEMY', 'ศัตรู/คู่แข่ง'),
+        ('MASTER_SERVANT', 'เจ้านาย/ลูกน้อง'),
+        ('OTHER', 'อื่นๆ'),
+    ]
+
+    # ตัวละครหลัก (คนที่เรากำลังระบุความสัมพันธ์)
+    from_character = models.ForeignKey(Character, on_delete=models.CASCADE, related_name='relationships_from')
+    
+    # ตัวละครเป้าหมาย (คนที่เราจะระบุความสัมพันธ์ด้วย)
+    to_character = models.ForeignKey(Character, on_delete=models.CASCADE, related_name='relationships_to')
+    
+    # สถานะ (เป็นอะไรกัน)
+    status = models.CharField(max_length=50, choices=RELATIONSHIP_TYPES, default='FRIEND')
+    
+    # รายละเอียดเพิ่มเติม (เผื่ออยากระบุลึกๆ เช่น "พี่สาวคนโต")
+    note = models.CharField(max_length=100, blank=True, null=True, verbose_name="ระบุเพิ่ม (เช่น พี่สาว, เพื่อนสนิท)")
+
+    def __str__(self):
+        return f"{self.from_character.name} -> {self.to_character.name} ({self.get_status_display()})"
 
 
 class Location(models.Model):

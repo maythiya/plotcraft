@@ -1,10 +1,11 @@
 from django.contrib.auth.models import AbstractUser
 from django import forms
 from .models import (
-    User, Profile, Novel, Chapter, Character, Location, Item,
+    CharacterRelationship, User, Profile, Novel, Chapter, Character, Location, Item,
     Scene, Timeline, TimelineEvent
 )
 from django.contrib.auth.forms import UserCreationForm
+from django.forms import inlineformset_factory
 
 
 # ==================== USER & PROFILE FORMS (from mysite) ====================
@@ -84,46 +85,65 @@ class ChapterForm(forms.ModelForm):
 # ==================== CHARACTER, LOCATION, ITEM FORMS (from worldbuilding) ====================
 
 class CharacterForm(forms.ModelForm):
-    def __init__(self, user, *args, **kwargs):
+    #  รวม __init__ ให้เหลือตัวเดียว และรับทั้ง user และ project
+    def __init__(self, user, *args, project=None, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # จำกัดเฉพาะนิยายของ user
+        # 1. กรอง Project ให้เหลือเฉพาะของ User นี้
         self.fields['project'].queryset = Novel.objects.filter(author=user)
-        self.fields['relationships'].queryset = Character.objects.filter(created_by=user)
+
+        # 2. Logic กรอง Relationships (หัวใจสำคัญ)
+        if self.instance.pk:
+            # กรณี "แก้ไข" (Edit) -> เลือกตัวละครในเรื่องเดียวกัน แต่ตัดตัวเองออก
+            queryset = Character.objects.filter(project=self.instance.project).exclude(id=self.instance.id)
+        elif project:
+            # กรณี "สร้างใหม่" (Create) โดยมี Project ระบุมา -> เลือกตัวละครในเรื่องนั้น
+            queryset = Character.objects.filter(project=project)
+        else:
+            # กรณีอื่นๆ (Safety) -> ไม่แสดงอะไรเลย หรือจะแสดงทั้งหมดของ User ก็ได้ (เลือกเอา)
+            # queryset = Character.objects.filter(created_by=user) # ถ้าอยากให้เห็นทั้งหมด
+            queryset = Character.objects.none() # ปลอดภัยสุด
+
+        self.fields['relationships'].queryset = queryset
+
+        # ====================== ส่วนตกแต่ง WIDGETS & CSS ======================
 
         base_input = 'w-full px-4 py-2 bg-white border border-[#FAEBD7] rounded-lg focus:ring-2 focus:ring-[#DAA520] focus:border-[#DAA520] outline-none transition'
         textarea = base_input + ' min-h-[120px]'
         select = base_input
 
-        self.fields['project'].widget.attrs.update({'class': select})
-        self.fields['name'].widget.attrs.update({
-            'class': base_input,
-            'placeholder': 'ชื่อตัวละคร (จำเป็น)'
-        })
-        self.fields['alias'].widget.attrs.update({
-            'class': base_input,
-            'placeholder': 'ฉายา / ชื่อเรียก'
-        })
-        self.fields['age'].widget.attrs.update({'class': base_input})
-        self.fields['birth_date'].widget = forms.DateInput(
-            attrs={'type': 'date', 'class': base_input}
-        )
-        self.fields['gender'].widget.attrs.update({'class': select})
-        self.fields['species'].widget.attrs.update({
-            'class': base_input,
-            'placeholder': 'มนุษย์ / เอลฟ์ / แวมไพร์ ฯลฯ'
-        })
-        self.fields['role'].widget.attrs.update({
-            'class': base_input,
-            'placeholder': 'ตัวเอก / ตัวร้าย / ตัวประกอบ'
-        })
-        self.fields['status'].widget.attrs.update({
-            'class': base_input,
-            'placeholder': 'มีชีวิต / เสียชีวิต / หายตัว'
-        })
-        self.fields['occupation'].widget.attrs.update({'class': base_input})
+        # วนลูปตั้งค่า Default Style ให้ทุก Field ก่อน
+        for field in self.fields:
+            # ตรวจดูว่าเป็น Checkbox หรือไม่ (บางที Style นี้อาจไม่เหมาะกับ Checkbox)
+            self.fields[field].widget.attrs.update({'class': base_input})
 
-        # Textarea
+        # --- ปรับแต่งราย Field ---
+        
+        # Project
+        self.fields['project'].widget.attrs.update({'class': select})
+        
+        # ข้อมูลพื้นฐาน
+        self.fields['name'].widget.attrs.update({'placeholder': 'ชื่อตัวละคร (จำเป็น)'})
+        self.fields['alias'].widget.attrs.update({'placeholder': 'ฉายา / ชื่อเรียก'})
+        
+        # วันเกิด (ต้องแก้ Type เป็น date)
+        self.fields['birth_date'].widget = forms.DateInput(
+            format='%Y-%m-%d',
+            attrs={
+                'type': 'date', 
+                'class': base_input
+            }
+        )
+        
+        # Select Boxes
+        self.fields['gender'].widget.attrs.update({'class': select})
+        
+        # ข้อมูลย่อย
+        self.fields['species'].widget.attrs.update({'placeholder': 'มนุษย์ / เอลฟ์ / แวมไพร์ ฯลฯ'})
+        self.fields['role'].widget.attrs.update({'placeholder': 'ตัวเอก / ตัวร้าย / ตัวประกอบ'})
+        self.fields['status'].widget.attrs.update({'placeholder': 'มีชีวิต / เสียชีวิต / หายตัว'})
+
+        # Textarea Guides (คำแนะนำ)
         guides = {
             'appearance': 'เช่น สีผม, สีตา, ส่วนสูง, รูปร่าง, การแต่งกาย, แผลเป็น หรือจุดเด่นที่เห็นได้ชัด...',
             'personality': 'นิสัยใจคอ, ความชอบ/ไม่ชอบ, Introvert/Extrovert, การตอบสนองต่อความเครียด, ท่าทางติดตัว...',
@@ -165,8 +185,60 @@ class CharacterForm(forms.ModelForm):
             'role', 'status', 'occupation',
             'appearance', 'personality', 'background',
             'goals', 'strengths', 'weaknesses', 'skills',
-            'location', 'relationships', 'notes', 'portrait'
+            'location', 'relationships', 'notes', 'portrait' 
         ]
+
+
+class CharacterRelationshipForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        project = kwargs.pop('project', None)
+        current_char = kwargs.pop('current_char', None)
+        
+        super().__init__(*args, **kwargs)
+        
+        # แต่งหน้าตา
+        self.fields['to_character'].widget.attrs.update({'class': 'border rounded p-2 w-full'})
+        self.fields['status'].widget.attrs.update({'class': 'border rounded p-2 w-full'})
+        self.fields['note'].widget.attrs.update({'class': 'border rounded p-2 w-full'})
+
+        # ================= LOGIC แบบ PYTHON ล้วน =================
+        # เริ่มต้นให้ว่างไว้ก่อน (กันแสดงข้อมูลมั่ว)
+        self.fields['to_character'].queryset = Character.objects.none()
+
+        if user:
+            # กรณี 1: ถ้ามี Project ส่งเข้ามา (จากการรีโหลดหน้า)
+            if project:
+                 self.fields['to_character'].queryset = Character.objects.filter(
+                     created_by=user, 
+                     project=project
+                 )
+            
+            # กรณี 2: ถ้าเป็นการแก้ไข (Edit) ให้ดึงจาก Project ของตัวละครนั้น
+            elif current_char and current_char.project:
+                 self.fields['to_character'].queryset = Character.objects.filter(
+                     created_by=user, 
+                     project=current_char.project
+                 )
+
+            # ตัดตัวเองทิ้ง (ถ้ามี)
+            if current_char and current_char.pk:
+                self.fields['to_character'].queryset = self.fields['to_character'].queryset.exclude(pk=current_char.pk)
+        # ========================================================
+
+    class Meta:
+        model = CharacterRelationship
+        fields = ['to_character', 'status', 'note']
+
+# FormSet (เหมือนเดิม ไม่ต้องแก้)
+RelationshipFormSet = inlineformset_factory(
+    Character, 
+    CharacterRelationship,
+    form=CharacterRelationshipForm,
+    fk_name='from_character',
+    extra=1,
+    can_delete=True
+)
 
 
 class LocationForm(forms.ModelForm):
@@ -296,22 +368,74 @@ class ItemForm(forms.ModelForm):
 
 # ==================== SCENE FORM (from scenes) ====================
 
+# forms.py
+
 class SceneForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
+        # รับค่า project_id ที่ส่งมาจาก View
+        project_id = kwargs.pop('project_id', None)
         super().__init__(*args, **kwargs)
 
+        # 1. ตั้งค่า QuerySet เริ่มต้น: เอาเฉพาะข้อมูลของ User คนนี้เท่านั้น
         self.fields['project'].queryset = Novel.objects.filter(author=user)
-        self.fields['pov_character'].queryset = Character.objects.filter(created_by=user)
         self.fields['location'].queryset = Location.objects.filter(created_by=user)
+        self.fields['pov_character'].queryset = Character.objects.filter(created_by=user)
         self.fields['characters'].queryset = Character.objects.filter(created_by=user)
         self.fields['items'].queryset = Item.objects.filter(created_by=user)
 
+        # 2. เพิ่ม Event onchange ให้กับ Project Dropdown
+        # เพื่อให้เมื่อเลือก Project แล้วหน้าเว็บรีโหลดส่งค่า project กลับมา
+        self.fields['project'].widget.attrs.update({
+            'onchange': "if(this.value) window.location.href='?project=' + this.value"
+        })
+
+        # 3. Logic หา Project ที่กำลังทำงานอยู่ เพื่อกรองตัวเลือกย่อย
+        selected_project = None
+
+        # กรณี A: มีการ Submit Form (POST) -> ดึงจาก data ที่ส่งมา
+        if self.data and 'project' in self.data:
+            try:
+                project_id_post = int(self.data.get('project'))
+                selected_project = Novel.objects.get(id=project_id_post)
+            except (ValueError, TypeError, Novel.DoesNotExist):
+                pass
+
+        # กรณี B: สร้างใหม่ (Create) -> ดึง Project จาก URL (project_id)
+        elif project_id:
+            try:
+                selected_project = Novel.objects.get(id=project_id, author=user)
+                self.fields['project'].initial = selected_project
+            except Novel.DoesNotExist:
+                pass
+        
+        # กรณี C: กำลังแก้ไข (Edit) -> ดึง Project จากข้อมูลเดิมในฐานข้อมูล
+        elif self.instance.pk and self.instance.project:
+            selected_project = self.instance.project
+
+        # 4. กรองตัวเลือกทั้งหมดให้เหลือแค่ใน Project นั้น
+        if selected_project:
+            self.fields['location'].queryset = self.fields['location'].queryset.filter(project=selected_project)
+            self.fields['pov_character'].queryset = self.fields['pov_character'].queryset.filter(project=selected_project)
+            self.fields['characters'].queryset = self.fields['characters'].queryset.filter(project=selected_project)
+            self.fields['items'].queryset = self.fields['items'].queryset.filter(project=selected_project)
+        
+        # กรณี Safety: ถ้ายังไม่เลือก Project เลย -> ปิดการแสดงผลตัวเลือกย่อยไปก่อน
+        elif self.instance.pk is None:
+             self.fields['location'].queryset = Location.objects.none()
+             self.fields['pov_character'].queryset = Character.objects.none()
+             self.fields['characters'].queryset = Character.objects.none()
+             self.fields['items'].queryset = Item.objects.none()
+
+        # ====================== ส่วนตกแต่ง WIDGETS & CSS ======================
         base = 'w-full px-4 py-2 bg-white border border-[#FAEBD7] rounded-lg focus:ring-2 focus:ring-[#DAA520] outline-none transition'
         textarea = base + ' min-h-[120px]'
         select = base
 
         # Core
-        self.fields['project'].widget.attrs.update({'class': select})
+        # project widget อัปเดต class ทับ onchange ที่ใส่ไว้ข้างบน ต้องระวัง
+        # ดังนั้น update ทีเดียว หรือ update แยกส่วน
+        self.fields['project'].widget.attrs.update({'class': select}) 
+        
         self.fields['title'].widget.attrs.update({
             'class': base,
             'placeholder': 'เช่น บทที่ 5: การเผชิญหน้า'
