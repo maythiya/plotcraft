@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% block title %}Scene Editor | PlotCraft{% endblock %}
 {% block content %}
 <script src="https://cdn.tailwindcss.com"></script>
 
@@ -133,61 +134,96 @@
 </div>
 
 <script>
+    // ฟังก์ชันสำหรับช่วยใส่ค่าลง Field (เลียนแบบ Character Form)
+    function setVal(id, value) {
+        const el = document.getElementById(id);
+        if (el && value) {
+            el.value = value;
+        }
+    }
+
     function generateSceneContent() {
         const conceptInput = document.getElementById('ai-scene-concept');
         const concept = conceptInput.value.trim();
         const loadingText = document.getElementById('ai-loading');
         const errorText = document.getElementById('ai-error');
-        // หา field content (Django มักจะใช้ id_content)
-        const contentField = document.getElementById('id_content') || document.querySelector('textarea[name="content"]');
+        
+        // ดึง ID ฉาก
+        const currentSceneId = "{{ object.id|default:scene.id|default:'' }}";
 
         if (!concept) {
-            alert("กรุณาใส่ไอเดียของฉากก่อนร่ายเวทมนตร์!");
+            alert("กรุณาใส่ไอเดียหรือคำสั่งก่อนค่ะ!");
             return;
+        }
+        
+        if (!currentSceneId) {
+             alert("⚠️ กรุณากด 'บันทึก' (Save) ข้อมูลฉากพื้นฐานก่อนใช้งาน AI ค่ะ!");
+             return;
         }
 
         loadingText.classList.remove('hidden');
         errorText.classList.add('hidden');
 
-        // เรียก API (สมมติว่าใช้ endpoint เดียวกัน หรือสร้างใหม่)
-        // หมายเหตุ: คุณอาจต้องไปเพิ่ม logic ฝั่ง backend ให้รองรับการเจนฉาก
-        fetch("{% url 'plotcraft:ai_generate_scene' %}", { // ⚠️ ตรวจสอบ URL นี้ใน urls.py ของคุณ
+        fetch("{% url 'plotcraft:ai_generate_scene' %}", { 
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': '{{ csrf_token }}'
             },
-            body: JSON.stringify({ concept: concept })
+            body: JSON.stringify({ 
+                scene_id: currentSceneId, 
+                instruction: concept 
+            })
         })
         .then(response => response.json())
         .then(data => {
             loadingText.classList.add('hidden');
-            if (data.success) {
-                // พิมพ์เนื้อหาลงในช่อง Content
-                // ถ้ามีข้อมูลเดิมอยู่แล้ว ให้ต่อท้าย หรือ ขึ้นบรรทัดใหม่
-                const currentContent = contentField.value;
-                const newContent = data.data.content || data.data; // ขึ้นกับ structure ที่ส่งกลับ
+
+            // ตรวจสอบว่ามีข้อมูลส่งกลับมาไหม
+            if (data.draft) {
+                const d = data.draft; // d คือ object ข้อมูล (goal, conflict, etc.)
+
+                // 1. หยอดข้อมูลลงช่องโครงสร้าง (Goal, Conflict, Outcome) 
+                // ใช้ id_ นำหน้า เพราะ Django form มักจะตั้ง id แบบนี้
+                setVal('id_goal', d.goal);
+                setVal('id_conflict', d.conflict);
+                setVal('id_outcome', d.outcome);
                 
-                if(currentContent) {
-                    contentField.value = currentContent + "\n\n" + newContent;
-                } else {
-                    contentField.value = newContent;
+                // 2. หยอดข้อมูลลงช่องเนื้อหา (Content) 
+                const contentField = document.getElementById('id_content') || document.querySelector('textarea[name="content"]');
+                
+                if (contentField && d.content) {
+                    const currentContent = contentField.value;
+                    // ถ้ามีเนื้อหาเดิม ให้ต่อท้าย / ถ้าไม่มี ให้ใส่เลย
+                    if (currentContent) {
+                        contentField.value = currentContent + "\n\n" + d.content;
+                    } else {
+                        contentField.value = d.content;
+                    }
                 }
-                
-                // เอฟเฟกต์เล็กน้อยว่าเสร็จแล้ว
+
+                // เสร็จสิ้น
                 conceptInput.value = ''; 
-                alert("✨ ร่างฉากเรียบร้อยแล้ว!");
-            } else {
-                errorText.textContent = "เกิดข้อผิดพลาด: " + (data.error || "AI ไม่ตอบสนอง");
+                alert("✨ AI ร่างฉากเรียบร้อยแล้วค่ะ!");
+                
+            } else if (data.error) {
+                errorText.textContent = "Error: " + data.error;
                 errorText.classList.remove('hidden');
             }
         })
         .catch(err => {
             loadingText.classList.add('hidden');
-            errorText.textContent = "เชื่อมต่อเซิร์ฟเวอร์ไม่ได้: " + err;
+            errorText.textContent = "Connection Error: " + err.message;
             errorText.classList.remove('hidden');
-            console.error(err);
         });
     }
+
+    // ผูกปุ่มกด
+    document.addEventListener('DOMContentLoaded', function() {
+        const btn = document.getElementById('aiGenerateBtn'); // ถ้าปุ่มมี id นี้
+        if (btn) {
+            btn.addEventListener('click', generateSceneContent);
+        }
+    });
 </script>
 {% endblock %}

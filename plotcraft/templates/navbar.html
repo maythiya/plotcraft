@@ -105,7 +105,9 @@
             {% if user.profile.image %}
                 <img src="{{ user.profile.image.url }}" class="w-full h-full object-cover">
             {% else %}
-                {{ user.username|slice:":1"|upper }}
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[#2F4F4F]" viewBox="0 0 24 24" fill="currentColor">
+                    <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM1.5 20.25a7.5 7.5 0 0115 0v.75a.75.75 0 01-.75.75h-14.5a.75.75 0 01-.75-.75v-.75z" clip-rule="evenodd" />
+                </svg>
             {% endif %}
         </div>
         

@@ -77,4 +77,6 @@ urlpatterns = [
     path('api/chat/general/', views.ai_chat_general, name='ai_chat_general'),
     path('api/generate-scene/', views.ai_generate_scene, name='ai_generate_scene'),
     path('api/generate-character/', views.ai_generate_character, name='ai_generate_character'),
+    path('api/generate/location/', views.ai_generate_location, name='ai_generate_location'),
+    path('api/generate/item/', views.ai_generate_item, name='ai_generate_item'),
 ]

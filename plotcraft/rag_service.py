@@ -6,6 +6,9 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_google_genai import GoogleGenerativeAI
 from dotenv import load_dotenv
 
+import json
+import re
+
 load_dotenv()
 
 class RAGService:
@@ -41,7 +44,7 @@ class RAGService:
             print(f"❌ ChromaDB Error: {e}")
             self.collection = None
     
-    # ==================== 1. NOVEL SUMMARY ====================
+    # ==================== NOVEL & CHAPTER ====================
     def add_novel_summary_to_rag(self, novel):
         """ จดจำสรุปเนื้อหานิยาย (ชื่อเรื่อง, คำโปรย, หมวดหมู่) """
         try:
@@ -72,44 +75,6 @@ class RAGService:
         except Exception as e:
             print(f"❌ Error adding novel summary: {e}")
 
-    # ==================== 2. CHARACTER & CHAPTER ====================
-
-    def add_character_to_rag(self, char):
-        """ จดจำข้อมูลตัวละคร """
-        try:
-            # สร้างข้อความสรุปตัวละครจาก Field ใน models.py
-            content = f"""
-            [ข้อมูลตัวละคร]
-            ชื่อ: {char.name}
-            นามแฝง: {char.alias}
-            บทบาท: {char.role}
-            นิสัย: {char.personality}
-            ปูมหลัง: {char.background}
-            จุดแข็ง: {char.strengths}
-            จุดอ่อน: {char.weaknesses}
-            ทักษะ: {char.skills}
-            รูปลักษณ์: {char.appearance}
-            อาชีพ: {char.occupation}
-            อายุ: {char.age}
-            """
-            
-            self.collection.add(
-                documents=[content],
-                embeddings=[self.embeddings.embed_query(content)],
-                metadatas=[{
-                    "type": "character",
-                    "novel_id": str(char.project.id) if char.project else "unknown",
-                    "owner_id": str(char.created_by.id) if char.created_by else "unknown",
-                    "source_id": str(char.id)
-                }],
-                ids=[f"char_{char.id}"]
-            )
-            print(f"✅ RAG Added Character: {char.name} (Owner: {char.created_by.id})")
-        except Exception as e:
-            print(f"❌ Error adding character: {e}")
-
-    # ==================== 3. CHAPTER ====================        
-
     def add_chapter_to_rag(self, chapter):
         """ จดจำเนื้อหาในแต่ละตอน """
         try:
@@ -135,7 +100,7 @@ class RAGService:
         except Exception as e:
              print(f"❌ Error adding chapter: {e}")
 
-    # ==================== 4. CHAT WITH EDITOR & SCENE DRAFTER ====================
+    # ==================== CHAT WITH EDITOR ====================
 
     def chat_with_editor(self, user_query, novel_id=None, user_id=None):
         """ ฟังก์ชันคุยกับพี่บก. (รวมร่าง: คุยเล่น + ตรวจงาน) """
@@ -229,109 +194,11 @@ class RAGService:
             return "ระบบพี่ยังไม่พร้อมใช้งานค่ะ (No API Key)"
         except Exception as e:
             return f"ขอโทษทีนะ พี่มึนหัวนิดหน่อย (Error: {str(e)})"
-    
-    def generate_scene_draft(self, scene):
-        """ ฟังก์ชันสำหรับช่วยร่างฉากนิยาย (Scene Drafter) """
-        print(f"✍️ Drafting Scene: {scene.title}")
-        
-        try:
-            # 1. เตรียมข้อมูลวัตถุดิบ (Raw Data)
-            pov_name = scene.pov_character.name if scene.pov_character else "ไม่ระบุ"
-            pov_desc = f"นิสัย: {scene.pov_character.personality}, รูปลักษณ์: {scene.pov_character.appearance}" if scene.pov_character else ""
-            
-            loc_name = scene.location.name if scene.location else "ไม่ระบุ"
-            loc_desc = f"สภาพแวดล้อม: {scene.location.terrain}, บรรยากาศ: {scene.location.climate}" if scene.location else ""
-            
-            other_chars = ", ".join([c.name for c in scene.characters.all()]) or "ไม่มี"
 
-            # 2. สร้าง Prompt สำหรับนักเขียนเงา
-            prompt = f"""
-            Role: คุณคือ "Ghostwriter" มืออาชีพ หน้าที่ของคุณคือร่างเนื้อหานิยาย (First Draft) จากโครงเรื่องที่กำหนดให้
-            
-            🏗️ โครงสร้างฉาก (Scene Structure):
-            - ชื่อฉาก: {scene.title}
-            - ตัวละครดำเนินเรื่อง (POV): {pov_name} ({pov_desc})
-            - สถานที่: {loc_name} ({loc_desc})
-            - ตัวละครอื่นๆ ในฉาก: {other_chars}
-            
-            🎯 เป้าหมายของฉาก (Goal): {scene.goal}
-            🚧 อุปสรรค/ความขัดแย้ง (Conflict): {scene.conflict}
-            🏁 ผลลัพธ์ของฉาก (Outcome): {scene.outcome}
-            
-            📝 คำสั่งการเขียน:
-            1. เขียนบรรยายในรูปแบบ "นิยาย" (Narrative) มุมมองบุคคลที่ 3 (หรือ 1 ตามความเหมาะสมของ POV)
-            2. เริ่มต้นด้วยการบรรยายบรรยากาศสถานที่ (Setting the scene) ให้เห็นภาพ
-            3. ใส่บทพูด (Dialogue) และการกระทำ (Action) ที่สะท้อนนิสัยตัวละคร
-            4. ดำเนินเรื่องให้เห็น "อุปสรรค" ที่ตัวละครต้องเจอ และจบลงที่ "ผลลัพธ์" ตามที่ระบุ
-            5. ไม่ต้องเขียนยาวมาก เอาแค่โครงร่างหลักๆ ประมาณ 300-500 คำ เพื่อให้นักเขียนไปเกลาต่อได้
-            6. ใช้ภาษาไทยสละสลวย เหมาะกับการเป็นนิยาย
-            
-            เริ่มร่างเนื้อหา:
-            """
-            
-            if self.llm:
-                return self.llm.invoke(prompt)
-            return "ระบบยังไม่พร้อมใช้งานค่ะ (No API Key)"
-            
-        except Exception as e:
-            print(f"Draft Error: {e}")
-            return f"เกิดข้อผิดพลาดในการร่าง: {str(e)}"
-        
-    
-        
-    def add_scene_to_rag(self, scene):
-        """ จดจำข้อมูลโครงสร้างฉาก (Goal, Conflict, Outcome) """
-        try:
-            # 1. เตรียมข้อมูลให้ AI อ่านง่าย
-            pov = scene.pov_character.name if scene.pov_character else "ไม่ระบุ"
-            loc = scene.location.name if scene.location else "ไม่ระบุ"
-            chars = ", ".join([c.name for c in scene.characters.all()]) or "-"
-            
-            content = f"""
-            [ข้อมูลฉาก]
-            ชื่อฉาก: {scene.title} (ลำดับที่ {scene.order})
-            สถานะ: {scene.get_status_display()}
-            สถานที่: {loc}
-            ตัวละครดำเนินเรื่อง (POV): {pov}
-            ตัวละครประกอบ: {chars}
-            
-            🎯 เป้าหมาย (Goal): {scene.goal}
-            🚧 อุปสรรค (Conflict): {scene.conflict}
-            🏁 ผลลัพธ์ (Outcome): {scene.outcome}
-            
-            📝 เนื้อหาบางส่วน:
-            {scene.content[:1000] if scene.content else "ยังไม่มีเนื้อหา"}
-            """
-            
-            # 2. บันทึกลง ChromaDB
-            self.collection.add(
-                documents=[content],
-                embeddings=[self.embeddings.embed_query(content)],
-                metadatas=[{
-                    "type": "scene",
-                    "novel_id": str(scene.project.id) if scene.project else "unknown",
-                    "owner_id": str(scene.created_by.id) if scene.created_by else "unknown",
-                    "source_id": str(scene.id)
-                }],
-                ids=[f"scene_{scene.id}"]
-            )
-            print(f"✅ RAG Added Scene: {scene.title}")
-            
-        except Exception as e:
-            print(f"❌ Error adding scene: {e}")
-        
-    def delete_data_from_rag(self, doc_id):
-        """ ฟังก์ชันลบข้อมูลออกจากสมอง AI """
-        try:
-            self.collection.delete(ids=[doc_id])
-            print(f"🗑️ Deleted from RAG: {doc_id}")
-        except Exception as e:
-            print(f"❌ Error deleting from RAG: {e}")
+        # ==================== CHARACTER ====================
 
     def generate_character_data(self, concept):
         """ ช่วยคิด/แกะข้อมูลตัวละคร (รองรับทั้งบรีฟสั้นและยาว) """
-        import json
-        import re
         
         print(f"🎨 Processing Character Concept: {concept[:50]}...")
         
@@ -384,5 +251,362 @@ class RAGService:
         except Exception as e:
             print(f"Gen Char Error: {e}")
             return None
+
+    def add_character_to_rag(self, char):
+        """ จดจำข้อมูลตัวละคร """
+        try:
+            # สร้างข้อความสรุปตัวละครจาก Field ใน models.py
+            content = f"""
+            [ข้อมูลตัวละคร]
+            ชื่อ: {char.name}
+            นามแฝง: {char.alias}
+            บทบาท: {char.role}
+            นิสัย: {char.personality}
+            ปูมหลัง: {char.background}
+            จุดแข็ง: {char.strengths}
+            จุดอ่อน: {char.weaknesses}
+            ทักษะ: {char.skills}
+            รูปลักษณ์: {char.appearance}
+            อาชีพ: {char.occupation}
+            อายุ: {char.age}
+            """
+            
+            self.collection.add(
+                documents=[content],
+                embeddings=[self.embeddings.embed_query(content)],
+                metadatas=[{
+                    "type": "character",
+                    "novel_id": str(char.project.id) if char.project else "unknown",
+                    "owner_id": str(char.created_by.id) if char.created_by else "unknown",
+                    "source_id": str(char.id)
+                }],
+                ids=[f"char_{char.id}"]
+            )
+            print(f"✅ RAG Added Character: {char.name} (Owner: {char.created_by.id})")
+        except Exception as e:
+            print(f"❌ Error adding character: {e}")      
+
+    # ==================== LOCATION & ITEM GENERATORS ====================
+    
+    def generate_location_data(self, concept):
+        """ ช่วยคิดข้อมูลสถานที่ (Location) """
+
+        print(f"🎨 Processing Location Concept: {concept[:50]}...")
+
+        try:
+            prompt = f"""
+            Role: คุณคือผู้ช่วยนักเขียนนิยายแฟนตาซี/ไซไฟมืออาชีพ (World Builder)
+            Task: สร้างข้อมูล "สถานที่" (Location) จากคอนเซปต์: "{concept}"
+            
+            Requirements:
+            1. ออกแบบชื่อสถานที่ให้ดูมีมนต์ขลังหรือสมจริงตามบริบท
+            2. บรรยายสภาพแวดล้อม (Terrain) และภูมิอากาศ (Climate) ให้เห็นภาพ
+            3. เขียนคำบรรยาย (Description) และประวัติความเป็นมา (History/Lore) สั้นๆ
+            4. ตอบกลับเป็น JSON Format เท่านั้น โดยใช้ Key ตามนี้:
+            {{
+                "name": "ชื่อสถานที่",
+                "world_type": "เช่น แฟนตาซี, ไซไฟ, โอเมก้าเวิร์ส",
+                "region": "ภูมิภาค/อาณาเขตที่ตั้ง",
+                "terrain": "ลักษณะภูมิประเทศ (เช่น ภูเขาหิน, ป่าทึบ)",
+                "climate": "สภาพอากาศ/บรรยากาศ",
+                "description": "คำบรรยายรายละเอียดของสถานที่",
+                "history": "ประวัติศาสตร์ความเป็นมา (ถ้ามี)"
+                "myths": "ตำนานและเรื่องเล่า",
+                "economy": "ระบบเศรษฐกิจ",
+                "culture": "วัฒนธรรม ความเชื่อ ศาสนา",
+                "language": "ภาษาที่ใช้",
+                "ecosystem": "ระบบนิเวศ",
+                "politics": "ระบบการการเมืองการปกครอง (เช่น กฎหมาย, ความขัดแย้งทางการเมือง)"
+            }}
+            """
+            
+            if self.llm:
+                response = self.llm.invoke(prompt)
+                
+                # แกะ JSON
+                try:
+                    json_match = re.search(r'\{[\s\S]*\}', response)
+                    if json_match:
+                        clean_json_str = json_match.group(0)
+                        return json.loads(clean_json_str)
+                    else:
+                        return json.loads(response)
+                except:
+                    return {"content": response}
+            return {"error": "No API Key"}
+        except Exception as e:
+            print(f"Location Gen Error: {e}")
+            return {"error": str(e)}
+
+    def generate_item_data(self, concept):
+        """ ช่วยคิดข้อมูลไอเทม (Item) """
+
+        print(f"🎨 Processing Item Concept: {concept[:50]}...")
+
+        try:
+            prompt = f"""
+            Role: คุณคือผู้ช่วยนักเขียนและนักออกแบบไอเทมในนิยาย
+            Task: สร้างข้อมูล "ไอเทม/วัตถุ" (Item) จากคอนเซปต์: "{concept}"
+            
+            Requirements:
+            1. ตั้งชื่อไอเทมให้โดดเด่น
+            2. ระบุประเภท (Type) และระดับความหายาก (Rarity) ถ้าจำเป็น
+            3. อธิบายคุณสมบัติพิเศษ (Abilities) หรือการใช้งาน
+            4. เขียนคำบรรยายรูปลักษณ์และที่มา
+            5. ตอบกลับเป็น JSON Format เท่านั้น โดยใช้ Key ตามนี้:
+            {{
+                "name": "ชื่อไอเทม",
+                "abilities": "ความสามารถพิเศษ หรือผลของไอเทม",
+                "description": "คำบรรยายรูปลักษณ์และการใช้งาน",
+                "history": "ประวัติความเป็นมา ตำนาน",
+                "appearance": "ลักษณะภายนอก วัสดุ สี",
+                "limitations": "เงื่อนไข ข้อจำกัด หรือผลข้างเคียง",
+            }}
+            """
+            
+            if self.llm:
+                response = self.llm.invoke(prompt)
+                
+                # แกะ JSON
+                try:
+                    json_match = re.search(r'\{[\s\S]*\}', response)
+                    if json_match:
+                        clean_json_str = json_match.group(0)
+                        return json.loads(clean_json_str)
+                    else:
+                        return json.loads(response)
+                except (json.JSONDecodeError, AttributeError):
+                    return {"content": response}
+            return {"error": "No API Key"}
+        except Exception as e:
+            print(f"Item Gen Error: {e}")
+            return {"error": str(e)}
+
+    def add_location_to_rag(self, location):
+        """ จดจำข้อมูลสถานที่ (Location) """
+        try:
+            # สร้าง Text สำหรับ AI อ่าน (รวมข้อมูลทุกด้าน)
+            content = f"""
+            [ข้อมูลสถานที่]
+            ชื่อ: {location.name}
+            ประเภทโลก: {location.world_type}
+            
+            -- สภาพแวดล้อม --
+            ภูมิประเทศ: {location.terrain}
+            สภาพอากาศ: {location.climate}
+            ระบบนิเวศ: {location.ecosystem}
+            
+            -- สังคมและวัฒนธรรม --
+            การปกครอง: {location.politics}
+            เศรษฐกิจ: {location.economy}
+            วัฒนธรรม/ความเชื่อ: {location.culture}
+            ภาษา: {location.language}
+            
+            -- ประวัติและตำนาน --
+            ประวัติศาสตร์: {location.history}
+            ตำนานเรื่องเล่า: {location.myths}
+            """
+            
+            # เตรียม Metadata
+            novel_id = str(location.project.id) if location.project else "unknown"
+            owner_id = str(location.created_by.id) if location.created_by else "unknown"
+
+            # บันทึกลง ChromaDB
+            self.collection.add(
+                documents=[content],
+                embeddings=[self.embeddings.embed_query(content)],
+                metadatas=[{
+                    "type": "location",
+                    "novel_id": novel_id,
+                    "owner_id": owner_id,
+                    "source_id": str(location.id)
+                }],
+                ids=[f"loc_{location.id}"]
+            )
+            print(f"✅ RAG Added Location: {location.name}")
+            
+        except Exception as e:
+            print(f"❌ Error adding location: {e}")
+
+
+    def add_item_to_rag(self, item):
+        """ จดจำข้อมูลไอเทม (Item) """
+        try:
+            # ดึงชื่อเจ้าของ/สถานที่เก็บ (ถ้ามี)
+            current_owner = item.owner.name if item.owner else "ไม่มีเจ้าของ"
+            current_location = item.location.name if item.location else "ไม่ระบุ"
+            
+            # ใช้ get_category_display() เพื่อดึงคำเต็มจาก Choice (เช่น "Weapon (อาวุธ)")
+            category_display = item.get_category_display()
+
+            content = f"""
+            [ข้อมูลไอเทม/วัตถุ]
+            ชื่อ: {item.name}
+            ประเภท: {category_display}
+            
+            -- คุณสมบัติและเงื่อนไข --
+            ความสามารถพิเศษ: {item.abilities}
+            ข้อจำกัด/ผลข้างเคียง: {item.limitations}
+            
+            -- รูปลักษณ์และประวัติ --
+            รูปลักษณ์ภายนอก: {item.appearance}
+            ประวัติความเป็นมา: {item.history}
+            
+            -- สถานะปัจจุบัน --
+            ผู้ครอบครอง: {current_owner}
+            สถานที่เก็บ: {current_location}
+            """
+            
+            novel_id = str(item.project.id) if item.project else "unknown"
+            owner_id = str(item.created_by.id) if item.created_by else "unknown"
+
+            self.collection.add(
+                documents=[content],
+                embeddings=[self.embeddings.embed_query(content)],
+                metadatas=[{
+                    "type": "item",
+                    "novel_id": novel_id,
+                    "owner_id": owner_id,
+                    "source_id": str(item.id)
+                }],
+                ids=[f"item_{item.id}"]
+            )
+            print(f"✅ RAG Added Item: {item.name}")
+            
+        except Exception as e:
+            print(f"❌ Error adding item: {e}")
+
+
+
+    # ==================== SCENE DRAFTER ====================       
+    
+    def generate_scene_draft(self, scene, instruction=""):
+        """ ฟังก์ชันสำหรับช่วยร่างฉากนิยาย (Scene Drafter) """
+        print(f"✍️ Drafting Scene: {scene.title}")
+        
+        try:
+            # 1. เตรียมข้อมูลวัตถุดิบ (Raw Data)
+            pov_name = scene.pov_character.name if scene.pov_character else "ไม่ระบุ"
+            pov_desc = f"นิสัย: {scene.pov_character.personality}, รูปลักษณ์: {scene.pov_character.appearance}" if scene.pov_character else ""
+            loc_name = scene.location.name if scene.location else "ไม่ระบุ"
+            loc_desc = f"สภาพแวดล้อม: {scene.location.terrain}, บรรยากาศ: {scene.location.climate}" if scene.location else ""
+            other_chars = ", ".join([c.name for c in scene.characters.all()]) or "ไม่มี"
+
+            # 2. สร้าง Prompt สำหรับนักเขียนเงา
+            prompt = f"""
+            Role: คุณคือผู้ช่วยนักเขียนมืออาชีพ
+            Task: วิเคราะห์คำสั่ง (Instruction) แล้วสร้าง "โครงสร้างฉาก" และ "เนื้อหาร่าง"
+            
+            🏗️ โครงสร้างฉาก (Scene Structure):
+            - ชื่อฉาก: {scene.title}
+            - ตัวละครดำเนินเรื่อง (POV): {pov_name} ({pov_desc})
+            - สถานที่: {loc_name} ({loc_desc})
+            - ตัวละครอื่น ๆ ในฉาก: {other_chars}
+            
+            🎯 เป้าหมายของฉาก (Goal): {scene.goal}
+            🚧 อุปสรรค/ความขัดแย้ง (Conflict): {scene.conflict}
+            🏁 ผลลัพธ์ของฉาก (Outcome): {scene.outcome}
+
+            คำสั่ง/ไอเดียจากนักเขียน: "{instruction}"
+
+            📝 คำสั่งการเขียน:
+            1. เขียนบรรยายในรูปแบบ "นิยาย" (Narrative) มุมมองบุคคลที่ 3 (หรือ 1 ตามความเหมาะสมของ POV)
+            2. เริ่มต้นด้วยการบรรยายบรรยากาศสถานที่ (Setting the scene) ให้เห็นภาพ
+            3. ใส่บทพูด (Dialogue) และการกระทำ (Action) ที่สะท้อนนิสัยตัวละคร
+            4. ดำเนินเรื่องให้เห็น "อุปสรรค" ที่ตัวละครต้องเจอ และจบลงที่ "ผลลัพธ์" ตามที่ระบุ
+            5. ไม่ต้องเขียนยาวมาก เอาแค่โครงร่างหลักๆ ประมาณ 300-500 คำ เพื่อให้นักเขียนไปเกลาต่อได้
+            6. ใช้ภาษาไทยสละสลวย เหมาะกับการเป็นนิยาย
+            7. **สำคัญมาก**: ตอบกลับเป็น JSON Format เท่านั้น โดยใช้ Key ดังนี้:
+               - "goal": (ข้อความบรรยาย ไม่ยาวมาก และไม่สั้นเกินไป)
+               - "conflict": (ข้อความบรรยาย ไม่ยาวมาก และไม่สั้นเกินไป)
+               - "outcome": (ข้อความบรรยาย ไม่ยาวมาก และไม่สั้นเกินไป)
+               - "content": (เนื้อหาบรรยายฉาก)
+            8. ถ้ามี POV ให้ใช้มุมมอง เสียง และแทนใช้เป็นชื่อของตัวละคร POV นั้นในการบรรยาย แต่ถ้ายังไม่มีให้แทนเป็นอย่างอื่่นตามความเหมาะสม
+            
+            ตัวอย่างการตอบ (JSON):
+            {{
+                "goal": "ตัวเอกต้องการขโมยกุญแจ...",
+                "conflict": "ยามเฝ้าอยู่หน้าประตู...",
+                "outcome": "ขโมยสำเร็จแต่ถูกจำหน้าได้...",
+                "content": "เสียงฝีเท้าเบาหวิว..."
+            }}
+            
+            เริ่มร่างเนื้อหา:
+            """
+            
+            if self.llm:
+                response = self.llm.invoke(prompt)
+                
+                #จุดแก้ที่สำคัญ: การแกะ Clean JSON
+                try:
+                    # ใช้ Regex ค้นหาเฉพาะส่วนที่เป็น { ... } (เผื่อ AI เผลอใส่ ```json มา)
+                    json_match = re.search(r'\{[\s\S]*\}', response) # [\s\S]* หมายถึงเอาทุกตัวอักษรรวมถึงบรรทัดใหม่
+                    
+                    if json_match:
+                        clean_json_str = json_match.group(0)
+                        return json.loads(clean_json_str) # ส่งกลับเป็น Python Dict (Object)
+                    else:
+                        # ถ้าหา JSON ไม่เจอจริงๆ ให้ลอง loads ตรงๆ
+                        return json.loads(response)
+                        
+                except (json.JSONDecodeError, AttributeError):
+                    # ถ้าแกะไม่ได้จริง ๆ ให้ส่งเป็น content ล้วน (กัน Error)
+                    return {"content": response}
+
+            return {"error": "ระบบยังไม่พร้อมใช้งาน (No API Key)"}
+            
+        except Exception as e:
+            print(f"Draft Error: {e}")
+            return f"เกิดข้อผิดพลาดในการร่าง: {str(e)}"
+        
+        
+    def add_scene_to_rag(self, scene):
+        """ จดจำข้อมูลโครงสร้างฉาก (Goal, Conflict, Outcome) """
+        try:
+            # 1. เตรียมข้อมูลให้ AI อ่านง่าย
+            pov = scene.pov_character.name if scene.pov_character else "ไม่ระบุ"
+            loc = scene.location.name if scene.location else "ไม่ระบุ"
+            chars = ", ".join([c.name for c in scene.characters.all()]) or "-"
+            
+            content = f"""
+            [ข้อมูลฉาก]
+            ชื่อฉาก: {scene.title} (ลำดับที่ {scene.order})
+            สถานะ: {scene.get_status_display()}
+            สถานที่: {loc}
+            ตัวละครดำเนินเรื่อง (POV): {pov}
+            ตัวละครประกอบ: {chars}
+            
+            🎯 เป้าหมาย (Goal): {scene.goal}
+            🚧 อุปสรรค (Conflict): {scene.conflict}
+            🏁 ผลลัพธ์ (Outcome): {scene.outcome}
+            
+            📝 เนื้อหาบางส่วน:
+            {scene.content[:1000] if scene.content else "ยังไม่มีเนื้อหา"}
+            """
+            
+            # 2. บันทึกลง ChromaDB
+            self.collection.add(
+                documents=[content],
+                embeddings=[self.embeddings.embed_query(content)],
+                metadatas=[{
+                    "type": "scene",
+                    "novel_id": str(scene.project.id) if scene.project else "unknown",
+                    "owner_id": str(scene.created_by.id) if scene.created_by else "unknown",
+                    "source_id": str(scene.id)
+                }],
+                ids=[f"scene_{scene.id}"]
+            )
+            print(f"✅ RAG Added Scene: {scene.title}")
+            
+        except Exception as e:
+            print(f"❌ Error adding scene: {e}")
+        
+    def delete_data_from_rag(self, doc_id):
+        """ ฟังก์ชันลบข้อมูลออกจากสมอง AI """
+        try:
+            self.collection.delete(ids=[doc_id])
+            print(f"🗑️ Deleted from RAG: {doc_id}")
+        except Exception as e:
+            print(f"❌ Error deleting from RAG: {e}")
 # สร้าง Instance รอไว้เรียกใช้
 rag_service = RAGService()

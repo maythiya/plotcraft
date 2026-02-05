@@ -1,7 +1,7 @@
 # plotcraft/signals.py
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
-from .models import Character, Chapter, Scene, Novel # Import Scene เพิ่มเผื่ออนาคต
+from .models import Character, Chapter, Scene, Novel, Location, Item # Import Scene เพิ่มเผื่ออนาคต
 from .rag_service import rag_service
 
 # ==================== NOVEL (นิยาย) ====================
@@ -58,3 +58,28 @@ def delete_scene_rag(sender, instance, **kwargs):
     """ เมื่อลบฉาก -> ให้ลืม """
     rag_service.delete_data_from_rag(f"scene_{instance.id}")
     print(f"🗑️ RAG Deleted: Scene '{instance.title}'")
+
+# =================== LOCATION & ITEM ====================
+@receiver(post_delete, sender=Location)
+@receiver(post_delete, sender=Item)
+def delete_location_item_rag(sender, instance, **kwargs):
+    """ เมื่อลบ Location หรือ Item -> ให้ลืม """
+    model_name = sender.__name__.lower()
+    if model_name == 'location':
+        rag_service.delete_data_from_rag(f"loc_{instance.id}")
+        print(f"🗑️ RAG Deleted: Location '{instance.name}'")
+    elif model_name == 'item':
+        rag_service.delete_data_from_rag(f"item_{instance.id}")
+        print(f"🗑️ RAG Deleted: Item '{instance.name}'")
+
+@receiver(post_save, sender=Location)
+@receiver(post_save, sender=Item)
+def update_location_item_rag(sender, instance, created, **kwargs):
+    """ เมื่อสร้างหรือแก้ Location หรือ Item -> ให้จำข้อมูล """
+    model_name = sender.__name__.lower()
+    if model_name == 'location':
+        rag_service.add_location_to_rag(instance)
+        print(f"🔄 RAG Updated: Location '{instance.name}'")
+    elif model_name == 'item':
+        rag_service.add_item_to_rag(instance)
+        print(f"🔄 RAG Updated: Item '{instance.name}'")

@@ -1208,23 +1208,31 @@ def bookmark_list(request):
 
 @csrf_exempt
 @login_required
-def ai_generate_scene(request, scene_id):
-    """ API สำหรับกดปุ่ม 'Generate Draft' """
+def ai_generate_scene(request):
+    """ API สำหรับ Gen เนื้อหาฉาก (Draft) """
     if request.method == "POST":
-        # 1. ดึงข้อมูล Scene มา (ต้องเป็นเจ้าของเท่านั้น)
-        # ใน models.py Scene ไม่ได้ผูกกับ User โดยตรง แต่ผูกผ่าน Project -> Owner
-        # ดังนั้นต้องเช็คผ่าน project__owner
-        scene = get_object_or_404(Scene, pk=scene_id, project__author=request.user)
-        
-        # 2. เรียก AI ให้ร่างให้
-        draft_content = rag_service.generate_scene_draft(scene)
-        
-        # 3. ส่งเนื้อหากลับไป
         try:
-             draft_content = rag_service.generate_scene_draft(scene)
-             return JsonResponse({'draft': draft_content})
+            data = json.loads(request.body)
+            
+            # 1. รับค่า 2 ค่า: ID และ คำสั่ง(Concept)
+            scene_id = data.get('scene_id')
+            instruction = data.get('instruction', '') # <--- เพิ่มตัวนี้ (เหมือน concept)
+
+            if not scene_id:
+                return JsonResponse({'error': 'Missing scene_id'}, status=400)
+
+            # 2. ดึง Object ฉากมา
+            scene = get_object_or_404(Scene, pk=scene_id, project__author=request.user)
+            
+            # 3. ส่งทั้งฉาก และ คำสั่ง ไปให้ Service
+            draft_content = rag_service.generate_scene_draft(scene, instruction)
+            
+            # 4. ส่งผลลัพธ์กลับ
+            return JsonResponse({'draft': draft_content})
+            
         except Exception as e:
-             return JsonResponse({'error': str(e)}, status=500)
+            print(f"Error generating scene: {e}")
+            return JsonResponse({'error': str(e)}, status=500)
 
     return JsonResponse({'error': 'Invalid method'}, status=405)
 
@@ -1269,4 +1277,44 @@ def ai_generate_character(request):
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
     
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+@csrf_exempt
+@login_required
+def ai_generate_location(request):
+    """ API สำหรับ Gen ข้อมูลสถานที่ """
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            concept = data.get('concept', '')
+            
+            loc_data = rag_service.generate_location_data(concept)
+            
+            if loc_data:
+                return JsonResponse({'success': True, 'data': loc_data})
+            else:
+                return JsonResponse({'success': False, 'error': 'แป๋ว... AI นึกไม่ออก ลองเปลี่ยนคำสั่งดูนะคะ'})
+                
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+@csrf_exempt
+@login_required
+def ai_generate_item(request):
+    """ API สำหรับ Gen ข้อมูลไอเทม """
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            concept = data.get('concept', '')
+            
+            item_data = rag_service.generate_item_data(concept)
+            
+            if item_data:
+                return JsonResponse({'success': True, 'data': item_data})
+            else:
+                return JsonResponse({'success': False, 'error': 'แป๋ว... AI นึกไม่ออก ลองเปลี่ยนคำสั่งดูนะคะ'})
+                
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
