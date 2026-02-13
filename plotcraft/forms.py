@@ -14,7 +14,11 @@ class RegisterForm(UserCreationForm):
     email = forms.EmailField(required=True)
     phone = forms.CharField(required=False)
     birthdate = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}), required=False)
-
+    terms = forms.BooleanField(
+        required=True, 
+        error_messages={'required': 'กรุณายอมรับเงื่อนไขการใช้งานก่อนลงทะเบียน'}
+    )
+    
     class Meta(UserCreationForm.Meta):
         model = User
         fields = UserCreationForm.Meta.fields + (

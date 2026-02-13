@@ -4,18 +4,32 @@
 <script src="https://cdn.tailwindcss.com"></script>
 
 <script>
-    // Preview image before saving
-    document.getElementById('id_image').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const profileImg = document.querySelector('.profile-pic');
-                profileImg.src = event.target.result;
-                profileImg.style.display = 'block';
-            };
-            reader.readAsDataURL(file);
-        }
+    document.addEventListener('DOMContentLoaded', function() {
+        const imageInput = document.getElementById('id_image');
+        
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    // หา element รูปภาพและ placeholder
+                    const profileImg = document.getElementById('profile-preview');
+                    const placeholder = document.getElementById('profile-placeholder');
+                    const deleteBtn = document.getElementById('btn-delete-image');
+                    
+                    // อัปเดต src ของรูปเป็นรูปใหม่ที่เพิ่งเลือก
+                    profileImg.src = event.target.result;
+                    
+                    // สั่งโชว์รูป และ ซ่อนตัวอักษรย่อ
+                    profileImg.classList.remove('hidden');
+                    if (placeholder) placeholder.classList.add('hidden');
+                    
+                    // (Optional) ซ่อนปุ่มลบรูปชั่วคราว เพราะกำลังจะอัพรูปใหม่
+                    if (deleteBtn) deleteBtn.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
     });
 </script>
 
@@ -28,28 +42,17 @@
         <h2 class="text-2xl font-bold mb-8 text-white flex items-center gap-2">
             <span class="text-[#DAA520]">⚙️</span> Settings
         </h2>
-
         <ul class="space-y-2">
-           <li>
-               <a href="{% url 'plotcraft:profile' %}" class="block px-4 py-3 bg-[#FAEBD7]/10 text-white rounded-lg font-medium border-l-4 border-[#DAA520] shadow-sm">
-                   บัญชีผู้ใช้ (Account)
-               </a>
-           </li>
-           <li>
-               <a href="{% url 'plotcraft:quickguide' %}" class="block px-4 py-3 text-[#FAEBD7]/70 hover:bg-[#FAEBD7]/5 hover:text-white rounded-lg transition">
-                   คู่มือการใช้งาน (Guide)
-               </a>
-           </li>
+           <li><a href="{% url 'plotcraft:profile' %}" class="block px-4 py-3 bg-[#FAEBD7]/10 text-white rounded-lg font-medium border-l-4 border-[#DAA520] shadow-sm">บัญชีผู้ใช้ (Account)</a></li>
+           <li><a href="{% url 'plotcraft:quickguide' %}" class="block px-4 py-3 text-[#FAEBD7]/70 hover:bg-[#FAEBD7]/5 hover:text-white rounded-lg transition">คู่มือการใช้งาน (Guide)</a></li>
         </ul>
       </div>
-
       <div class="mt-8 pt-8 border-t border-[#FAEBD7]/10 space-y-4">
-                        <a href="{% url 'plotcraft:landing' %}" class="flex items-center gap-2 text-[#FAEBD7]/70 hover:text-white transition px-4">
+          <a href="{% url 'plotcraft:landing' %}" class="flex items-center gap-2 text-[#FAEBD7]/70 hover:text-white transition px-4">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
               ออกจากระบบ
           </a>
       </div>
-
     </div>
 
     <div class="flex-1 p-8 md:p-12 overflow-y-auto">
@@ -61,23 +64,27 @@
             
             <div class="flex items-center gap-8 pb-8 border-b border-gray-100">
                 <div class="relative group">
-                    <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-[#DAA520]/20 shadow-md bg-gray-200">
-                        {% if user.profile.image %}
-                            <img src="{{ user.profile.image.url }}" alt="Profile" class="profile-pic w-full h-full object-cover">
-                        {% else %}
-                            <div class="w-full h-full flex items-center justify-center text-[#2F4F4F] text-4xl font-bold">
-                                {{ user.username|slice:":1"|upper }}
-                            </div>
-                        {% endif %}
-                    </div>
+                    <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-[#DAA520]/20 shadow-md bg-[#2F4F4F] flex items-center justify-center relative">
+
+                        <img id="profile-preview" 
+                             src="{% if user.profile.image %}{{ user.profile.image.url }}{% endif %}" 
+                             alt="Profile" 
+                             class="w-full h-full object-cover absolute top-0 left-0 bg-white {% if not user.profile.image %}hidden{% endif %}">
                     
+                        <div id="profile-placeholder" 
+                             class="w-full h-full flex items-center justify-center bg-[#2F4F4F] text-[#FAEBD7] text-5xl font-bold select-none {% if user.profile.image %}hidden{% endif %}">
+                            {{ user.username|slice:":1"|upper }}
+                        </div>
+
+                    </div>
+
                     <label for="id_image" class="absolute bottom-1 right-1 bg-[#DAA520] text-white p-2.5 rounded-full shadow-lg cursor-pointer hover:bg-[#b8860b] hover:scale-110 transition-all duration-200 z-10">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
                     </label>
-
+                
                     <div class="hidden">
                         {{ p_form.image }}
                     </div>
@@ -91,29 +98,24 @@
                     </span>
 
                     {% if user.profile.image %}
-                    <form method="post" class="mt-3">
-                        {% csrf_token %}
-                        <button type="submit" name="delete_image" onclick="return confirm('ลบรูปภาพโปรไฟล์ใช่หรือไม่?');" class="px-3 py-1 bg-red-100 text-red-600 text-xs font-bold rounded-lg hover:bg-red-200 transition">
+                    <div class="mt-3" id="btn-delete-image-container">
+                        <button type="submit" id="btn-delete-image" name="delete_image" onclick="return confirm('ต้องการลบรูปภาพโปรไฟล์ใช่หรือไม่?');" class="px-3 py-1 bg-red-100 text-red-600 text-xs font-bold rounded-lg hover:bg-red-200 transition">
                             ลบรูปภาพ
                         </button>
-                    </form>
+                    </div>
                     {% endif %}
                 </div> 
             </div>
 
             <div class="grid gap-6">
-                
                 <div>
                     <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ชื่อที่ใช้แสดง (Display Name)</label>
                     {{ u_form.display_name }}
                 </div>
-
                 <div>
                     <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ชื่อผู้ใช้ (Username)</label>
-                    <input type="text" value="{{ user.username }}" readonly 
-                        class="w-full px-4 py-2 bg-gray-100 text-gray-500 border border-gray-200 rounded-lg cursor-not-allowed" />
+                    <input type="text" value="{{ user.username }}" readonly class="w-full px-4 py-2 bg-gray-100 text-gray-500 border border-gray-200 rounded-lg cursor-not-allowed" />
                 </div>
-
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-bold text-[#2F4F4F] mb-1">อีเมล (Email)</label>

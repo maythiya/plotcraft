@@ -12,6 +12,8 @@ from django.conf.urls.static import static
 from django.urls import reverse
 import json
 
+from django.contrib.auth.forms import AuthenticationForm
+
 import io
 from django.template.loader import render_to_string
 from django.utils.encoding import escape_uri_path
@@ -62,7 +64,7 @@ def register(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)
+            login(request, user) # สมัครเสร็จ ล็อกอินให้เลย
             messages.success(request, "Registration successful.")
             return redirect('plotcraft:home')
         else:
@@ -77,17 +79,49 @@ def logout_view(request):
     return redirect('plotcraft:landing')
 
 def login_view(request):
-    return render(request, 'registration/login.html')
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            
+            # --- ส่วนการทำงานของ Remember Me ---
+            if request.POST.get('remember_me'):
+                # ถ้าติ๊ก: ให้ Session อยู่ได้ 2 สัปดาห์ (1209600 วินาที)
+                request.session.set_expiry(1209600) 
+            else:
+                # ถ้าไม่ติ๊ก: ให้ Session หมดอายุทันทีเมื่อปิด Browser
+                request.session.set_expiry(0)
+            # --------------------------------
+
+            return redirect('plotcraft:home') # ไปหน้า Home หลัง Login สำเร็จ
+    else:
+        form = AuthenticationForm()
+    
+    return render(request, 'registration/login.html', {'form': form})
 
 @login_required
 def profile(request):
     if request.method == 'POST':
+        # 1. เช็คปุ่มลบบัญชี (ของเดิม)
         if 'delete_account' in request.POST:
             user = request.user
             logout(request)
             user.delete()
             return redirect('plotcraft:landing')
 
+        # 2. (เพิ่มใหม่) เช็คปุ่มลบรูปภาพ
+        if 'delete_image' in request.POST:
+            profile = request.user.profile
+            if profile.image:
+                # ลบรูปจริง (ถ้าต้องการ) และเคลียร์ค่าใน Database
+                profile.image.delete(save=False) 
+                profile.image = None
+                profile.save()
+                messages.success(request, 'ลบรูปภาพโปรไฟล์เรียบร้อยแล้ว')
+            return redirect('plotcraft:profile')
+
+        # 3. การบันทึกข้อมูลปกติ (Save Changes)
         u_form = UserForm(request.POST, instance=request.user)
         p_form = ProfileForm(request.POST, request.FILES, instance=request.user.profile)
 

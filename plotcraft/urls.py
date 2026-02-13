@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, reverse_lazy
 from django.contrib.auth import views as auth_views
 from . import views
 
@@ -9,7 +9,7 @@ urlpatterns = [
     path('', views.landing, name='landing'),
     path('home/', views.home, name='home'),
     path('register/', views.register, name='register'),
-    path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
+    path('login/', views.login_view, name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='landing'), name='logout'),
     path('profile/', views.profile, name='profile'),
     path('quickguide/', auth_views.TemplateView.as_view(template_name='Quickguide.html'), name='quickguide'),
@@ -79,4 +79,42 @@ urlpatterns = [
     path('api/generate-character/', views.ai_generate_character, name='ai_generate_character'),
     path('api/generate/location/', views.ai_generate_location, name='ai_generate_location'),
     path('api/generate/item/', views.ai_generate_item, name='ai_generate_item'),
+
+    # ==================== Reset Password ====================
+    # 1. หน้ากรอกอีเมล (นี่คือจุดที่บอกให้ใช้ HTML ของคุณ)
+    path('password-reset/', 
+         auth_views.PasswordResetView.as_view(
+             # บรรทัดนี้สำคัญ! มันบอกให้ใช้ไฟล์ html ที่คุณแต่งไว้ แทนหน้า default
+             template_name='registration/password_reset_form.html',
+             
+             # ไฟล์เนื้อหาในอีเมลที่จะส่งไป
+             email_template_name='registration/password_reset_email.html',
+             
+             # ส่งเสร็จแล้วไปหน้าไหน? (ไปหน้าแจ้งเตือน custom ของเรา)
+             success_url=reverse_lazy('plotcraft:password_reset_done') 
+         ), 
+         name='password_reset'),
+
+    # 2. หน้าแจ้งเตือน "ส่งเมลไปแล้วนะ" (HTML ของคุณ)
+    path('password-reset/done/', 
+         auth_views.PasswordResetDoneView.as_view(
+             template_name='registration/password_reset_done.html'
+         ), 
+         name='password_reset_done'),
+
+    # 3. หน้าตั้งรหัสใหม่ (User กดลิงก์จากอีเมลจะเด้งมาหน้านี้)
+    path('reset/<uidb64>/<token>/', 
+         auth_views.PasswordResetConfirmView.as_view(
+             template_name='registration/password_reset_confirm.html',
+             # เปลี่ยนรหัสเสร็จแล้วไปหน้า "เรียบร้อย"
+             success_url=reverse_lazy('plotcraft:password_reset_complete')
+         ), 
+         name='password_reset_confirm'),
+
+    # 4. หน้าจบ "เปลี่ยนรหัสเสร็จแล้วจ้า" (HTML ของคุณ)
+    path('reset/done/', 
+         auth_views.PasswordResetCompleteView.as_view(
+             template_name='registration/password_reset_complete.html'
+         ), 
+         name='password_reset_complete'),
 ]

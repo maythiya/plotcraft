@@ -4,16 +4,28 @@
     <meta charset="UTF-8">
     <title>Login | PlotCraft</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .checkbox-theme:checked {
+            background-color: #DAA520;
+            border-color: #DAA520;
+        }
+    </style>
 </head>
-<body class="bg-[#FAEBD7] flex items-center justify-center min-h-screen p-4">
+<body class="bg-[#FAEBD7] flex items-center justify-center min-h-screen p-4 font-sans">
 
     <div class="bg-white p-8 md:p-10 rounded-2xl shadow-2xl w-full max-w-md border border-[#2F4F4F]/10 relative overflow-hidden">
-        <div class="absolute top-0 left-0 w-full h-1.5 bg-linear-to-r from-[#2F4F4F] to-[#DAA520]"></div>
+        <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#2F4F4F] to-[#DAA520]"></div>
 
         <div class="text-center mb-8">
             <h2 class="text-3xl font-bold text-[#2F4F4F]">ยินดีต้อนรับกลับมา</h2>
             <p class="text-gray-500 text-sm mt-2">เข้าสู่ระบบเพื่อสร้างสรรค์เรื่องราวของคุณต่อ</p>
         </div>
+
+        {% if form.errors %}
+        <div class="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg text-center">
+            ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง
+        </div>
+        {% endif %}
 
         <form method="POST" class="space-y-5">
             {% csrf_token %} 
@@ -21,7 +33,7 @@
             <div>
                 <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Username</label>
                 <div class="relative">
-                    <input type="text" name="username" class="w-full p-3 pl-10 bg-[#FAEBD7]/20 border border-[#2F4F4F]/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#DAA520] transition text-[#2F4F4F]" placeholder="ชื่อผู้ใช้" required>
+                    <input type="text" name="username" class="w-full p-3 pl-10 bg-[#FAEBD7]/20 border border-[#2F4F4F]/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#DAA520] text-[#2F4F4F]" placeholder="ชื่อผู้ใช้" required>
                     <svg class="absolute left-3 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                 </div>
             </div>
@@ -29,12 +41,24 @@
             <div>
                 <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Password</label>
                 <div class="relative">
-                    <input type="password" name="password" class="w-full p-3 pl-10 bg-[#FAEBD7]/20 border border-[#2F4F4F]/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#DAA520] transition text-[#2F4F4F]" placeholder="รหัสผ่าน" required>
+                    <input type="password" name="password" id="passwordInput" class="w-full p-3 pl-10 pr-10 bg-[#FAEBD7]/20 border border-[#2F4F4F]/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#DAA520] text-[#2F4F4F]" placeholder="รหัสผ่าน" required>
                     <svg class="absolute left-3 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                    
+                    <button type="button" onclick="togglePassword('passwordInput')" class="absolute right-3 top-3.5 text-gray-400 hover:text-[#DAA520] focus:outline-none">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                    </button>
                 </div>
             </div>
 
-            <button type="submit" class="w-full bg-[#2F4F4F] text-[#FAEBD7] font-bold py-3 rounded-lg hover:bg-[#1a3030] shadow-md hover:shadow-lg transition transform hover:-translate-y-0.5 mt-4">
+            <div class="flex items-center justify-between text-sm">
+                <div class="flex items-center">
+                    <input type="checkbox" name="remember_me" id="remember" class="h-4 w-4 text-[#DAA520] border-gray-300 rounded checkbox-theme focus:ring-[#DAA520]">
+                    <label for="remember" class="ml-2 block text-gray-600 cursor-pointer">จดจำฉันไว้</label>
+                </div>
+                <a href="{% url 'plotcraft:password_reset' %}" class="text-[#DAA520] font-bold hover:underline">ลืมรหัสผ่าน?</a>
+            </div>
+
+            <button type="submit" class="w-full bg-[#2F4F4F] text-[#FAEBD7] font-bold py-3 rounded-lg hover:bg-[#1a3030] shadow-md hover:translate-y-[-2px] transition-all">
                 เข้าสู่ระบบ
             </button>
         </form>
@@ -44,5 +68,15 @@
         </p>
     </div>
 
+    <script>
+        function togglePassword(id) {
+            var x = document.getElementById(id);
+            if (x.type === "password") {
+                x.type = "text";
+            } else {
+                x.type = "password";
+            }
+        }
+    </script>
 </body>
 </html>

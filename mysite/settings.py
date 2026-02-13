@@ -33,6 +33,11 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost').split(',')
 # Application definition
 
 INSTALLED_APPS = [
+    # Custom apps
+    'plotcraft',
+    'tailwind',
+    'theme',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,11 +45,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_htmx',
-    'tailwind',
-    'theme',
-
-    # Custom apps
-    'plotcraft',
 ]
 
 MIDDLEWARE = [
@@ -151,3 +151,7 @@ LOGOUT_REDIRECT_URL = 'plotcraft:landing'
 # django-tailwind settings
 TAILWIND_APP_NAME = 'theme'
 TAILWIND_CSS_PATH = 'css/dist/styles.css'
+
+# ตั้งค่า Email สำหรับ Reset Password
+# สำหรับ Dev: ให้ปริ้นท์อีเมลลงใน Console (Terminal) แทนการส่งจริง
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
