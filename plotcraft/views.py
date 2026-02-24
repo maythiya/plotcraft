@@ -694,7 +694,7 @@ def scene_create(request):
         # 3. ส่ง project_id เข้าไปใน Form ตอน GET (เพื่อกรอง Dropdown)
         form = SceneForm(request.user, project_id=project_id)
 
-    return render(request, 'scenes/scene_form.html', {'form': form})
+    return render(request, 'scenes/scene_form.html', {'form': form, 'scene': None})
 
 
 @login_required
@@ -845,10 +845,20 @@ def timeline_event_create(request, pk):
 
     if request.method == 'POST':
         form = EventForm(request.POST, request.FILES, user=request.user, timeline=timeline)
-        
+        ai_prompt = request.POST.get('ai_prompt', '').strip()
+
         if form.is_valid():
             ev = form.save(commit=False)
             ev.timeline = timeline
+            # ถ้ามี ai_prompt ให้เรียก AI เพื่อร่าง/สรุปเนื้อหา
+            if ai_prompt:
+                from .rag_service import generate_timeline_event_summary
+                ai_result = generate_timeline_event_summary(ai_prompt, timeline=timeline, user=request.user)
+                # เติมผลลัพธ์ลง description (ถ้าเดิมว่าง หรือแนบต่อท้าย)
+                if not ev.description:
+                    ev.description = ai_result
+                else:
+                    ev.description += f"\n\n[AI สรุป/ร่าง]\n" + ai_result
             ev.save()
             form.save_m2m()
             return redirect('plotcraft:timeline_detail', pk=timeline.id)

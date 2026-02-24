@@ -48,15 +48,10 @@ class UserForm(forms.ModelForm):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['image', 'bio']
+        fields = ['image']
 
     def __init__(self, *args, **kwargs):
         super(ProfileForm, self).__init__(*args, **kwargs)
-        self.fields['bio'].widget.attrs.update({
-            'class': 'w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#DAA520]',
-            'rows': 3,
-            'placeholder': 'แนะนำตัวสั้นๆ...'
-        })
         self.fields['image'].widget.attrs.update({
             'class': 'hidden',
             'id': 'id_image',
@@ -234,7 +229,7 @@ class CharacterRelationshipForm(forms.ModelForm):
         model = CharacterRelationship
         fields = ['to_character', 'status', 'note']
 
-# FormSet (เหมือนเดิม ไม่ต้องแก้)
+    # FormSet (เหมือนเดิม ไม่ต้องแก้)
 RelationshipFormSet = inlineformset_factory(
     Character, 
     CharacterRelationship,

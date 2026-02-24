@@ -148,8 +148,8 @@
         const loadingText = document.getElementById('ai-loading');
         const errorText = document.getElementById('ai-error');
         
-        // ดึง ID ฉาก
-        const currentSceneId = "{{ object.id|default:scene.id|default:'' }}";
+        // ใช้ if เช็คก่อนว่ามี scene ไหม ถ้ามีค่อยเอา id มา
+        const currentSceneId = "{% if scene %}{{ scene.id }}{% endif %}";
 
         if (!concept) {
             alert("กรุณาใส่ไอเดียหรือคำสั่งก่อนค่ะ!");

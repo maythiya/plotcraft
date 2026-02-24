@@ -610,3 +610,38 @@ class RAGService:
             print(f"❌ Error deleting from RAG: {e}")
 # สร้าง Instance รอไว้เรียกใช้
 rag_service = RAGService()
+
+# ==================== TIMELINE EVENT GENERATOR ====================
+def generate_timeline_event_summary(prompt, timeline=None, user=None):
+    """ ใช้ AI สรุปหรือร่างเหตุการณ์ timeline event ตาม prompt ที่ผู้ใช้ระบุ """
+    from .models import Scene, Character
+    context = ""
+    # ถ้ามี timeline และต้องการดึงฉาก/ตัวละครมาเป็นบริบท
+    if timeline:
+        scenes = Scene.objects.filter(timelineevent__timeline=timeline)
+        characters = Character.objects.filter(timeline_events__timeline=timeline).distinct()
+        if scenes.exists():
+            context += "\nฉากในไทม์ไลน์นี้:\n"
+            for s in scenes:
+                context += f"- {s.title}: {s.content[:200].replace(chr(10), ' ').replace(chr(13), ' ')}\n"
+        if characters.exists():
+            context += "\nตัวละครในไทม์ไลน์นี้:\n"
+            for c in characters:
+                context += f"- {c.name}: {c.personality.replace(chr(10), ' ').replace(chr(13), ' ') if c.personality else ''}\n"
+    # ปรับแต่ง prompt ให้ AI ตอบแบบกระชับ ชัดเจน ไม่ใช้ตัวอักษรพิเศษ
+    system_prompt = (
+        "คุณคือผู้ช่วยนักเขียนนิยาย ช่วยสรุปหรือร่างเหตุการณ์ในไทม์ไลน์นี้ "
+        "โดยใช้ภาษากระชับ ชัดเจน ไม่ใช้ตัวอักษรพิเศษ เช่น #, *, -, /, ~, |, _ หรือ emoji ใด ๆ "
+        "ให้เนื้อหาสามารถนำไปใช้ในนิยายหรือบันทึกเหตุการณ์ได้ทันที ไม่ต้องมีหัวข้อหรือโครงสร้างพิเศษ "
+        "ตอบเป็นข้อความธรรมดาเท่านั้น"
+    )
+    full_prompt = f"{system_prompt}\n\nคำอธิบายหรือแนวทาง: {prompt}\n{context}"
+    rag = rag_service
+    if rag.llm:
+        response = rag.llm.invoke(full_prompt)
+        # ลบอักขระพิเศษที่ไม่ต้องการซ้ำอีกชั้น (กันพลาด)
+        clean = response
+        for ch in ['#', '*', '-', '/', '~', '|', '_', '•', '●', '–', '—', '>', '<', '→', '←', '★', '☆', '※', '✓', '✔', '✗', '✘', '→', '←', '⇒', '⇔', '➡', '⬅', '🔹', '🔸', '🔺', '🔻', '🔼', '🔽', '▶', '◀', '●', '○', '◆', '◇', '■', '□', '▲', '▼', '▶', '◀', '★', '☆', '※', '✓', '✔', '✗', '✘', '→', '←', '⇒', '⇔', '➡', '⬅', '🔹', '🔸', '🔺', '🔻', '🔼', '🔽', '▶', '◀', '●', '○', '◆', '◇', '■', '□', '▲', '▼', '▶', '◀', '★', '☆', '※', '✓', '✔', '✗', '✘']:
+            clean = clean.replace(ch, '')
+        return clean.strip()
+    return "[AI] ระบบยังไม่พร้อมใช้งาน (No API Key)"
