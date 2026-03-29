@@ -43,7 +43,13 @@
                 </div>
                 <div class="space-y-2">
                     <label class="block text-xs font-bold text-[#2F4F4F] uppercase tracking-wider">ร่างหรือสรุปเหตุการณ์ด้วย AI</label>
-                    <textarea name="ai_prompt" rows="2" class="w-full rounded-xl border border-[#2F4F4F]/20 p-3 text-sm" placeholder="เช่น อยากให้ AI สรุปเหตุการณ์จากฉากที่เลือก หรือร่างเหตุการณ์ใหม่จากเนื้อเรื่องย่อ..."></textarea>
+                    <div class="flex gap-2 items-start">
+                        <textarea id="ai-prompt" name="ai_prompt" rows="2" class="flex-1 rounded-xl border border-[#2F4F4F]/20 p-3 text-sm" placeholder="เช่น อยากให้ AI สรุปเหตุการณ์จากฉากที่เลือก หรือร่างเหตุการณ์ใหม่จากเนื้อเรื่องย่อ..."></textarea>
+                        <div class="flex flex-col gap-2">
+                            <button type="button" id="aiGenerateBtnEvent" class="px-4 py-2 bg-[#2F4F4F] text-white rounded-lg hover:bg-[#1a3030] text-sm">🔮 ร่าง</button>
+                            <p id="ai-loading" class="text-xs text-gray-500 hidden">⏳ กำลังร่าง...</p>
+                        </div>
+                    </div>
                     <p class="text-[10px] text-gray-400">ใส่คำอธิบายหรือแนวทางที่ต้องการให้ AI ช่วยร่างเหตุการณ์ เช่น "สรุปเหตุการณ์จากฉากที่เลือก" หรือ "แต่งเหตุการณ์ใหม่เกี่ยวกับตัวละครหลัก"</p>
                 </div>
                 <div class="pt-6 flex items-center gap-4">
@@ -78,4 +84,53 @@
         box-shadow: 0 0 0 3px rgba(218, 165, 32, 0.1);
     }
 </style>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const btn = document.getElementById('aiGenerateBtnEvent');
+        const promptEl = document.getElementById('ai-prompt');
+        const loading = document.getElementById('ai-loading');
+
+        if (btn) {
+            btn.addEventListener('click', function() {
+                const prompt = promptEl.value.trim();
+                if (!prompt) {
+                    alert('กรุณาใส่คำอธิบายก่อนนะคะ');
+                    return;
+                }
+
+                loading.classList.remove('hidden');
+                btn.disabled = true;
+
+                fetch('{% url "plotcraft:ai_generate_timeline_event" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({ timeline_id: {{ timeline.id }}, prompt: prompt })
+                })
+                .then(r => r.json())
+                .then(data => {
+                    loading.classList.add('hidden');
+                    btn.disabled = false;
+                    if (data.success) {
+                        const descEl = document.querySelector('[name="description"]') || document.getElementById('id_description');
+                        if (descEl) {
+                            descEl.value = data.description;
+                        }
+                        alert('✨ AI ร่างเหตุการณ์เรียบร้อยแล้ว');
+                        promptEl.value = '';
+                    } else {
+                        alert('เกิดข้อผิดพลาด: ' + (data.error || 'Unknown'));
+                    }
+                })
+                .catch(err => {
+                    loading.classList.add('hidden');
+                    btn.disabled = false;
+                    alert('เชื่อมต่อไม่ได้: ' + err);
+                });
+            });
+        }
+    });
+</script>
 {% endblock %}

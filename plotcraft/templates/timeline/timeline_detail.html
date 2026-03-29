@@ -206,6 +206,17 @@
                         <div class="h-px bg-gray-100 my-2"></div>
                         <div><label class="block text-xs font-bold text-[#2F4F4F] mb-1">เชื่อมฉาก</label>{{ event_form.related_scene }}</div>
                         <div><label class="block text-xs font-bold text-[#2F4F4F] mb-1">ตัวละคร</label>{{ event_form.characters }}</div>
+                        <div class="space-y-2">
+                            <label class="block text-xs font-bold text-[#2F4F4F] mb-1">ร่างหรือสรุปเหตุการณ์ด้วย AI</label>
+                            <div class="flex gap-2 items-start">
+                                <textarea id="modal-ai-prompt" name="ai_prompt" rows="2" class="flex-1 rounded-xl border border-[#2F4F4F]/20 p-3 text-sm" placeholder="เช่น อยากให้ AI สรุปเหตุการณ์จากฉากที่เลือก หรือร่างเหตุการณ์ใหม่จากเนื้อเรื่องย่อ..."></textarea>
+                                <div class="flex flex-col gap-2">
+                                    <button type="button" @click="generateDraft()" class="px-4 py-2 bg-[#2F4F4F] text-white rounded-lg hover:bg-[#1a3030] text-sm">🔮 ร่าง</button>
+                                    <p id="modal-ai-loading" class="text-xs text-gray-500 hidden">⏳ กำลังร่าง...</p>
+                                </div>
+                            </div>
+                            <p class="text-[10px] text-gray-400">ใส่คำอธิบายหรือแนวทางที่ต้องการให้ AI ช่วยร่างเหตุการณ์ เช่น "สรุปเหตุการณ์จากฉากที่เลือก" หรือ "แต่งเหตุการณ์ใหม่เกี่ยวกับตัวละครหลัก"</p>
+                        </div>
                         <div class="pt-4 flex gap-3">
                             <button type="submit" class="flex-1 py-3 bg-[#DAA520] text-white font-bold rounded-lg hover:bg-[#b8860b] shadow-md transition">บันทึก</button>
                             <button type="button" @click="mode === 'edit' ? mode = 'view' : closeModal()" class="px-6 py-3 border border-gray-300 rounded-lg text-gray-500 font-bold hover:bg-gray-50">ยกเลิก</button>
@@ -237,6 +248,34 @@
                         }
                     });
                 }
+            },
+            generateDraft() {
+                const promptEl = document.getElementById('modal-ai-prompt');
+                const loadingEl = document.getElementById('modal-ai-loading');
+                const prompt = promptEl ? promptEl.value.trim() : '';
+                if (!prompt) { alert('กรุณาใส่คำอธิบายก่อนนะคะ'); return; }
+                if (!loadingEl) return;
+                loadingEl.classList.remove('hidden');
+
+                fetch('{% url "plotcraft:ai_generate_timeline_event" %}', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
+                    body: JSON.stringify({ timeline_id: {{ timeline.id }}, prompt: prompt })
+                }).then(r => r.json()).then(data => {
+                    loadingEl.classList.add('hidden');
+                    if (data.success) {
+                        const desc = data.description;
+                        const descEl = document.querySelector('#eventForm [name="description"]') || document.getElementById('id_description');
+                        if (descEl) descEl.value = desc;
+                        alert('✨ AI ร่างเหตุการณ์เรียบร้อยแล้ว');
+                        if (promptEl) promptEl.value = '';
+                    } else {
+                        alert('เกิดข้อผิดพลาด: ' + (data.error || 'Unknown'));
+                    }
+                }).catch(err => {
+                    loadingEl.classList.add('hidden');
+                    alert('เชื่อมต่อไม่ได้: ' + err);
+                });
             },
             getHeaderTitle() {
                 if (this.mode === 'add') return '➕ เพิ่มเหตุการณ์ใหม่';

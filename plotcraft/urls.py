@@ -79,6 +79,7 @@ urlpatterns = [
     path('api/generate-character/', views.ai_generate_character, name='ai_generate_character'),
     path('api/generate/location/', views.ai_generate_location, name='ai_generate_location'),
     path('api/generate/item/', views.ai_generate_item, name='ai_generate_item'),
+    path('api/generate/timeline-event/', views.ai_generate_timeline_event, name='ai_generate_timeline_event'),
 
     # ==================== Reset Password ====================
     # 1. หน้ากรอกอีเมล (นี่คือจุดที่บอกให้ใช้ HTML ของคุณ)

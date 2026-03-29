@@ -397,7 +397,12 @@ def character_create(request):
             pass
 
     if request.method == 'POST':
-        # (ส่วนบันทึกข้อมูล เหมือนเดิมทุกอย่างครับ ไม่ต้องแก้)
+        # ถ้าไม่ได้มาจาก ?project= แต่ฟอร์มส่งมาพร้อมค่าของ project ให้ใช้อันนั้น
+        if not project and request.POST.get('project'):
+            try:
+                project = Novel.objects.get(id=request.POST.get('project'), author=request.user)
+            except (ValueError, Novel.DoesNotExist):
+                project = None
         form = CharacterForm(request.user, request.POST, request.FILES, project=project)
         formset = RelationshipFormSet(request.POST, form_kwargs={'user': request.user, 'project': project})
 
@@ -677,8 +682,9 @@ def scene_create(request):
     project_id = request.GET.get('project')
 
     if request.method == 'POST':
-        # 2. ส่ง project_id เข้าไปใน Form ตอน POST ด้วย เพื่อให้ Form รู้ว่า Project อะไร (เผื่อ validation fail)
-        form = SceneForm(request.user, request.POST, project_id=project_id)
+        # 2. อ่าน project จาก POST ถ้ามี (จะมีเมื่อผู้ใช้ส่งฟอร์ม)
+        posted_project = request.POST.get('project') or project_id
+        form = SceneForm(request.user, request.POST, project_id=posted_project)
         if form.is_valid():
             obj = form.save(commit=False)
             obj.created_by = request.user
@@ -877,8 +883,20 @@ def timeline_event_update(request, pk):
 
     if request.method == 'POST':
         form = EventForm(request.POST, request.FILES, user=request.user, instance=event)
+        ai_prompt = request.POST.get('ai_prompt', '').strip()
+
         if form.is_valid():
-            form.save()
+            ev = form.save(commit=False)
+            # ถ้ามี ai_prompt ให้เรียก AI เพื่อร่าง/สรุปเนื้อหา (เหมือน create)
+            if ai_prompt:
+                from .rag_service import generate_timeline_event_summary
+                ai_result = generate_timeline_event_summary(ai_prompt, timeline=event.timeline, user=request.user)
+                if not ev.description:
+                    ev.description = ai_result
+                else:
+                    ev.description += f"\n\n[AI สรุป/ร่าง]\n" + ai_result
+            ev.save()
+            form.save_m2m()
             return redirect('plotcraft:timeline_detail', pk=event.timeline.id)
     else:
         form = EventForm(user=request.user, instance=event)
@@ -1362,3 +1380,29 @@ def ai_generate_item(request):
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+
+@csrf_exempt
+@login_required
+def ai_generate_timeline_event(request):
+    """ API สำหรับร่าง/สรุปเหตุการณ์ใน Timeline โดยใช้ rag_service.generate_timeline_event_summary """
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            timeline_id = data.get('timeline_id')
+            prompt = data.get('prompt', '')
+
+            if not timeline_id:
+                return JsonResponse({'success': False, 'error': 'Missing timeline_id'}, status=400)
+
+            timeline = get_object_or_404(Timeline, id=timeline_id)
+            if timeline.created_by != request.user and not request.user.is_staff:
+                return JsonResponse({'success': False, 'error': 'Permission denied'}, status=403)
+
+            from .rag_service import generate_timeline_event_summary
+            result = generate_timeline_event_summary(prompt, timeline=timeline, user=request.user)
+            return JsonResponse({'success': True, 'description': result})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+    return JsonResponse({'success': False, 'error': 'Method not allowed'}, status=405)

@@ -119,7 +119,8 @@ class CharacterForm(forms.ModelForm):
         # --- ปรับแต่งราย Field ---
         
         # Project
-        self.fields['project'].widget.attrs.update({'class': select})
+        # เมื่อผู้ใช้เลือก Project ให้รีโหลดหน้าเพื่อส่ง ?project=<id>
+        self.fields['project'].widget.attrs.update({'class': select, 'onchange': "if(this.value) window.location.href='?project=' + this.value"})
         
         # ข้อมูลพื้นฐาน
         self.fields['name'].widget.attrs.update({'placeholder': 'ชื่อตัวละคร (จำเป็น)'})
@@ -244,8 +245,11 @@ class LocationForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        # ให้เลือกเฉพาะโปรเจกต์ของผู้ใช้
         self.fields['project'].queryset = Novel.objects.filter(author=user)
-        self.fields['residents'].queryset = Character.objects.filter(created_by=user)
+
+        # เริ่มต้นไม่แสดง residents เพื่อป้องกันการแสดงข้อมูลมั่ว
+        self.fields['residents'].queryset = Character.objects.none()
 
         base = (
             "w-full px-4 py-2 bg-white border border-[#FAEBD7] "
@@ -255,7 +259,11 @@ class LocationForm(forms.ModelForm):
         textarea = base + " min-h-[120px]"
         select = base
 
-        self.fields['project'].widget.attrs.update({'class': select})
+        # ให้ Project dropdown รีโหลดหน้าเมื่อเปลี่ยนค่าเพื่อส่ง ?project=<id>
+        self.fields['project'].widget.attrs.update({
+            'class': select,
+            'onchange': "if(this.value) window.location.href='?project=' + this.value"
+        })
         self.fields['name'].widget.attrs.update({'class': base})
         self.fields['world_type'].widget.attrs.update({
             'class': base,
@@ -265,6 +273,40 @@ class LocationForm(forms.ModelForm):
         self.fields['residents'].widget = forms.SelectMultiple(
             attrs={'class': select, 'size': 6}
         )
+
+        # ================= LOGIC: กรอง residents ตาม Project ที่เลือก =================
+        selected_project = None
+
+        # กรณี A: Submit/POST -> อ่านจาก data
+        if self.data and 'project' in self.data:
+            try:
+                project_id_post = int(self.data.get('project'))
+                selected_project = Novel.objects.get(id=project_id_post, author=user)
+            except (ValueError, TypeError, Novel.DoesNotExist):
+                selected_project = None
+
+        # กรณี B: มี initial (จาก ?project= in view) -> อ่านจาก initial ที่ view ใส่เข้ามา
+        elif 'project' in (kwargs.get('initial') or {}):
+            initial_proj = (kwargs.get('initial') or {}).get('project')
+            # initial อาจเป็น instance หรือ id
+            if isinstance(initial_proj, Novel):
+                selected_project = initial_proj
+            else:
+                try:
+                    selected_project = Novel.objects.get(id=initial_proj, author=user)
+                except (TypeError, ValueError, Novel.DoesNotExist):
+                    selected_project = None
+
+        # กรณี C: กำลังแก้ไข -> ดึงจาก instance
+        elif self.instance.pk and getattr(self.instance, 'project', None):
+            selected_project = self.instance.project
+
+        # ถ้ามี selected_project ให้กรอง residents ให้เป็นตัวละครในโปรเจกต์นั้น
+        if selected_project:
+            self.fields['residents'].queryset = Character.objects.filter(created_by=user, project=selected_project)
+        # Safety: ถ้ายังไม่เลือก Project ให้ปิดการแสดงผล
+        elif self.instance.pk is None:
+            self.fields['residents'].queryset = Character.objects.none()
 
         guides = {
             'terrain': 'เช่น ภูเขา, ป่าทึบ, ทะเลทราย, ที่ราบลุ่ม, ลักษณะเด่นทางธรณีวิทยา...',
@@ -395,7 +437,7 @@ class SceneForm(forms.ModelForm):
         if self.data and 'project' in self.data:
             try:
                 project_id_post = int(self.data.get('project'))
-                selected_project = Novel.objects.get(id=project_id_post)
+                selected_project = Novel.objects.get(id=project_id_post, author=user)
             except (ValueError, TypeError, Novel.DoesNotExist):
                 pass
 
@@ -492,9 +534,17 @@ class TimelineForm(forms.ModelForm):
 class EventForm(forms.ModelForm):
     def __init__(self, *args, user=None, timeline=None, **kwargs):
         super().__init__(*args, **kwargs)
+        # เริ่มต้นให้เป็นของผู้ใช้ก่อน แล้วถ้ามี timeline ที่เชื่อมกับ project ให้กรองลงไปอีก
         if user:
             self.fields['related_scene'].queryset = Scene.objects.filter(created_by=user)
             self.fields['characters'].queryset = Character.objects.filter(created_by=user)
+
+        # ถ้ามี timeline และ timeline.related_project -> กรองตัวเลือกให้เป็นของโปรเจกต์นั้นเท่านั้น
+        if timeline and getattr(timeline, 'related_project', None):
+            proj = timeline.related_project
+            # เฉพาะ Scenes / Characters ที่อยู่ในโปรเจกต์นั้น
+            self.fields['related_scene'].queryset = self.fields['related_scene'].queryset.filter(project=proj)
+            self.fields['characters'].queryset = self.fields['characters'].queryset.filter(project=proj)
 
     class Meta:
         model = TimelineEvent

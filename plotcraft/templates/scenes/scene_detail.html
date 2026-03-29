@@ -183,6 +183,13 @@
              <h2 class="text-xl font-bold">เนื้อหาบรรยาย</h2>
           </div>
         </header>
+        <div class="prose max-w-none text-gray-800 whitespace-pre-line">
+            {% if scene.content %}
+                {{ scene.content|linebreaksbr }}
+            {% else %}
+                <p class="text-gray-400">- ยังไม่มีเนื้อหา -</p>
+            {% endif %}
+        </div>
       </section>
 
     </main>
