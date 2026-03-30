@@ -42,6 +42,7 @@ services:
     command: gunicorn mysite.wsgi:application --bind 0.0.0.0:8000 --workers 1 --timeout 120
     volumes:
       - .:/code
+      - huggingface_cache:/root/.cache/huggingface
     ports:
       - "8000:8000"
     shm_size: '2gb'
@@ -57,7 +58,9 @@ services:
       - DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,[::1]
       - CHROMA_HOST=chroma_db # บอก Django ว่า ChromaDB อยู่ที่ไหน
       - CHROMA_PORT=8000  # บอก Django ว่า ChromaDB ใช้พอร์ตไหน
+    
 
 volumes:
   db_data:
-  chroma_data: # เก็บข้อมูล Vector ไม่ให้หาย
+  chroma_data:
+  huggingface_cache: 

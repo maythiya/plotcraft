@@ -111,39 +111,6 @@
                 </div>
             </div>
         </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-                <h3 class="text-sm font-bold text-[#DAA520] uppercase mb-2">ตัวละครที่เกี่ยวข้อง</h3>
-                {% if scene.characters.all %}
-                <div class="flex flex-wrap gap-2">
-                    {% for char in scene.characters.all %}
-                        <a href="{% url 'plotcraft:character_detail' char.id %}" class="px-2 py-1 bg-gray-100 border border-gray-200 rounded text-sm text-gray-600 hover:bg-[#2F4F4F] hover:text-[#FAEBD7] transition">
-                            {{ char.name }}
-                        </a>
-                    {% endfor %}
-                </div>
-                {% else %}
-                    <p class="text-sm text-gray-400">- ไม่มี -</p>
-                {% endif %}
-            </div>
-
-            <div>
-                <h3 class="text-sm font-bold text-[#DAA520] uppercase mb-2">ไอเทมสำคัญ</h3>
-                {% if scene.items.all %}
-                <div class="flex flex-wrap gap-2">
-                    {% for item in scene.items.all %}
-                        <a href="{% url 'plotcraft:item_detail' item.id %}" class="px-2 py-1 bg-amber-50 border border-amber-100 text-amber-800 rounded text-sm flex items-center gap-1 hover:shadow-md transition">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
-                            {{ item.name }}
-                        </a>
-                    {% endfor %}
-                </div>
-                {% else %}
-                    <p class="text-sm text-gray-400">- ไม่มี -</p>
-                {% endif %}
-            </div>
-        </div>
       </section>
 
       <section class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border-t-4 border-[#DAA520]">

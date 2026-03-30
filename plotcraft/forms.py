@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django import forms
+from django.db.models import Q
 from .models import (
     CharacterRelationship, User, Profile, Novel, Chapter, Character, Location, Item,
     Scene, Timeline, TimelineEvent
@@ -413,59 +414,77 @@ class ItemForm(forms.ModelForm):
 
 class SceneForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
-        # รับค่า project_id ที่ส่งมาจาก View
+        # 1. รับ project_id จาก views.py อย่างระมัดระวัง
         project_id = kwargs.pop('project_id', None)
         super().__init__(*args, **kwargs)
 
-        # 1. ตั้งค่า QuerySet เริ่มต้น: เอาเฉพาะข้อมูลของ User คนนี้เท่านั้น
+        # 2. กำหนด QuerySet ดึงโปรเจกต์ทั้งหมดที่ผู้ใช้แต่ง
         self.fields['project'].queryset = Novel.objects.filter(author=user)
-        self.fields['location'].queryset = Location.objects.filter(created_by=user)
-        self.fields['pov_character'].queryset = Character.objects.filter(created_by=user)
-        self.fields['characters'].queryset = Character.objects.filter(created_by=user)
-        self.fields['items'].queryset = Item.objects.filter(created_by=user)
-
-        # 2. เพิ่ม Event onchange ให้กับ Project Dropdown
-        # เพื่อให้เมื่อเลือก Project แล้วหน้าเว็บรีโหลดส่งค่า project กลับมา
+        
+        # เพิ่ม onchange เพื่อโหลดหน้าเว็บใหม่เมื่อสลับเรื่อง
         self.fields['project'].widget.attrs.update({
             'onchange': "if(this.value) window.location.href='?project=' + this.value"
         })
 
-        # 3. Logic หา Project ที่กำลังทำงานอยู่ เพื่อกรองตัวเลือกย่อย
+        # 3. ลอจิกค้นหาว่า "ตอนนี้เรากำลังทำงานอยู่กับโปรเจกต์ไหน"
         selected_project = None
 
-        # กรณี A: มีการ Submit Form (POST) -> ดึงจาก data ที่ส่งมา
-        if self.data and 'project' in self.data:
+        if self.data and self.data.get('project'):
+            # กรณีผู้ใช้กด Submit Form (POST)
             try:
-                project_id_post = int(self.data.get('project'))
-                selected_project = Novel.objects.get(id=project_id_post, author=user)
+                selected_project = Novel.objects.get(id=int(self.data.get('project')), author=user)
             except (ValueError, TypeError, Novel.DoesNotExist):
                 pass
-
-        # กรณี B: สร้างใหม่ (Create) -> ดึง Project จาก URL (project_id)
         elif project_id:
+            # กรณีรับค่าจาก URL เช่น ?project=1
             try:
-                selected_project = Novel.objects.get(id=project_id, author=user)
+                # รับ project โดย id โดยไม่บังคับว่าเป็นของ user เพื่อให้ฟอร์มสามารถ
+                # แสดงตัวละคร/ไอเท็มที่ผูกกับโปรเจกต์นั้นได้ (แต่การบันทึกจะตรวจสอบสิทธิ์
+                # อีกครั้งใน view)
+                selected_project = Novel.objects.get(id=int(project_id))
                 self.fields['project'].initial = selected_project
-            except Novel.DoesNotExist:
+            except (ValueError, TypeError, Novel.DoesNotExist):
                 pass
-        
-        # กรณี C: กำลังแก้ไข (Edit) -> ดึง Project จากข้อมูลเดิมในฐานข้อมูล
+        elif self.initial and self.initial.get('project'):
+            # กรณี View พยายามส่ง initial เข้ามา
+            try:
+                p_id = self.initial.get('project')
+                if isinstance(p_id, Novel):
+                    selected_project = p_id
+                else:
+                    selected_project = Novel.objects.get(id=int(p_id), author=user)
+            except (ValueError, TypeError, Novel.DoesNotExist):
+                pass
         elif self.instance.pk and self.instance.project:
+            # กรณีหน้าแก้ไข (Edit Scene) ที่มีข้อมูลอยู่แล้ว
             selected_project = self.instance.project
 
-        # 4. กรองตัวเลือกทั้งหมดให้เหลือแค่ใน Project นั้น
+        # 4. เมื่อรู้ว่าอยู่โปรเจกต์ไหน ให้กรองข้อมูลมาแสดง
         if selected_project:
-            self.fields['location'].queryset = self.fields['location'].queryset.filter(project=selected_project)
-            self.fields['pov_character'].queryset = self.fields['pov_character'].queryset.filter(project=selected_project)
-            self.fields['characters'].queryset = self.fields['characters'].queryset.filter(project=selected_project)
-            self.fields['items'].queryset = self.fields['items'].queryset.filter(project=selected_project)
-        
-        # กรณี Safety: ถ้ายังไม่เลือก Project เลย -> ปิดการแสดงผลตัวเลือกย่อยไปก่อน
-        elif self.instance.pk is None:
-             self.fields['location'].queryset = Location.objects.none()
-             self.fields['pov_character'].queryset = Character.objects.none()
-             self.fields['characters'].queryset = Character.objects.none()
-             self.fields['items'].queryset = Item.objects.none()
+            # แสดง Location เฉพาะของโปรเจกต์
+            self.fields['location'].queryset = Location.objects.filter(project=selected_project)
+
+            # สำหรับตัวละครและ POV: แสดงตัวละครที่อยู่ในโปรเจกต์นั้น
+            # และรวมตัวละครที่ผู้ใช้สร้าง (fallback) เพื่อให้ผู้ใช้เลือกตัวละครแม้ยังไม่ผูก project
+            pid = getattr(selected_project, 'id', None)
+            self.fields['pov_character'].queryset = Character.objects.filter(
+                Q(project_id=pid) | Q(created_by=user)
+            ).distinct()
+
+            self.fields['characters'].queryset = Character.objects.filter(
+                Q(project_id=pid) | Q(created_by=user)
+            ).distinct()
+
+            # ไอเท็มแสดงของโปรเจกต์หรือของผู้ใช้
+            self.fields['items'].queryset = Item.objects.filter(
+                Q(project_id=pid) | Q(created_by=user)
+            ).distinct()
+        else:
+            # ไม่มีโปรเจกต์ที่ชัดเจน -> แสดงเฉพาะทรัพยากรที่ผู้ใช้สร้าง (fallback)
+            self.fields['location'].queryset = Location.objects.filter(created_by=user)
+            self.fields['pov_character'].queryset = Character.objects.filter(created_by=user)
+            self.fields['characters'].queryset = Character.objects.filter(created_by=user)
+            self.fields['items'].queryset = Item.objects.filter(created_by=user)
 
         # ====================== ส่วนตกแต่ง WIDGETS & CSS ======================
         base = 'w-full px-4 py-2 bg-white border border-[#FAEBD7] rounded-lg focus:ring-2 focus:ring-[#DAA520] outline-none transition'
@@ -489,10 +508,10 @@ class SceneForm(forms.ModelForm):
         self.fields['pov_character'].widget.attrs.update({'class': select})
 
         self.fields['characters'].widget = forms.SelectMultiple(
-            attrs={'class': select, 'size': 6}
+            attrs={'class': select, 'size': 6, 'style': 'color: #2F4F4F; background-color: #ffffff;'}
         )
         self.fields['items'].widget = forms.SelectMultiple(
-            attrs={'class': select, 'size': 6}
+            attrs={'class': select, 'size': 6, 'style': 'color: #2F4F4F; background-color: #ffffff;'}
         )
 
         # Story beat
@@ -510,12 +529,9 @@ class SceneForm(forms.ModelForm):
 
     class Meta:
         model = Scene
-        fields = [
-            'project', 'title', 'order', 'status',
-            'location', 'pov_character', 'characters', 'items',
-            'goal', 'conflict', 'outcome',
-            'content'
-        ]
+        fields = ['title', 'order', 'project', 'location',
+        'pov_character', 'characters', 'items', 'content', 'status',
+        'goal', 'conflict', 'outcome']
 
 
 # ==================== TIMELINE FORMS (from timeline) ====================

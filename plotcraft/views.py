@@ -678,30 +678,82 @@ def scene_list(request):
 
 @login_required
 def scene_create(request):
-    # 1. รับค่า project จาก URL (เช่น ?project=1)
+    # รับค่า project_id จาก URL
     project_id = request.GET.get('project')
 
     if request.method == 'POST':
-        # 2. อ่าน project จาก POST ถ้ามี (จะมีเมื่อผู้ใช้ส่งฟอร์ม)
+        # ใช้ค่าจาก POST หรือ URL ก็ได้ถ้า POST หาย
         posted_project = request.POST.get('project') or project_id
+        
+        # ส่งข้อมูลทั้งหมดเข้า Form
         form = SceneForm(request.user, request.POST, project_id=posted_project)
+        
         if form.is_valid():
             obj = form.save(commit=False)
+            # ตรวจสอบสิทธิ์: ผู้ใช้ต้องเป็นเจ้าของโปรเจกต์ที่จะเพิ่มฉาก
+            if obj.project and getattr(obj.project, 'author', None) != request.user:
+                messages.error(request, "ไม่มีสิทธิ์สร้างฉากในโปรเจกต์นี้")
+                return redirect('plotcraft:scene_list')
+
             obj.created_by = request.user
             obj.save()
-            form.save_m2m() # สำคัญมากสำหรับ ManyToMany Field (characters, items)
+            form.save_m2m() # เซฟความสัมพันธ์พวก ตัวละคร, ไอเทม
 
             messages.success(request, f"สร้างฉาก '{obj.title}' เรียบร้อย")
-
-            # Redirect ไปหน้ารายการโดยระบุ Project เดิม
             url = reverse('plotcraft:scene_list')
             return redirect(f"{url}?project={obj.project.id}")
     else:
-        # 3. ส่ง project_id เข้าไปใน Form ตอน GET (เพื่อกรอง Dropdown)
-        form = SceneForm(request.user, project_id=project_id)
+        # เปิดหน้าเว็บครั้งแรก
+        initial_data = {}
+        if project_id:
+            initial_data['project'] = project_id
 
-    return render(request, 'scenes/scene_form.html', {'form': form, 'scene': None})
+        form = SceneForm(request.user, project_id=project_id, initial=initial_data)
 
+    # เพิ่มข้อมูลดีบั๊ก: จำนวนตัวเลือกที่ form กรองมาให้
+    characters_count = 0
+    items_count = 0
+    try:
+        characters_count = form.fields['characters'].queryset.count()
+    except Exception:
+        characters_count = 0
+    try:
+        items_count = form.fields['items'].queryset.count()
+    except Exception:
+        items_count = 0
+
+    # for debugging: small lists of the available names
+    try:
+        characters_list = list(form.fields['characters'].queryset.values_list('id', 'name'))
+    except Exception:
+        characters_list = []
+    try:
+        items_list = list(form.fields['items'].queryset.values_list('id', 'name'))
+    except Exception:
+        items_list = []
+
+    return render(request, 'scenes/scene_form.html', {
+        'form': form,
+        'scene': None,
+        'characters_choices_count': characters_count,
+        'items_choices_count': items_count,
+        'characters_choices_list': characters_list,
+        'items_choices_list': items_list,
+    })
+
+@login_required
+def render_character_list_for_scene(scene):
+    characters = scene.characters.all()
+    if not characters:
+        return "ไม่มีตัวละครในฉากนี้"
+    return ", ".join([char.name for char in characters])
+
+@login_required
+def render_item_list_for_scene(scene):
+    items = scene.items.all()
+    if not items:
+        return "ไม่มีไอเท็มในฉากนี้"
+    return ", ".join([item.name for item in items])
 
 @login_required
 def scene_edit(request, pk):
