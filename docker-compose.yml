@@ -20,16 +20,26 @@ services:
       retries: 5
       start_period: 30s
 
-  chroma_db: # เพิ่ม Service นี้สำหรับ RAG Database
+  adminer: # 🔹 สำหรับเข้าไปส่องตารางใน MySQL
+    image: adminer:latest
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  chroma_db: # ฐานข้อมูล Vector (RAG) ของเรา
     image: chromadb/chroma:latest
     volumes:
       - chroma_data:/chroma/chroma
     ports:
-      - "8001:8000"
+      - "8001:8000" # 🔹 ดึงพอร์ต 8001 ออกมาให้คอมพิวเตอร์เราส่องได้โดยตรง
     environment:
       - IS_PERSISTENT=TRUE
+      - CHROMA_SERVER_CORS_ALLOW_ORIGINS=["*"] # 🔹 เปิดประตูให้หน้าเว็บที่เราสร้างเข้าไปส่องข้อมูลได้
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/heartbeat"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v2/heartbeat"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -51,16 +61,15 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      chroma_db: # รอให้ ChromaDB พร้อมก่อน
+      chroma_db: 
         condition: service_started
     environment:
-      - DEBUG=1  #  บังคับเปิด Debug Mode เพื่อให้ Django ยอมส่งไฟล์ CSS
+      - DEBUG=1  
       - DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,[::1]
-      - CHROMA_HOST=chroma_db # บอก Django ว่า ChromaDB อยู่ที่ไหน
-      - CHROMA_PORT=8000  # บอก Django ว่า ChromaDB ใช้พอร์ตไหน
-    
+      - CHROMA_HOST=chroma_db 
+      - CHROMA_PORT=8000  
 
 volumes:
   db_data:
   chroma_data:
-  huggingface_cache: 
+  huggingface_cache:
