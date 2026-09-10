@@ -8,7 +8,7 @@
         
         <div class="text-center mb-12">
             <h1 class="text-4xl md:text-5xl font-bold text-[#2F4F4F] mb-4 tracking-tight">
-                ⏳ เส้นเวลา (Timelines)
+                <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M6 3h12M6 21h12M8 3c0 5 8 5 8 10s-8 5-8 8M16 3c0 5-8 5-8 10s8 5 8 8"/></svg> เส้นเวลา (Timelines)
             </h1>
             <p class="text-lg text-[#2F4F4F]/70 max-w-2xl mx-auto">
                 "ประวัติศาสตร์ไม่ได้เกิดขึ้นภายในวันเดียว" มาจัดการลำดับเหตุการณ์ในนิยายของคุณ 
@@ -58,9 +58,9 @@
                             <div class="flex items-center gap-2">
                                 <span class="text-xs font-bold px-2 py-1 bg-[#FAEBD7] text-[#2F4F4F] rounded-md">
                                     {% if t.related_project %}
-                                        📖 {{ t.related_project.title|truncatechars:15 }}
+                                        <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5V21.5M8 7h8M8 11h8"/></svg> {{ t.related_project.title|truncatechars:15 }}
                                     {% else %}
-                                        📝 ทั่วไป
+                                        <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 20h16M6 17.5V5a2 2 0 0 1 2-2h7"/><path d="m14 6 4-4 3 3-4 4-4 1z"/></svg> ทั่วไป
                                     {% endif %}
                                 </span>
                             </div>

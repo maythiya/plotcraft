@@ -38,7 +38,7 @@
                {% else %}
                    bg-white text-[#2F4F4F] border-[#2F4F4F]/30 hover:border-[#DAA520] hover:text-[#DAA520]
                {% endif %}">
-               <span>📖 {{ project.title }}</span>
+               <span><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5V21.5M8 7h8M8 11h8"/></svg> {{ project.title }}</span>
                <span class="bg-black/10 px-1.5 py-0.5 rounded-md text-[10px] opacity-70">
                    {{ project.scenes.count }}
                </span>
@@ -88,13 +88,13 @@
                     
                     <div class="text-sm text-gray-500 flex flex-wrap gap-4 mb-3">
                         {% if scene.project %}
-                            <span class="flex items-center gap-1">📖 {{ scene.project.title }}</span>
+                            <span class="flex items-center gap-1"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5V21.5M8 7h8M8 11h8"/></svg> {{ scene.project.title }}</span>
                         {% endif %}
                         {% if scene.location %}
-                            <span class="flex items-center gap-1 text-[#DAA520]">📍 {{ scene.location.name }}</span>
+                            <span class="flex items-center gap-1 text-[#DAA520]"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0z"/><circle cx="12" cy="10" r="2.5"/></svg> {{ scene.location.name }}</span>
                         {% endif %}
                         {% if scene.pov_character %}
-                            <span class="flex items-center gap-1">👀 POV: {{ scene.pov_character.name }}</span>
+                            <span class="flex items-center gap-1"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z"/><circle cx="12" cy="12" r="2.5"/></svg> POV: {{ scene.pov_character.name }}</span>
                         {% endif %}
                     </div>
 
@@ -135,7 +135,7 @@
     {% else %}
 
     <div class="text-center py-12 bg-white rounded-xl border border-[#FAEBD7]">
-        <div class="text-5xl mb-4">🎬</div>
+        <div class="text-5xl mb-4"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 7h16v12H4zM4 7l3-4h10l3 4M8 3l3 4M14 3l3 4"/></svg></div>
         <h3 class="text-xl font-bold text-[#2F4F4F]">ยังไม่มีฉาก</h3>
         <p class="text-gray-500">เริ่มวางโครงเรื่องของคุณทีละฉาก</p>
     </div>

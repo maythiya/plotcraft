@@ -31,7 +31,7 @@
                             <img src="{{ novel.cover_image.url }}" class="w-full h-full object-cover">
                         {% else %}
                             <div class="w-full h-full flex flex-col items-center justify-center text-gray-300 bg-gray-50">
-                                <span class="text-5xl mb-2">📖</span>
+                                <span class="text-5xl mb-2"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5V21.5M8 7h8M8 11h8"/></svg></span>
                                 <span class="text-xs text-gray-400">No Cover</span>
                             </div>
                         {% endif %}
@@ -99,7 +99,7 @@
         <div class="mb-8">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-xl font-bold text-[#2F4F4F] flex items-center gap-2">
-                    <span class="text-2xl">👥</span> ตัวละคร
+                    <span class="text-2xl"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="16" cy="9" r="2.5"/><path d="M3.5 21a5.5 5.5 0 0 1 11 0M14 16a5 5 0 0 1 6.5 5"/></svg></span> ตัวละคร
                 </h3>
             </div>
 
@@ -161,11 +161,11 @@
                              style="display: none;">
 
                             <a href="{% url 'plotcraft:export_novel_epub' novel.id %}" class="flex px-4 py-3 text-gray-700 hover:bg-[#DAA520]/10 hover:text-[#DAA520] transition text-sm font-bold items-center gap-2">
-                                <span class="text-xl">📱</span> Export as EPUB
+                                <span class="text-xl"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg></span> Export as EPUB
                             </a>
                             <div class="h-px bg-gray-100"></div>
                             <a href="{% url 'plotcraft:export_novel_pdf' novel.id %}" target="_blank" class="flex px-4 py-3 text-gray-700 hover:bg-[#DAA520]/10 hover:text-[#DAA520] transition text-sm font-bold items-center gap-2">
-                                <span class="text-xl">📄</span> Export as PDF
+                                <span class="text-xl"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6zM14 3v5h5M9 13h6M9 17h6"/></svg></span> Export as PDF
                             </a>
                         </div>
                     </div>

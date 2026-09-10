@@ -43,7 +43,7 @@
                     <span class="text-[#DAA520] drop-shadow-sm">
                         {{ user.display_name|default:user.username|default:"นักเขียน" }}
                     </span>
-                    <span class="animate-bounce inline-block origin-bottom ml-2">👋</span>
+                    <span class="animate-bounce inline-block origin-bottom ml-2"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M7 12V6a1.5 1.5 0 0 1 3 0v4-6a1.5 1.5 0 0 1 3 0v6-5a1.5 1.5 0 0 1 3 0v6-3a1.5 1.5 0 0 1 3 0v6c0 4-3 7-7 7-4 0-7-3-7-7v-2z"/></svg></span>
                 </h1>
                 <p class="text-gray-600 text-lg max-w-2xl leading-relaxed">
                     พร้อมจะร้อยเรียงจินตนาการของคุณใน <span class="font-bold text-[#2F4F4F]">PlotCraft</span> แล้วหรือยัง?
@@ -59,7 +59,7 @@
     <div class="mb-16 fade-in-up delay-200">
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-2xl font-bold flex items-center gap-3 text-[#2F4F4F]">
-                <span class="p-2 bg-[#2F4F4F]/10 rounded-lg text-2xl">📚</span> งานเขียนของคุณ
+                <span class="p-2 bg-[#2F4F4F]/10 rounded-lg text-2xl"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 5h4v15H4zM8 4h4v16H8zM12 6h4v14h-4zM16 5h4v15h-4z"/></svg></span> งานเขียนของคุณ
             </h2>
             {% if novels %}
             <a href="{% url 'plotcraft:novel_list' %}" class="text-sm font-bold text-[#DAA520] hover:text-[#2F4F4F] transition flex items-center gap-1 group">
@@ -80,7 +80,7 @@
                         <img src="{{ novel.cover_image.url }}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500">
                     {% else %}
                         <div class="w-full h-full bg-linear-to-br from-[#2F4F4F] to-[#1a3030] flex flex-col items-center justify-center text-[#FAEBD7] p-2 text-center">
-                            <div class="text-3xl mb-1">📖</div>
+                            <div class="text-3xl mb-1"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5V21.5M8 7h8M8 11h8"/></svg></div>
                         </div>
                     {% endif %}
                 </div>
@@ -137,7 +137,7 @@
     <div class="mb-16 fade-in-up delay-300">
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-2xl font-bold flex items-center gap-3">
-                <span class="p-2 bg-blue-100 rounded-lg text-2xl">👤</span> ตัวละครของคุณ
+                <span class="p-2 bg-blue-100 rounded-lg text-2xl"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 21a7 7 0 0 1 14 0"/></svg></span> ตัวละครของคุณ
             </h2>
             {% if characters %}
             <a href="{% url 'plotcraft:character_list' %}" class="text-sm font-bold text-[#DAA520] hover:text-[#2F4F4F] transition flex items-center gap-1 group">
@@ -188,7 +188,7 @@
         </div>
         {% else %}
         <div class="bg-white rounded-2xl p-10 text-center border-2 border-dashed border-[#2F4F4F]/10">
-            <div class="text-6xl mb-4 grayscale opacity-50">👤</div>
+            <div class="text-6xl mb-4 grayscale opacity-50"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 21a7 7 0 0 1 14 0"/></svg></div>
             <h3 class="text-xl font-bold text-[#2F4F4F] mb-2">ยังไม่มีตัวละคร</h3>
             <p class="text-gray-500 mb-6">เริ่มสร้างตัวละครแรกของคุณ เพื่อเติมเต็มโลกใบนี้</p>
             <a href="{% url 'plotcraft:character_create' %}" class="inline-block px-6 py-2 bg-[#DAA520] text-white rounded-lg font-bold hover:bg-[#b8860b] transition shadow-md hover:-translate-y-0.5 transform">
@@ -203,7 +203,7 @@
     <div class="mb-12 fade-in-up delay-300">
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-2xl font-bold flex items-center gap-3">
-                <span class="p-2 bg-[#DAA520]/10 rounded-lg text-2xl">🗺️</span> สถานที่ของคุณ
+                <span class="p-2 bg-[#DAA520]/10 rounded-lg text-2xl"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg>️</span> สถานที่ของคุณ
             </h2>
             {% if locations %}
             <a href="{% url 'plotcraft:location_list' %}" class="text-sm font-bold text-[#DAA520] hover:text-[#2F4F4F] transition flex items-center gap-1 group">
@@ -248,7 +248,7 @@
         </div>
         {% else %}
         <div class="bg-white rounded-2xl p-10 text-center border-2 border-dashed border-[#2F4F4F]/10">
-            <div class="text-6xl mb-4 grayscale opacity-50">🗺️</div>
+            <div class="text-6xl mb-4 grayscale opacity-50"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg>️</div>
             <h3 class="text-xl font-bold text-[#2F4F4F] mb-2">ยังไม่มีสถานที่</h3>
             <p class="text-gray-500 mb-6">เริ่มสร้างสถานที่แรกของคุณ เพื่อเติมเต็มโลกใบนี้</p>
             <a href="{% url 'plotcraft:location_create' %}" class="inline-block px-6 py-2 bg-[#DAA520] text-white rounded-lg font-bold hover:bg-[#b8860b] transition shadow-md hover:-translate-y-0.5 transform">
