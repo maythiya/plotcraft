@@ -13,14 +13,14 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
            </svg>
         </div>
-        <h1 class="text-3xl font-bold text-[#2F4F4F]">ไอเทมทั้งหมด (Items & Artifacts)</h1>
+        <h1 class="text-3xl font-bold text-[#2F4F4F]">ItemsAll (Items & Artifacts)</h1>
       </div>
       
       <a href="{% url 'plotcraft:item_create' %}" class="px-5 py-2 bg-[#DAA520] hover:bg-[#b8860b] text-white rounded-lg shadow-md hover:shadow-lg transition font-semibold flex items-center gap-2">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
         </svg>
-        สร้างไอเทมใหม่
+        สร้างItemsใหม่
       </a>
     </div>
 
@@ -40,7 +40,7 @@
             <a href="{% url 'plotcraft:toggle_bookmark' 'item' item.id %}"
                class="absolute top-2 right-2 p-2 rounded-full shadow-md backdrop-blur-sm transition-all duration-200 hover:scale-110 z-20
                       {% if item.id in bookmarked_ids %} bg-[#DAA520] text-white {% else %} bg-white/90 text-gray-400 hover:text-[#DAA520] {% endif %}"
-               title="{% if item.id in bookmarked_ids %}เลิกปักหมุด{% else %}ปักหมุดไอเทม{% endif %}">
+               title="{% if item.id in bookmarked_ids %}Remove bookmark{% else %}BookmarkItems{% endif %}">
                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" stroke="currentColor"
                     fill="{% if item.id in bookmarked_ids %}currentColor{% else %}none{% endif %}">
                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
@@ -75,9 +75,9 @@
 
             <div class="text-gray-600 text-xs line-clamp-2 leading-relaxed grow mb-4">
                 {% if item.owner %}
-                    <span class="font-bold text-[#2F4F4F]">ผู้ถือครอง:</span> {{ item.owner.name }}
+                    <span class="font-bold text-[#2F4F4F]">Owner:</span> {{ item.owner.name }}
                 {% elif item.location %}
-                    <span class="font-bold text-[#2F4F4F]">สถานที่:</span> {{ item.location.name }}
+                    <span class="font-bold text-[#2F4F4F]">Locations:</span> {{ item.location.name }}
                 {% elif item.abilities %}
                     {{ item.abilities }}
                 {% else %}
@@ -87,14 +87,14 @@
 
             <div class="mt-auto flex items-center justify-between pt-3 border-t border-gray-100">
               <a href="{% url 'plotcraft:item_detail' item.id %}" class="px-3 py-1.5 border border-[#2F4F4F] rounded-lg text-[#2F4F4F] font-semibold text-xs flex items-center gap-1 hover:bg-[#2F4F4F] hover:text-[#FAEBD7] transition">
-                รายละเอียด
+                Details
               </a>
 
               <a href="{% url 'plotcraft:item_edit' item.id %}" class="text-[#DAA520] hover:text-[#b8860b] font-medium text-xs flex items-center gap-1">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                 </svg>
-                แก้ไข
+                Edit
               </a>
             </div>
 
@@ -108,8 +108,8 @@
         <div class="w-20 h-20 bg-[#FAEBD7] rounded-full flex items-center justify-center text-4xl mb-6 text-[#2F4F4F]">
             <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m3 7 9-4 9 4-9 4zM3 7v10l9 4 9-4V7M12 11v10"/></svg>
         </div>
-        <h3 class="text-2xl font-bold text-[#2F4F4F] mb-2">คลังสมบัติว่างเปล่า</h3>
-        <p class="text-gray-500 mb-8 max-w-md">เริ่มสร้างไอเทม อาวุธ หรือวัตถุสำคัญชิ้นแรกของคุณ</p>
+        <h3 class="text-2xl font-bold text-[#2F4F4F] mb-2">Your collection is empty</h3>
+        <p class="text-gray-500 mb-8 max-w-md">เริ่มสร้างItems อาวุธ หรือวัตถุสำคัญชิ้นแรกของคุณ</p>
     </div>
     {% endif %}
 
