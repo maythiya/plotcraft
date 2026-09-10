@@ -27,13 +27,13 @@
                     My novels
                 </h1>
                 <p class="text-gray-500 mt-2 text-sm">
-                    All {{ novels.count }} novel(s)
+                    {{ novels.count }} novels
                 </p>
             </div>
 
             <a href="{% url 'plotcraft:novel_create' %}"
                class="bg-[#2F4F4F] text-[#FAEBD7] px-6 py-3 rounded-xl font-bold shadow-lg hover:-translate-y-1 transition">
-                + Createnovel(s)new
+                + Create a new novel
             </a>
         </div>
 
