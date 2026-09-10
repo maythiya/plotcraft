@@ -22,7 +22,7 @@
         <div class="mb-8 text-center">
             <h2 class="text-3xl font-extrabold text-[#2F4F4F] tracking-tight flex items-center justify-center gap-3">
                 <span class="text-4xl animate-bounce"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg></span>
-                {% if is_edit %}EditinformationNovels{% else %}Create a new novel{% endif %}
+                {% if is_edit %}Edit novel details{% else %}Create a new novel{% endif %}
             </h2>
             <p class="text-gray-500 mt-2">Create an imagined world that feels real.</p>
         </div>
@@ -126,7 +126,7 @@
                             {% if form.instance.pk %}
                                 <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M5 3h12l3 3v15H4V4zM8 3v6h8V3M8 21v-7h8v7"/></svg> SavetheEdit
                             {% else %}
-                                <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M14 4c3-2 6-2 6-2s0 3-2 6l-7 7-5-5zM9 16l-3 3M6 14l-3 1 1-3M14 8h.01"/></svg> CreateNovels
+                                <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M14 4c3-2 6-2 6-2s0 3-2 6l-7 7-5-5zM9 16l-3 3M6 14l-3 1 1-3M14 8h.01"/></svg> Create novel
                             {% endif %}
                         </button>
                     </div>
