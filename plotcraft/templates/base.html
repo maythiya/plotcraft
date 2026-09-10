@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>{% block title %}PlotCraft{% endblock %}</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="/static/css/plotcraft-theme.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}PlotCraft{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/static/css/plotcraft-theme.css">
 </head>
 <body class="pc-app">
   <div class="pc-shell">
@@ -15,199 +15,85 @@
         <div><div class="pc-eyebrow">PlotCraft Workspace</div><div class="pc-topbar__title">Bring your story world to life.</div></div>
         <div class="pc-topbar__actions"><span class="pc-topbar__pill">Writing mode</span><span class="pc-topbar__dot" aria-label="Online"></span></div>
       </header>
-      {% block content %}
-      {% endblock %}
+      {% block content %}{% endblock %}
     </main>
   </div>
-
-    <div id="ai-chat-window" class="fixed bottom-28 right-10 w-96 bg-white rounded-2xl shadow-2xl border border-gray-200 hidden flex-col z-50 overflow-hidden transition-all duration-300 transform scale-95 opacity-0">
-        
-        <div class="bg-[#2F4F4F] text-white p-4 flex justify-between items-center">
-            <div class="flex items-center gap-2">
-                <span class="text-xl"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4M8 12h.01M16 12h.01M8 16h8"/></svg></span>
-                <h3 class="font-bold">Plotcraft Assistant</h3>
-            </div>
-            <button onclick="toggleChat()" class="hover:bg-white/20 rounded-full p-1 transition">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
-                </svg>
-            </button>
-        </div>
-
-        <div id="chat-messages" class="flex-1 p-4 h-80 overflow-y-auto bg-gray-50 space-y-3">
-            <div class="flex justify-start">
-                <div class="bg-white border border-gray-200 rounded-lg rounded-tl-none p-3 max-w-[85%] text-sm shadow-sm text-gray-700">
-                    Hello! I’m your writing assistant. What would you like to create or check today? <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M7 12V6a1.5 1.5 0 0 1 3 0v4-6a1.5 1.5 0 0 1 3 0v6-5a1.5 1.5 0 0 1 3 0v6-3a1.5 1.5 0 0 1 3 0v6c0 4-3 7-7 7-4 0-7-3-7-7v-2z"/></svg>
-                </div>
-            </div>
-        </div>
-
-        <div class="p-3 bg-white border-t border-gray-100">
-            <form id="chat-form" onsubmit="sendMessage(event)" class="flex gap-2">
-                <input type="text" id="chat-input" 
-                       class="flex-1 border border-gray-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-[#2F4F4F] focus:ring-1 focus:ring-[#2F4F4F]"
-                       placeholder="Type a message..." autocomplete="off">
-                <button type="submit" class="bg-[#2F4F4F] text-white p-2 rounded-full hover:bg-[#1a3030] disabled:opacity-50 transition shadow-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform rotate-90" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
-                    </svg>
-                </button>
-            </form>
-        </div>
+  <div id="ai-chat-window" class="fixed bottom-28 right-10 w-96 bg-white rounded-2xl shadow-2xl border border-gray-200 hidden flex-col z-50 overflow-hidden transition-all duration-300 transform scale-95 opacity-0">
+    <div class="bg-[#103b2b] text-white p-4 flex justify-between items-center">
+      <div class="flex items-center gap-2"><svg aria-hidden="true" class="pc-icon w-5 h-5" viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4M8 12h.01M16 12h.01M8 16h8"/></svg><h3 class="font-bold">PlotCraft Assistant</h3></div>
+      <button type="button" onclick="toggleChat()" class="hover:bg-white/20 rounded-full p-1 transition" aria-label="Close assistant">×</button>
     </div>
-
-    <div class="fixed bottom-10 right-10 z-50">
-        <button onclick="toggleChat()" 
-                class="pc-chat-fab w-14 h-14 rounded-full shadow-lg border-2 text-white flex items-center justify-center hover:scale-110 transition duration-200">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-            </svg>
-        </button>
+    <div id="chat-messages" class="flex-1 p-4 h-80 overflow-y-auto bg-gray-50 space-y-3">
+      <div class="flex justify-start"><div class="bg-white border border-gray-200 rounded-lg rounded-tl-none p-3 max-w-[85%] text-sm shadow-sm text-gray-700">Hello! I’m your writing assistant. What would you like to create or check today?</div></div>
     </div>
-
-    <script>
-        // ฟังก์ชันเClose/Close Chat
-        function toggleChat() {
-            const chatWindow = document.getElementById('ai-chat-window');
-            
-            // เช็คว่าchaptersนี้ "ซ่อน" อยู่orเปล่า?
-            if (chatWindow.classList.contains('hidden')) {
-                // === ถ้าซ่อนอยู่ thatเClose ===
-
-                // เอา class hidden ออกtothatมันhaveตัวตนinpageเว็บ
-                chatWindow.classList.remove('hidden');
-
-                // ใช้ setTimeout เล็กน้อยtothat Animation ทำงาน (Transition From Opacity 0 -> 100)
-                setTimeout(() => {
-                    chatWindow.classList.remove('opacity-0', 'scale-95');
-                    chatWindow.classList.add('opacity-100', 'scale-100');
-                    document.getElementById('chat-input').focus();
-                }, 10);
-            } else {
-                // === ถ้าเCloseอยู่ thatClose ===
-
-                // ทำthatจางandย่อลงก่อน (Animation Back)
-                chatWindow.classList.remove('opacity-100', 'scale-100');
-                chatWindow.classList.add('opacity-0', 'scale-95');
-
-                // รอ 300ms (เท่าwithเวลา Transition) yetค่อยใส่ hidden toซ่อนpermanently
-                setTimeout(() => {
-                    chatWindow.classList.add('hidden');
-                }, 300);
-            }
-        }
-
-        // ฟังก์ชันSendข้อความ
-        async function sendMessage(e) {
-            // ห้ามnotthatpageเว็บ Refresh whenclick Submit
-            e.preventDefault();
-
-            const input = document.getElementById('chat-input');
-            const messagesDiv = document.getElementById('chat-messages');
-            const message = input.value.trim();
-            
-            // ถ้าnotcanพิมพ์อะไรcome ก็จบtheทำงาน
-            if (!message) return;
-
-            // แสดงข้อความฝั่ง User
-            appendMessage(message, 'user');
-            input.value = ''; // เคลียร์ช่องพิมพ์
-
-            // แสดง Loading "Thinking..."
-            const loadingId = 'loading-' + Date.now();
-            appendLoading(loadingId);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-
-            // Checkว่าอยู่inpageNovelsorเปล่า? as Novel ID From URL (forSend Context Novelsthat AI)
-            // imageแบบ URL : /notes/1/edit/ or /scenes/?project=1
-            let novelId = null;
-            const path = window.location.pathname;
-            const searchParams = new URLSearchParams(window.location.search);
-            
-            // กรณี 1: page /notes/<id>/...
-            const notesMatch = path.match(/\/notes\/(\d+)\//);
-            if (notesMatch) {
-                novelId = notesMatch[1];
-            }
-
-            // กรณี 2: page /scenes/?project=<id>
-            if (!novelId && searchParams.has('project')) {
-                novelId = searchParams.get('project');
-            }
-
-            console.log("Context Novel ID:", novelId); // goเช็คin Console can
-
-            try {
-                // ยิง API goหา Backend
-                const response = await fetch('/api/chat/general/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': '{{ csrf_token }}' // ต้องSend CSRF Token goด้วย notงั้น Django จะตีBackว่าnotปลอดภัย
-                    },
-                    // Send novel_id goด้วย (ถ้าhave)
-                    body: JSON.stringify({
-                        message: message,   // ข้อความthatเราพิมพ์
-                        novel_id: novelId   // ID Novels (ถ้าhave)
-                    })
-                });
-
-                const data = await response.json();
-                
-                // Delete Loading ออกwhencanwordตอบ
-                document.getElementById(loadingId).remove();
-
-                if (data.reply) {
-                    // แสดงข้อความตอบBackFrom AI
-                    appendMessage(data.reply, 'bot');
-                } else {
-                    appendMessage('Something went wrong while processing your request.', 'bot', true);
-                }
-            
-            // กรณีเน็ตหลุด or Server พัง
-            } catch (error) {
-                if (document.getElementById(loadingId)) {
-                    document.getElementById(loadingId).remove();
-                }
-                appendMessage('Unable to connect to the server.', 'bot', true);
-                console.error(error);
-            }
-
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        }
-
-        // Helper: Createกล่องข้อความ
-        function appendMessage(text, sender, isError = false) {
-            const messagesDiv = document.getElementById('chat-messages');
-            const div = document.createElement('div');
-
-            if (sender === 'user') {
-                div.className = 'flex justify-end';
-                div.innerHTML = `<div class="bg-[#2F4F4F] text-white rounded-lg rounded-tr-none p-3 max-w-[85%] text-sm shadow-md">${text}</div>`;
-            } else {
-                div.className = 'flex justify-start';
-                // แปลง \n as <br> totheแสดงresultsthatถูกต้อง
-                const formattedText = text.replace(/\n/g, '<br>');
-                div.innerHTML = `<div class="bg-white border border-gray-200 rounded-lg rounded-tl-none p-3 max-w-[85%] text-sm shadow-sm ${isError ? 'text-red-600 bg-red-50 border-red-200' : 'text-gray-700'}">${formattedText}</div>`;
-            }
-            messagesDiv.appendChild(div);
-        }
-
-        // Helper: Createตัวโหลด (Loading Dots)
-        function appendLoading(id) {
-            const messagesDiv = document.getElementById('chat-messages');
-            const div = document.createElement('div');
-            div.id = id;
-            div.className = 'flex justify-start animate-pulse';
-            div.innerHTML = `
-                <div class="bg-white border border-gray-200 rounded-lg rounded-tl-none p-3 shadow-sm flex gap-1">
-                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
-                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
-                </div>`;
-            messagesDiv.appendChild(div);
-        }
-    </script>
-
+    <div class="p-3 bg-white border-t border-gray-100">
+      <form id="chat-form" onsubmit="sendMessage(event)" class="flex gap-2">
+        <input type="text" id="chat-input" class="flex-1 border border-gray-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-[#103b2b] focus:ring-1 focus:ring-[#103b2b]" placeholder="Type a message..." autocomplete="off">
+        <button type="submit" class="bg-[#103b2b] text-white p-2 rounded-full hover:bg-[#08261b] disabled:opacity-50 transition shadow-md" aria-label="Send message">↑</button>
+      </form>
+    </div>
+  </div>
+  <div class="fixed bottom-10 right-10 z-50"><button type="button" onclick="toggleChat()" class="pc-chat-fab w-14 h-14 rounded-full shadow-lg border-2 text-white flex items-center justify-center hover:scale-110 transition duration-200" aria-label="Open assistant"><svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg></button></div>
+  <script>
+    function toggleChat() {
+      const chatWindow = document.getElementById("ai-chat-window");
+      if (chatWindow.classList.contains("hidden")) {
+        chatWindow.classList.remove("hidden");
+        setTimeout(function () {
+          chatWindow.classList.remove("opacity-0", "scale-95");
+          chatWindow.classList.add("opacity-100", "scale-100");
+          document.getElementById("chat-input").focus();
+        }, 10);
+      } else {
+        chatWindow.classList.remove("opacity-100", "scale-100");
+        chatWindow.classList.add("opacity-0", "scale-95");
+        setTimeout(function () { chatWindow.classList.add("hidden"); }, 300);
+      }
+    }
+    async function sendMessage(event) {
+      event.preventDefault();
+      const input = document.getElementById("chat-input");
+      const messages = document.getElementById("chat-messages");
+      const message = input.value.trim();
+      if (!message) return;
+      appendMessage(message, "user");
+      input.value = "";
+      const loadingId = "loading-" + Date.now();
+      appendLoading(loadingId);
+      messages.scrollTop = messages.scrollHeight;
+      let novelId = null;
+      const path = window.location.pathname;
+      const params = new URLSearchParams(window.location.search);
+      const notesMatch = path.match(/\/notes\/(\d+)\//);
+      if (notesMatch) novelId = notesMatch[1];
+      if (!novelId && params.has("project")) novelId = params.get("project");
+      try {
+        const response = await fetch("/api/chat/general/", {method: "POST", headers: {"Content-Type": "application/json", "X-CSRFToken": "{{ csrf_token }}"}, body: JSON.stringify({message: message, novel_id: novelId})});
+        const data = await response.json();
+        document.getElementById(loadingId)?.remove();
+        appendMessage(data.reply || "Something went wrong while processing your request.", "bot", !data.reply);
+      } catch (error) {
+        document.getElementById(loadingId)?.remove();
+        appendMessage("Unable to connect to the server.", "bot", true);
+        console.error(error);
+      }
+      messages.scrollTop = messages.scrollHeight;
+    }
+    function appendMessage(text, sender, isError) {
+      const messages = document.getElementById("chat-messages");
+      const row = document.createElement("div");
+      row.className = sender === "user" ? "flex justify-end" : "flex justify-start";
+      const bubble = document.createElement("div");
+      bubble.className = sender === "user" ? "bg-[#103b2b] text-white rounded-lg rounded-tr-none p-3 max-w-[85%] text-sm shadow-md" : "bg-white border border-gray-200 rounded-lg rounded-tl-none p-3 max-w-[85%] text-sm shadow-sm " + (isError ? "text-red-600 bg-red-50 border-red-200" : "text-gray-700");
+      bubble.innerHTML = String(text).replace(/\n/g, "<br>");
+      row.appendChild(bubble); messages.appendChild(row);
+    }
+    function appendLoading(id) {
+      const messages = document.getElementById("chat-messages");
+      const row = document.createElement("div"); row.id = id; row.className = "flex justify-start animate-pulse";
+      row.innerHTML = "<div class=\"bg-white border border-gray-200 rounded-lg rounded-tl-none p-3 shadow-sm flex gap-1\"><div class=\"w-2 h-2 bg-gray-400 rounded-full animate-bounce\"></div><div class=\"w-2 h-2 bg-gray-400 rounded-full animate-bounce\" style=\"animation-delay:.1s\"></div><div class=\"w-2 h-2 bg-gray-400 rounded-full animate-bounce\" style=\"animation-delay:.2s\"></div></div>";
+      messages.appendChild(row);
+    }
+  </script>
 </body>
 </html>
