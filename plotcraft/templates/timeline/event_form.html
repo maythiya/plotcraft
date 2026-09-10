@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{% if form.instance.pk %}Editเหตุการณ์ Timeline{% else %}Add eventใหม่ใน Timeline{% endif %} | PlotCraft{% endblock %}
+{% block title %}{% if form.instance.pk %}Editเหตุtheณ์ Timeline{% else %}Add eventnewin Timeline{% endif %} | PlotCraft{% endblock %}
 {% block content %}
 <script src="https://cdn.tailwindcss.com"></script>
 
@@ -14,50 +14,50 @@
                     </svg>
                 </div>
                 <h1 class="text-3xl font-bold text-[#2F4F4F]">
-                    {% if form.instance.pk %}Editเหตุการณ์ Timeline{% else %}Add eventใหม่ใน Timeline{% endif %}
+                    {% if form.instance.pk %}Editเหตุtheณ์ Timeline{% else %}Add eventnewin Timeline{% endif %}
                 </h1>
-                <p class="text-gray-500 text-sm mt-2">กรอกDetailsเหตุการณ์ในเส้นเวลา</p>
+                <p class="text-gray-500 text-sm mt-2">EnterDetailsเหตุtheณ์intimeline</p>
             </div>
             <form method="post" enctype="multipart/form-data" class="space-y-6">
                 {% csrf_token %}
                 {{ form.non_field_errors }}
                 <div class="space-y-2">
-                    <label class="block text-xs font-bold text-[#2F4F4F] uppercase tracking-wider">ชื่อเหตุการณ์ *</label>
+                    <label class="block text-xs font-bold text-[#2F4F4F] uppercase tracking-wider">nameเหตุtheณ์ *</label>
                     {{ form.title }}
                 </div>
                 <div class="space-y-2">
-                    <label class="block text-xs font-bold text-[#2F4F4F] uppercase tracking-wider">Detailsเหตุการณ์</label>
+                    <label class="block text-xs font-bold text-[#2F4F4F] uppercase tracking-wider">Detailsเหตุtheณ์</label>
                     {{ form.description }}
                 </div>
                 <div class="space-y-2">
-                    <label class="block text-xs font-bold text-[#2F4F4F] uppercase tracking-wider">ภาพประกอบ (ถ้ามี)</label>
+                    <label class="block text-xs font-bold text-[#2F4F4F] uppercase tracking-wider">ภาพประกอบ (ถ้าhave)</label>
                     {{ form.image }}
                 </div>
                 <div class="space-y-2">
-                    <label class="block text-xs font-bold text-[#2F4F4F] uppercase tracking-wider">ConnectกับScenes</label>
+                    <label class="block text-xs font-bold text-[#2F4F4F] uppercase tracking-wider">ConnectwithScenes</label>
                     {{ form.related_scene }}
                 </div>
                 <div class="space-y-2">
-                    <label class="block text-xs font-bold text-[#2F4F4F] uppercase tracking-wider">Charactersที่เกี่ยวข้อง</label>
+                    <label class="block text-xs font-bold text-[#2F4F4F] uppercase tracking-wider">Charactersthatเกี่ยวข้อง</label>
                     {{ form.characters }}
                 </div>
                 <div class="space-y-2">
-                    <label class="block text-xs font-bold text-[#2F4F4F] uppercase tracking-wider">ร่างหรือสรุปเหตุการณ์ด้วย AI</label>
+                    <label class="block text-xs font-bold text-[#2F4F4F] uppercase tracking-wider">Draftorสรุปเหตุtheณ์ด้วย AI</label>
                     <div class="flex gap-2 items-start">
-                        <textarea id="ai-prompt" name="ai_prompt" rows="2" class="flex-1 rounded-xl border border-[#2F4F4F]/20 p-3 text-sm" placeholder="เช่น อยากthat AI สรุปเหตุการณ์จากScenesที่เลือก หรือร่างเหตุการณ์ใหม่จากเนื้อnovel(s)ย่อ..."></textarea>
+                        <textarea id="ai-prompt" name="ai_prompt" rows="2" class="flex-1 rounded-xl border border-[#2F4F4F]/20 p-3 text-sm" placeholder="เช่น อยากthat AI สรุปเหตุtheณ์FromScenesthatSelect orDraftเหตุtheณ์newFromเนื้อnovel(s)ย่อ..."></textarea>
                         <div class="flex flex-col gap-2">
-                            <button type="button" id="aiGenerateBtnEvent" class="px-4 py-2 bg-[#2F4F4F] text-white rounded-lg hover:bg-[#1a3030] text-sm"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><path d="M5 19h14M8 22h8"/></svg> ร่าง</button>
-                            <p id="ai-loading" class="text-xs text-gray-500 hidden"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M6 3h12M6 21h12M8 3c0 5 8 5 8 10s-8 5-8 8M16 3c0 5-8 5-8 10s8 5 8 8"/></svg> กำลังร่าง...</p>
+                            <button type="button" id="aiGenerateBtnEvent" class="px-4 py-2 bg-[#2F4F4F] text-white rounded-lg hover:bg-[#1a3030] text-sm"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><path d="M5 19h14M8 22h8"/></svg> Draft</button>
+                            <p id="ai-loading" class="text-xs text-gray-500 hidden"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M6 3h12M6 21h12M8 3c0 5 8 5 8 10s-8 5-8 8M16 3c0 5-8 5-8 10s8 5 8 8"/></svg> LoadingDraft...</p>
                         </div>
                     </div>
-                    <p class="text-[10px] text-gray-400">ใส่คำอธิบายหรือแนวทางที่ต้องการthat AI ช่วยร่างเหตุการณ์ เช่น "สรุปเหตุการณ์จากScenesที่เลือก" หรือ "แต่งเหตุการณ์ใหม่เกี่ยวกับCharactersหลัก"</p>
+                    <p class="text-[10px] text-gray-400">ใส่wordอธิบายorแนวทางthatต้องthethat AI helpDraftเหตุtheณ์ เช่น "สรุปเหตุtheณ์FromScenesthatSelect" or "แต่งเหตุtheณ์newเกี่ยวwithCharactersmain"</p>
                 </div>
                 <div class="pt-6 flex items-center gap-4">
                     <a href="{% url 'plotcraft:timeline_detail' timeline.id %}" class="w-1/3 py-3 text-center border border-gray-200 text-gray-500 rounded-xl font-bold hover:bg-gray-50 transition">
                         Cancel
                     </a>
                     <button type="submit" class="w-2/3 py-3 bg-[#2F4F4F] text-[#FAEBD7] rounded-xl font-bold shadow-lg hover:bg-[#1a3030] hover:shadow-xl transition transform hover:-translate-y-1 flex justify-center items-center gap-2">
-                        <span>Saveเหตุการณ์</span>
+                        <span>Saveเหตุtheณ์</span>
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                         </svg>
@@ -94,7 +94,7 @@
             btn.addEventListener('click', function() {
                 const prompt = promptEl.value.trim();
                 if (!prompt) {
-                    alert('กรุณาใส่คำอธิบายก่อนนะคะ');
+                    alert('กรุณาใส่wordอธิบายก่อนนะคะ');
                     return;
                 }
 
@@ -118,7 +118,7 @@
                         if (descEl) {
                             descEl.value = data.description;
                         }
-                        alert('<svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg> AI ร่างเหตุการณ์เรียบร้อยแล้ว');
+                        alert('<svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg> AI Draftเหตุtheณ์เรียบร้อยyet');
                         promptEl.value = '';
                     } else {
                         alert('เกิดข้อผิดพลาด: ' + (data.error || 'Unknown'));
@@ -127,7 +127,7 @@
                 .catch(err => {
                     loading.classList.add('hidden');
                     btn.disabled = false;
-                    alert('เชื่อมต่อไม่ได้: ' + err);
+                    alert('เnameมcontinuenotcan: ' + err);
                 });
             });
         }
