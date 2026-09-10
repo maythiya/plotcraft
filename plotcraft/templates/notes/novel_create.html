@@ -24,7 +24,7 @@
                 <span class="text-4xl animate-bounce"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg></span>
                 {% if is_edit %}EditinformationNovels{% else %}Create a new novel{% endif %}
             </h2>
-            <p class="text-gray-500 mt-2">Createสรรค์worldจินตนาtheyourthatasจริง</p>
+            <p class="text-gray-500 mt-2">Createสรรค์worldจินตนาtheyourthatasreal</p>
         </div>
 
         <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 hover:shadow-2xl transition-shadow duration-500">
@@ -54,7 +54,7 @@
                             <input type="file" name="cover_image" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
                                    @change="const file = $event.target.files[0]; if(file){ const reader = new FileReader(); reader.onload = (e) => imagePreview = e.target.result; reader.readAsDataURL(file); }">
                         </div>
-                        <p class="text-xs text-gray-400 mt-2 text-center">แนะนำขนาดแนวตั้ง (Ratio 2:3)</p>
+                        <p class="text-xs text-gray-400 mt-2 text-center">recommendedขนาดportrait (Ratio 2:3)</p>
                     </div>
 
                     <div class="md:col-span-8 space-y-6">
@@ -112,7 +112,7 @@
                             Cancel
                         </a>
                     
-                        <!-- ปุ่มmain -->
+                        <!-- buttonmain -->
                         <button type="submit"
                             class="px-8 py-2.5 rounded-lg font-bold
                                    bg-[#DAA520] text-white
