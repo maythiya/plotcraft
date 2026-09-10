@@ -14,7 +14,7 @@
         <h1 class="text-3xl font-bold text-[#2F4F4F]">ManageScenes (Scenes)</h1>
       </div>
     <a href="{% url 'plotcraft:scene_create' %}" class="px-5 py-2 bg-[#DAA520] hover:bg-[#b8860b] text-white rounded-lg shadow-md transition font-bold flex items-center gap-2">
-        + เพิ่มScenesใหม่
+        + AddScenesnew
       </a>
     </div>
 
@@ -50,7 +50,7 @@
     {% if selected_project %}
     <div class="mb-6 border-b border-[#2F4F4F]/10 pb-2">
         <h2 class="text-xl font-bold text-[#2F4F4F]">
-            Scenesในnovel(s): <span class="text-[#DAA520]">{{ selected_project.title }}</span>
+            Scenesinnovel(s): <span class="text-[#DAA520]">{{ selected_project.title }}</span>
         </h2>
     </div>
     {% endif %}
@@ -118,12 +118,12 @@
                     </a>
 
                     <form method="post" action="{% url 'plotcraft:scene_delete' scene.id %}" 
-                          onsubmit="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบScenesนี้? หากลบแล้วไม่สามารถกู้คืนได้นะคะ!');" 
+                          onsubmit="return confirm('youแน่ใจornotว่าต้องtheDeleteScenesนี้? หากDeleteyetnotสาcomeรถกู้คืนcanนะคะ!');" 
                           class="w-full">
                         {% csrf_token %}
                         <button type="submit" 
                                 class="w-full text-center text-red-600 hover:text-red-800 font-bold text-sm border border-red-600 px-4 py-2 rounded-lg hover:bg-red-600/10 transition">
-                            ลบScenes
+                            DeleteScenes
                         </button>
                     </form>
                 </div>
@@ -136,8 +136,8 @@
 
     <div class="text-center py-12 bg-white rounded-xl border border-[#FAEBD7]">
         <div class="text-5xl mb-4"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 7h16v12H4zM4 7l3-4h10l3 4M8 3l3 4M14 3l3 4"/></svg></div>
-        <h3 class="text-xl font-bold text-[#2F4F4F]">ยังไม่มีScenes</h3>
-        <p class="text-gray-500">เริ่มวางโครงnovel(s)ของคุณทีละScenes</p>
+        <h3 class="text-xl font-bold text-[#2F4F4F]">NoScenes</h3>
+        <p class="text-gray-500">Startวางโครงnovel(s)yourทีละScenes</p>
     </div>
 
     {% endif %}
