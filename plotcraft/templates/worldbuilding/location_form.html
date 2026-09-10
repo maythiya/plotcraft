@@ -53,7 +53,7 @@
                     </div>
 
                     <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/20">
-                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">อยู่innovel(s) / โปรเจกต์</label>
+                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">อยู่innovel(s) / project</label>
                         {{ form.project }}
                     </div>
 
@@ -69,9 +69,9 @@
                     </div>
 
                     <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Charactersthatเกี่ยวข้องwithLocationsนี้</label>
+                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">CharactersthatrelatedwithLocationsนี้</label>
                         {{ form.residents }}
-                        <p class="text-xs text-[#2F4F4F]/60 mt-1">กด Ctrl (or Command) ค้างไว้toSelectหลายคน</p>
+                        <p class="text-xs text-[#2F4F4F]/60 mt-1">click Ctrl (or Command) to selecttoSelectmultiple people</p>
                     </div>
                 </div>
 
@@ -128,14 +128,14 @@
                     </div>
                     
                     <p class="text-xs text-[#2F4F4F]/40 mt-2 text-center">
-                        แนะนำภาพแนวนอน (Landscape 4:3)
+                        recommendedภาพlandscape (Landscape 4:3)
                     </p>
                 </div>
             </div>
 
             <div class="flex items-center gap-2 mb-4 border-b border-[#FAEBD7] pb-2 pt-4">
                 <span class="text-[#DAA520]"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m3 20 6-10 3 5 3-7 6 12zM3 20h18"/></svg>️</span>
-                <h2 class="text-xl font-bold text-[#2F4F4F]">terrainandสภาพแวดล้อม</h2>
+                <h2 class="text-xl font-bold text-[#2F4F4F]">terrainandenvironment</h2>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -144,11 +144,11 @@
                     {{ form.terrain }}
                 </div>
                 <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">สภาพอากาศ (Climate)</label>
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">climate (Climate)</label>
                     {{ form.climate }}
                 </div>
                 <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ระบบนิเวศ (Ecosystem)</label>
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">systemนิเวศ (Ecosystem)</label>
                     {{ form.ecosystem }}
                 </div>
             </div>
@@ -164,14 +164,14 @@
                     {{ form.history }}
                 </div>
                 <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ตำนานandnovel(s)เล่า (Myths & Legends)</label>
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">mythsandnovel(s)เล่า (Myths & Legends)</label>
                     {{ form.myths }}
                 </div>
             </div>
 
             <div class="flex items-center gap-2 mb-4 border-b border-[#FAEBD7] pb-2 pt-4">
                 <span class="text-[#DAA520]">⚖️</span>
-                <h2 class="text-xl font-bold text-[#2F4F4F]">สังคมandวัฒนธรรม</h2>
+                <h2 class="text-xl font-bold text-[#2F4F4F]">societyandculture</h2>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -195,15 +195,15 @@
 
             <div class="mb-8 p-6 bg-indigo-50 rounded-2xl border border-indigo-100 shadow-sm">
                 <h3 class="font-bold text-indigo-800 text-lg mb-3 flex items-center gap-2">
-                    <span><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 21V7h4V4h3v3h2V4h3v3h4v14M8 21v-5h3v5M5 11h2M12 11h2M17 11h2"/></svg></span> that AI helpออกแบบLocations
+                    <span><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 21V7h4V4h3v3h2V4h3v3h4v14M8 21v-5h3v5M5 11h2M12 11h2M17 11h2"/></svg></span> that AI helpdesignLocations
                 </h3>
                 <div class="flex gap-3">
                     <input type="text" id="ai-concept" 
                            class="flex-1 border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition" 
-                           placeholder="เช่น: forestต้องสาปthathaveหมอกสีม่วงปกคลุมตลอดเวลา, cityลอยฟ้าofเผ่าวิหค">
+                           placeholder="เช่น: forestต้องสาปthathaveหมอกสีม่วงปกคลุมany time, cityลอยฟ้าofเผ่าวิหค">
                     <button type="button" id="aiGenerateBtn"
                             class="bg-indigo-600 text-white px-6 py-3 rounded-xl hover:bg-indigo-700 font-bold shadow-md transition flex items-center gap-2 whitespace-nowrap">
-                        <span><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg></span> เสกLocations
+                        <span><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg></span> GenerateLocations
                     </button>
                 </div>
                 <p id="ai-loading" class="text-sm text-indigo-600 mt-3 hidden flex items-center gap-2">
@@ -286,26 +286,26 @@
                         
                         // informationกายภาพ
                         setVal('id_terrain', d.terrain);         // terrain
-                        setVal('id_climate', d.climate);         // สภาพอากาศ
+                        setVal('id_climate', d.climate);         // climate
                         setVal('id_region', d.region);           // ภูมิภาค (ถ้าhave field นี้)
                         setVal('id_world_type', d.world_type);   // typeworld (ถ้าhave field นี้)
                         
-                        // informationเนื้อหา
+                        // informationcontent
                         setVal('id_description', d.description); // wordบรรยาย
                         setVal('id_history', d.history);         // history
-                        setVal('id_myths', d.myths);             // ตำนาน
+                        setVal('id_myths', d.myths);             // myths
                         
-                        // informationสังคมandระบบ
-                        setVal('id_economy', d.economy);         // เศรษฐกิจ
-                        setVal('id_culture', d.culture);         // วัฒนธรรม
+                        // informationsocietyandsystem
+                        setVal('id_economy', d.economy);         // economy
+                        setVal('id_culture', d.culture);         // culture
                         setVal('id_politics', d.politics);       // thecity
                         setVal('id_language', d.language);       // language
                         setVal('id_ecosystem', d.ecosystem); 
 
-                        alert("<svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg> CreateLocationsเรียบร้อยyet!");
+                        alert("<svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg> CreateLocationscompleteyet!");
                         conceptInput.value = '';
                     } else {
-                        alert("เกิดข้อผิดพลาด: " + data.error);
+                        alert("An error occurred: " + data.error);
                     }
                 })
                 .catch(err => {
