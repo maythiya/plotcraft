@@ -55,7 +55,7 @@
 
                     <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/20">
                         <label class="block text-sm font-bold text-[#2F4F4F] mb-1">
-                            อยู่innovel(s) / โปรเจกต์ (Story)
+                            อยู่innovel(s) / project (Story)
                             <span class="text-xs text-[#2F4F4F]/60 font-normal ml-2">*Selectโน้ตthatasnamenovel(s)</span>
                         </label>
                         <div class="w-full">
@@ -151,7 +151,7 @@
                     </div>
                 
                     <p class="text-xs text-[#2F4F4F]/40 mt-2 text-center">
-                        แนะนำภาพแนวตั้ง (Portrait 3:4)
+                        recommendedภาพportrait (Portrait 3:4)
                     </p>
                 </div>
             </div>
@@ -240,7 +240,7 @@
                 <div class="rounded-lg border border-[#FAEBD7] p-4 bg-[#FAEBD7]/10">
                     <label class="block text-sm font-bold text-[#2F4F4F] mb-3">
                         Relationships (Relationships) 
-                        <span class="text-xs font-normal text-gray-500 ml-2">* กดSavetoAddแถวnew</span>
+                        <span class="text-xs font-normal text-gray-500 ml-2">* clickSavetoAddแถวnew</span>
                     </label>
 
                     {{ formset.management_form }}
@@ -254,7 +254,7 @@
                                 {% endfor %}
 
                                 <div class="flex-1 w-full">
-                                    <label class="text-xs text-gray-400 font-bold mb-1 block">คู่กรณี</label>
+                                    <label class="text-xs text-gray-400 font-bold mb-1 block">counterpart</label>
                                     {{ rel_form.to_character }}
                                 </div>
                                 
@@ -347,7 +347,7 @@
         const loading = document.getElementById('ai-loading');
         
         if (!concept) {
-            alert("ใส่คอนเซปต์สั้น ๆ that AI หน่อยค่ะ");
+            alert("ใส่คอนเซปต์สั้น ๆ that AI pleaseค่ะ");
             return;
         }
 
@@ -397,9 +397,9 @@
                 setVal('id_strengths', d.strengths);
                 setVal('id_weaknesses', d.weaknesses);
                 
-                alert("<svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg> GenerateCharactersเรียบร้อยyetค่ะ!");
+                alert("<svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg> GenerateCharacterscompleteyetค่ะ!");
             } else {
-                alert("เกิดข้อผิดพลาด: " + data.error);
+                alert("An error occurred: " + data.error);
             }
         })
         .catch(error => {
