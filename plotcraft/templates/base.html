@@ -90,7 +90,7 @@
                 chatWindow.classList.remove('opacity-100', 'scale-100');
                 chatWindow.classList.add('opacity-0', 'scale-95');
 
-                // รอ 300ms (เท่าwithเวลา Transition) yetค่อยใส่ hidden toซ่อนถาวร
+                // รอ 300ms (เท่าwithเวลา Transition) yetค่อยใส่ hidden toซ่อนpermanently
                 setTimeout(() => {
                     chatWindow.classList.add('hidden');
                 }, 300);
@@ -99,7 +99,7 @@
 
         // ฟังก์ชันSendข้อความ
         async function sendMessage(e) {
-            // ห้ามnotthatpageเว็บ Refresh เมื่อกด Submit
+            // ห้ามnotthatpageเว็บ Refresh whenclick Submit
             e.preventDefault();
 
             const input = document.getElementById('chat-input');
@@ -154,7 +154,7 @@
 
                 const data = await response.json();
                 
-                // Delete Loading ออกเมื่อcanwordตอบ
+                // Delete Loading ออกwhencanwordตอบ
                 document.getElementById(loadingId).remove();
 
                 if (data.reply) {
