@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{% if is_edit %}แก้ไข{% else %}สร้าง{% endif %}นิยาย | PlotCraft{% endblock %}
+{% block title %}{% if is_edit %}Edit{% else %}สร้าง{% endif %}Novels | PlotCraft{% endblock %}
 
 {% block content %}
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -22,9 +22,9 @@
         <div class="mb-8 text-center">
             <h2 class="text-3xl font-extrabold text-[#2F4F4F] tracking-tight flex items-center justify-center gap-3">
                 <span class="text-4xl animate-bounce"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg></span>
-                {% if is_edit %}แก้ไขข้อมูลนิยาย{% else %}สร้างผลงานเรื่องใหม่{% endif %}
+                {% if is_edit %}Editข้อมูลNovels{% else %}Create a new novel{% endif %}
             </h2>
-            <p class="text-gray-500 mt-2">สร้างสรรค์โลกจินตนาการของคุณให้เป็นจริง</p>
+            <p class="text-gray-500 mt-2">สร้างสรรค์โลกจินตนาการของคุณthatเป็นจริง</p>
         </div>
 
         <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 hover:shadow-2xl transition-shadow duration-500">
@@ -36,7 +36,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-10">
                     
                     <div class="md:col-span-4 flex flex-col items-center">
-                        <label class="block text-sm font-bold text-gray-700 mb-3 self-start">รูปปกนิยาย</label>
+                        <label class="block text-sm font-bold text-gray-700 mb-3 self-start">รูปปกNovels</label>
                                         
                         <div class="relative w-full aspect-2/3 min-h-[300px] bg-gray-50 rounded-xl border-2 border-dashed border-gray-300 hover:border-[#DAA520] transition-colors duration-300 group cursor-pointer overflow-hidden shadow-inner dashed-border flex items-center justify-center">
                             
@@ -47,7 +47,7 @@
                             <template x-if="!imagePreview">
                                 <div class="absolute inset-0 flex flex-col items-center justify-center text-gray-400 group-hover:text-[#DAA520] transition-colors z-10">
                                     <svg class="w-12 h-12 mb-2 group-hover:animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                    <span class="text-xs font-bold">คลิกเพื่ออัปโหลด</span>
+                                    <span class="text-xs font-bold">Click to upload</span>
                                 </div>
                             </template>
                         
@@ -59,28 +59,28 @@
 
                     <div class="md:col-span-8 space-y-6">
                         <div class="group">
-                            <label class="block text-sm font-bold text-gray-700 mb-1 group-focus-within:text-[#DAA520] transition-colors">ชื่อเรื่อง *</label>
+                            <label class="block text-sm font-bold text-gray-700 mb-1 group-focus-within:text-[#DAA520] transition-colors">Title *</label>
                             {{ form.title }}
                         </div>
                         
                         <div class="group">
-                            <label class="block text-sm font-bold text-gray-700 mb-1 group-focus-within:text-[#DAA520] transition-colors">คำโปรย / เรื่องย่อ</label>
+                            <label class="block text-sm font-bold text-gray-700 mb-1 group-focus-within:text-[#DAA520] transition-colors">Synopsis</label>
                             {{ form.synopsis }}
                         </div>
 
                         <div class="grid grid-cols-2 gap-6">
                             <div class="group">
-                                <label class="block text-sm font-bold text-gray-700 mb-1 group-focus-within:text-[#DAA520] transition-colors">หมวดหมู่</label>
+                                <label class="block text-sm font-bold text-gray-700 mb-1 group-focus-within:text-[#DAA520] transition-colors">Category</label>
                                 {{ form.category }}
                             </div>
                             <div class="group">
-                                <label class="block text-sm font-bold text-gray-700 mb-1 group-focus-within:text-[#DAA520] transition-colors">ระดับเนื้อหา</label>
+                                <label class="block text-sm font-bold text-gray-700 mb-1 group-focus-within:text-[#DAA520] transition-colors">Content rating</label>
                                 {{ form.rating }}
                             </div>
                         </div>
                         
                         <div class="group">
-                            <label class="block text-sm font-bold text-gray-700 mb-1 group-focus-within:text-[#DAA520] transition-colors">สถานะ</label>
+                            <label class="block text-sm font-bold text-gray-700 mb-1 group-focus-within:text-[#DAA520] transition-colors">Status</label>
                             {{ form.status }}
                         </div>
                     </div>
@@ -91,25 +91,25 @@
                     <div>
                         {% if form.instance.pk %}
                             <a href="{% url 'plotcraft:novel_delete' form.instance.pk %}"
-                               onclick="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบนิยายเรื่องนี้? หากลบแล้วตอนทั้งหมดที่มีก็จะถูกลบด้วยนะคะ!');"
+                               onclick="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบNovelsnovel(s)นี้? หากลบแล้วchaptersAllที่มีก็จะถูกลบด้วยนะคะ!');"
                                class="text-red-500 font-bold hover:text-red-700
                                      hover:bg-red-50 px-4 py-2.5 rounded-lg transition 
                                      flex items-center gap-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                 </svg>
-                                ลบนิยาย
+                                ลบNovels
                             </a>
                         {% endif %}
                     </div>
 
                     <div class="flex gap-4">
-                        <!-- ยกเลิก -->
+                        <!-- Cancel -->
                         <a href="{% url 'plotcraft:novel_list' %}"
                            class="px-6 py-2.5 rounded-lg border border-gray-300
                                   text-gray-600 hover:bg-gray-50 hover:text-gray-800
                                   transition font-bold">
-                            ยกเลิก
+                            Cancel
                         </a>
                     
                         <!-- ปุ่มหลัก -->
@@ -124,9 +124,9 @@
                                    focus:outline-none focus:ring-2 focus:ring-[#DAA520]/40">
 
                             {% if form.instance.pk %}
-                                <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M5 3h12l3 3v15H4V4zM8 3v6h8V3M8 21v-7h8v7"/></svg> บันทึกการแก้ไข
+                                <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M5 3h12l3 3v15H4V4zM8 3v6h8V3M8 21v-7h8v7"/></svg> SaveการEdit
                             {% else %}
-                                <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M14 4c3-2 6-2 6-2s0 3-2 6l-7 7-5-5zM9 16l-3 3M6 14l-3 1 1-3M14 8h.01"/></svg> สร้างนิยาย
+                                <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M14 4c3-2 6-2 6-2s0 3-2 6l-7 7-5-5zM9 16l-3 3M6 14l-3 1 1-3M14 8h.01"/></svg> สร้างNovels
                             {% endif %}
                         </button>
                     </div>
