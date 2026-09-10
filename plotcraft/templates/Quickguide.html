@@ -16,12 +16,12 @@
         <ul class="space-y-2">
            <li>
                <a href="{% url 'plotcraft:profile' %}" class="block px-4 py-3 text-[#FAEBD7]/70 hover:bg-[#FAEBD7]/5 hover:text-white rounded-lg transition">
-                   บัญชีผู้ใช้ (Account)
+                   Account (Account)
                </a>
            </li>
            <li>
                <a href="{% url 'plotcraft:quickguide' %}" class="block px-4 py-3 bg-[#FAEBD7]/10 text-white rounded-lg font-medium border-l-4 border-[#DAA520] shadow-sm">
-                   คู่มือการใช้งาน (Guide)
+                   Guide (Guide)
                </a>
            </li>
         </ul>
@@ -30,7 +30,7 @@
       <div class="mt-8 pt-8 border-t border-[#FAEBD7]/10 space-y-4">
                         <a href="{% url 'plotcraft:landing' %}" class="flex items-center gap-2 text-[#FAEBD7]/70 hover:text-white transition px-4">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-              ออกจากระบบ
+              Log out
           </a>
       </div>
     </div>
@@ -41,10 +41,10 @@
         <div class="mb-10">
             <h1 class="text-4xl font-bold text-[#2F4F4F] mb-3 flex items-center gap-3">
                 <span class="bg-[#2F4F4F] text-[#FAEBD7] p-2 rounded-lg"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5V21.5M8 7h8M8 11h8"/></svg></span>
-                คู่มือการใช้งาน PlotCraft
+                Guide PlotCraft
             </h1>
             <p class="text-gray-500 text-lg">
-                ระบบจัดการงานเขียนนิยายครบวงจร: ตั้งแต่การวางโครงเรื่อง, สร้างโลก, ไปจนถึงการเขียนจริงและส่งออก
+                ระบบManageงานเขียนNovelsครบวงจร: ตั้งแต่การวางโครงnovel(s), Build a world, ไปจนถึงการเขียนจริงและส่งออก
             </p>
         </div>
     
@@ -54,7 +54,7 @@
                 <h2 class="text-xl font-bold text-[#2F4F4F]">ภาพรวมระบบ (System Overview)</h2>
             </div>
             <p class="text-gray-700 mb-6 leading-relaxed">
-                PlotCraft ถูกออกแบบมาเพื่อแก้ปัญหา "ตัน" และ "ออกทะเล" ของนักเขียน โดยแบ่งการทำงานออกเป็นส่วนๆ ที่เชื่อมโยงกันอย่างเป็นระบบ:
+                PlotCraft ถูกออกแบบมาเพื่อแก้ปัญหา "ตัน" และ "ออกทะเล" ของWriter Byแบ่งการทำงานออกเป็นส่วนๆ ที่Connectกันอย่างเป็นระบบ:
             </p>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm font-medium text-[#2F4F4F]">
                 <div class="flex items-center gap-2 bg-white p-3 rounded-lg border border-[#2F4F4F]/10 shadow-sm">
@@ -64,7 +64,7 @@
                     <span class="text-[#DAA520]">2.</span> <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg> Worldbuilding (ฐานข้อมูลโลก)
                 </div>
                 <div class="flex items-center gap-2 bg-white p-3 rounded-lg border border-[#2F4F4F]/10 shadow-sm">
-                    <span class="text-[#DAA520]">3.</span> <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 7h16v12H4zM4 7l3-4h10l3 4M8 3l3 4M14 3l3 4"/></svg> Scenes (การ์ดฉาก & โครงสร้าง)
+                    <span class="text-[#DAA520]">3.</span> <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 7h16v12H4zM4 7l3-4h10l3 4M8 3l3 4M14 3l3 4"/></svg> Scenes (การ์ดScenes & โครงสร้าง)
                 </div>
                 <div class="flex items-center gap-2 bg-white p-3 rounded-lg border border-[#2F4F4F]/10 shadow-sm">
                     <span class="text-[#DAA520]">4.</span> <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M6 3h12M6 21h12M8 3c0 5 8 5 8 10s-8 5-8 8M16 3c0 5-8 5-8 10s8 5 8 8"/></svg> Timeline (ลำดับเวลา)
@@ -79,8 +79,8 @@
             <div class="flex items-center gap-4 mb-6 border-b border-[#FAEBD7] pb-3">
                 <div class="w-10 h-10 rounded-full bg-[#2F4F4F] flex items-center justify-center text-white font-bold text-lg">1</div>
                 <div>
-                    <h2 class="text-2xl font-bold text-[#2F4F4F]">My Notes — การจัดการต้นฉบับ</h2>
-                    <p class="text-sm text-gray-500">พื้นที่สำหรับการเขียนเนื้อหาจริงและการจัดแบ่งตอน</p>
+                    <h2 class="text-2xl font-bold text-[#2F4F4F]">My Notes — การManageต้นฉบับ</h2>
+                    <p class="text-sm text-gray-500">พื้นที่สำหรับการเขียนเนื้อหาจริงและการจัดแบ่งchapters</p>
                 </div>
             </div>
             
@@ -89,7 +89,7 @@
                 <ul class="space-y-3 text-gray-600">
                     <li class="flex items-start gap-3">
                         <svg class="w-5 h-5 text-[#DAA520] mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        <span><strong>Hierarchical Structure:</strong> จัดเก็บในรูปแบบ นิยาย (Project) > ตอน (Chapter) ทำให้หาง่ายและเป็นระเบียบ</span>
+                        <span><strong>Hierarchical Structure:</strong> จัดเก็บในรูปแบบ Novels (Project) > chapters (Chapter) ทำthatหาง่ายและเป็นระเบียบ</span>
                     </li>
                     <li class="flex items-start gap-3">
                         <svg class="w-5 h-5 text-[#DAA520] mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -103,30 +103,30 @@
             <div class="flex items-center gap-4 mb-6 border-b border-[#FAEBD7] pb-3">
                 <div class="w-10 h-10 rounded-full bg-[#2F4F4F] flex items-center justify-center text-white font-bold text-lg">2</div>
                 <div>
-                    <h2 class="text-2xl font-bold text-[#2F4F4F]">Worldbuilding — ระบบสร้างโลก</h2>
-                    <p class="text-sm text-gray-500">คลังข้อมูลอ้างอิงสำหรับนิยายของคุณ แบ่งหมวดหมู่อย่างชัดเจน</p>
+                    <h2 class="text-2xl font-bold text-[#2F4F4F]">Worldbuilding — ระบบBuild a world</h2>
+                    <p class="text-sm text-gray-500">คลังข้อมูลอ้างอิงสำหรับNovelsของคุณ แบ่งCategoryอย่างชัดเจน</p>
                 </div>
             </div>
         
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="bg-white border border-[#2F4F4F]/10 rounded-xl p-5 shadow-sm hover:shadow-md transition group">
                     <h3 class="text-lg font-bold text-[#2F4F4F] mb-3 flex items-center gap-2 group-hover:text-[#DAA520] transition">
-                        <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 21a7 7 0 0 1 14 0"/></svg> Characters (ตัวละคร)
+                        <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 21a7 7 0 0 1 14 0"/></svg> Characters (Characters)
                     </h3>
-                    <p class="text-xs text-gray-500 mb-4 h-10">สร้างตัวละครที่มีมิติ ไม่ใช่แค่ชื่อ แต่รวมถึงปูมหลังและเป้าหมาย</p>
+                    <p class="text-xs text-gray-500 mb-4 h-10">สร้างCharactersที่มีมิติ ไม่ใช่แค่ชื่อ แต่รวมถึงปูมหลังและGoals</p>
                     <ul class="text-sm text-gray-600 space-y-2 list-disc list-inside bg-gray-50 p-3 rounded-lg">
-                        <li>รูปภาพประกอบ (Portrait)</li>
-                        <li>เป้าหมาย (Goals)</li>
-                        <li>จุดแข็ง/จุดอ่อน</li>
-                        <li>นิสัยและภูมิหลัง</li>
+                        <li>Image (Portrait)</li>
+                        <li>Goals (Goals)</li>
+                        <li>Strengths/Weaknesses</li>
+                        <li>นิสัยและBackground</li>
                     </ul>
                 </div>
             
                 <div class="bg-white border border-[#2F4F4F]/10 rounded-xl p-5 shadow-sm hover:shadow-md transition group">
                     <h3 class="text-lg font-bold text-[#2F4F4F] mb-3 flex items-center gap-2 group-hover:text-[#DAA520] transition">
-                        <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 21V9l5-3v15M9 21V4l6-2v19M15 21v-9l5 2v7M6 12h1M11 7h1M11 11h1M17 16h1"/></svg> Locations (สถานที่)
+                        <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 21V9l5-3v15M9 21V4l6-2v19M15 21v-9l5 2v7M6 12h1M11 7h1M11 11h1M17 16h1"/></svg> Locations (Locations)
                     </h3>
-                    <p class="text-xs text-gray-500 mb-4 h-10">ออกแบบฉากหลังให้สมจริง ทั้งสภาพแวดล้อมและสังคม</p>
+                    <p class="text-xs text-gray-500 mb-4 h-10">ออกแบบScenesหลังthatสมจริง ทั้งสภาพแวดล้อมและสังคม</p>
                     <ul class="text-sm text-gray-600 space-y-2 list-disc list-inside bg-gray-50 p-3 rounded-lg">
                         <li>ภูมิประเทศ & สภาพอากาศ</li>
                         <li>การเมือง & เศรษฐกิจ</li>
@@ -137,9 +137,9 @@
             
                 <div class="bg-white border border-[#2F4F4F]/10 rounded-xl p-5 shadow-sm hover:shadow-md transition group">
                     <h3 class="text-lg font-bold text-[#2F4F4F] mb-3 flex items-center gap-2 group-hover:text-[#DAA520] transition">
-                        <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m4 9 3-5h10l3 5-8 11zM4 9h16M9 4l3 16 3-16"/></svg> Items (ไอเทม)
+                        <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m4 9 3-5h10l3 5-8 11zM4 9h16M9 4l3 16 3-16"/></svg> Items (Items)
                     </h3>
-                    <p class="text-xs text-gray-500 mb-4 h-10">วัตถุสำคัญในเรื่อง อาวุธ หรือของวิเศษ</p>
+                    <p class="text-xs text-gray-500 mb-4 h-10">วัตถุสำคัญในnovel(s) อาวุธ หรือของวิเศษ</p>
                     <ul class="text-sm text-gray-600 space-y-2 list-disc list-inside bg-gray-50 p-3 rounded-lg">
                         <li>ความสามารถพิเศษ</li>
                         <li>ข้อจำกัด/เงื่อนไข</li>
@@ -154,20 +154,20 @@
             <div class="flex items-center gap-4 mb-6 border-b border-[#FAEBD7] pb-3">
                 <div class="w-10 h-10 rounded-full bg-[#2F4F4F] flex items-center justify-center text-white font-bold text-lg">3</div>
                 <div>
-                    <h2 class="text-2xl font-bold text-[#2F4F4F]">Scenes — หัวใจของการดำเนินเรื่อง</h2>
-                    <p class="text-sm text-gray-500">เครื่องมือสำหรับวางแผน "รายฉาก" เพื่อไม่ให้หลุดประเด็น</p>
+                    <h2 class="text-2xl font-bold text-[#2F4F4F]">Scenes — หัวใจของการดำเนินnovel(s)</h2>
+                    <p class="text-sm text-gray-500">เครื่องมือสำหรับวางแผน "รายScenes" เพื่อไม่thatหลุดประเด็น</p>
                 </div>
             </div>
         
             <div class="bg-[#F9FAFB] rounded-xl p-6 border border-gray-200">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
-                        <h3 class="font-bold text-[#2F4F4F] mb-3 text-lg">องค์ประกอบของฉาก (Scene Elements)</h3>
-                        <p class="text-gray-600 text-sm mb-4">ในหน้าจัดการฉาก (Scenes) เราได้เตรียมช่องกรอกข้อมูลสำคัญตามหลักการเขียนนิยายไว้ให้:</p>
+                        <h3 class="font-bold text-[#2F4F4F] mb-3 text-lg">องค์ประกอบของScenes (Scene Elements)</h3>
+                        <p class="text-gray-600 text-sm mb-4">ในหน้าManageScenes (Scenes) เราได้เตรียมช่องกรอกข้อมูลสำคัญตามหลักการเขียนNovelsไว้that:</p>
                         <ul class="space-y-3">
                             <li class="flex items-center gap-3 bg-white p-2 rounded border border-gray-100 shadow-sm">
                                 <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-1 rounded">Goal</span>
-                                <span class="text-sm text-gray-700">เป้าหมายของตัวละครในฉากนี้คืออะไร?</span>
+                                <span class="text-sm text-gray-700">GoalsของCharactersในScenesนี้คืออะไร?</span>
                             </li>
                             <li class="flex items-center gap-3 bg-white p-2 rounded border border-gray-100 shadow-sm">
                                 <span class="bg-red-100 text-red-800 text-xs font-bold px-2 py-1 rounded">Conflict</span>
@@ -175,14 +175,14 @@
                             </li>
                             <li class="flex items-center gap-3 bg-white p-2 rounded border border-gray-100 shadow-sm">
                                 <span class="bg-green-100 text-green-800 text-xs font-bold px-2 py-1 rounded">Outcome</span>
-                                <span class="text-sm text-gray-700">ผลลัพธ์ (ชนะ/แพ้) และส่งผลอย่างไรต่อฉากหน้า?</span>
+                                <span class="text-sm text-gray-700">ผลลัพธ์ (ชนะ/แพ้) และส่งผลอย่างไรต่อScenesหน้า?</span>
                             </li>
                         </ul>
                     </div>
                     <div>
-                        <h3 class="font-bold text-[#2F4F4F] mb-3 text-lg">การเชื่อมโยง (Linking)</h3>
+                        <h3 class="font-bold text-[#2F4F4F] mb-3 text-lg">การConnect (Linking)</h3>
                         <div class="bg-white p-4 rounded-xl border border-dashed border-[#DAA520] text-center">
-                            <p class="text-gray-600 text-sm mb-2">คุณสามารถดึงข้อมูลจาก Worldbuilding มาใช้ในฉากได้:</p>
+                            <p class="text-gray-600 text-sm mb-2">คุณสามารถดึงข้อมูลจาก Worldbuilding มาใช้ในScenesได้:</p>
                             <div class="flex flex-wrap justify-center gap-2 mt-2">
                                 <span class="text-xs bg-[#2F4F4F] text-white px-2 py-1 rounded">Link Characters</span>
                                 <span class="text-xs bg-[#2F4F4F] text-white px-2 py-1 rounded">Link Location</span>
@@ -204,7 +204,7 @@
                 </div>
             </div>
             <p class="text-gray-600 mb-4">
-                สร้าง Event เหตุการณ์สำคัญ และจัดเรียงตามลำดับเวลา สามารถเชื่อมโยง Event เข้ากับ Scene ที่เกี่ยวข้องได้ เพื่อดูว่า "เหตุการณ์นี้ เกิดขึ้นในฉากไหนของนิยาย"
+                สร้าง Event เหตุการณ์สำคัญ และจัดเรียงตามลำดับเวลา สามารถConnect Event เข้ากับ Scene ที่เกี่ยวข้องได้ เพื่อดูว่า "เหตุการณ์นี้ เกิดขึ้นในScenesไหนของNovels"
             </p>
         </section>
     
@@ -220,13 +220,13 @@
                 <div class="p-5 rounded-xl bg-white border border-gray-100 shadow-sm">
                     <h3 class="text-[#DAA520] font-bold mb-2">Backend & Database</h3>
                     <p class="text-gray-600 text-sm">
-                        ขับเคลื่อนด้วย <strong>Django Framework (Python)</strong> ที่มีความปลอดภัยสูง และใช้ฐานข้อมูล <strong>MySQL</strong> รองรับการเชื่อมโยงข้อมูลที่ซับซ้อน
+                        ขับเคลื่อนด้วย <strong>Django Framework (Python)</strong> ที่มีความปลอดภัยสูง และใช้ฐานข้อมูล <strong>MySQL</strong> รองรับการConnectข้อมูลที่ซับซ้อน
                     </p>
                 </div>
                 <div class="p-5 rounded-xl bg-white border border-gray-100 shadow-sm">
                     <h3 class="text-[#DAA520] font-bold mb-2">Frontend</h3>
                     <p class="text-gray-600 text-sm">
-                        ใช้ <strong>HTML5</strong> ร่วมกับ <strong>Tailwind CSS</strong> เพื่อความสวยงาม และเสริมด้วย <strong>Alpine.js</strong> เพื่อการตอบสนองที่ลื่นไหลโดยไม่ต้องรีโหลดหน้า
+                        ใช้ <strong>HTML5</strong> ร่วมกับ <strong>Tailwind CSS</strong> เพื่อความสวยงาม และเสริมด้วย <strong>Alpine.js</strong> เพื่อการตอบสนองที่ลื่นไหลByไม่ต้องรีโหลดหน้า
                     </p>
                 </div>
             </div>
