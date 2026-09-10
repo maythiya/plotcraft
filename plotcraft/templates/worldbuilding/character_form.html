@@ -15,21 +15,21 @@
         
             <div>
                 <h1 class="text-3xl font-bold text-[#2F4F4F] flex items-center gap-2">
-                    สร้าง / แก้ไข ตัวละคร (Character)
+                    สร้าง / Edit Characters (Character)
                     <span class="text-sm text-gray-400 font-normal border border-gray-200 px-2 py-0.5 rounded-full bg-white">
-                        {% if form.instance.pk %}แก้ไข{% else %}สร้างใหม่{% endif %}
+                        {% if form.instance.pk %}Edit{% else %}Create new{% endif %}
                     </span>
                 </h1>
 
                 <p class="text-sm text-gray-500 mt-1 font-medium">
-                    ไม่จำเป็นต้องเขียนทั้งหมดก็ได้นะคะ!
+                    ไม่จำเป็นต้องเขียนAllก็ได้นะคะ!
                 </p>
             </div>
         </div>
 
         <a href="{% url 'plotcraft:character_list' %}" class="text-[#2F4F4F] hover:text-[#DAA520] transition duration-150 font-medium flex items-center text-sm">
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-            ย้อนกลับ
+            Back
         </a>
 
     </div>
@@ -50,13 +50,13 @@
                 <div class="flex-1 space-y-6">
                     <div class="flex items-center gap-2 mb-2 border-b border-[#FAEBD7] pb-2">
                         <span class="text-[#DAA520]">✦</span>
-                        <h2 class="text-xl font-bold text-[#2F4F4F]">ข้อมูลทั่วไป (Identity)</h2>
+                        <h2 class="text-xl font-bold text-[#2F4F4F]">Identity</h2>
                     </div>
 
                     <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/20">
                         <label class="block text-sm font-bold text-[#2F4F4F] mb-1">
-                            อยู่ในเรื่อง / โปรเจกต์ (Story)
-                            <span class="text-xs text-[#2F4F4F]/60 font-normal ml-2">*เลือกโน้ตที่เป็นชื่อเรื่อง</span>
+                            อยู่ในnovel(s) / โปรเจกต์ (Story)
+                            <span class="text-xs text-[#2F4F4F]/60 font-normal ml-2">*เลือกโน้ตที่เป็นชื่อnovel(s)</span>
                         </label>
                         <div class="w-full">
                             {{ form.project }}
@@ -64,31 +64,31 @@
                     </div>
 
                     <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10 focus-within:ring-2 ring-[#DAA520]/50 transition">
-                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ชื่อตัวละคร <span class="text-red-500">*</span></label>
+                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ชื่อCharacters <span class="text-red-500">*</span></label>
                         {{ form.name }}
                         {% if form.name.errors %}<p class="text-red-600 text-xs mt-1">{{ form.name.errors.0 }}</p>{% endif %}
                     </div>
 
                     <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ชื่อเล่น / ฉายา (Alias)</label>
+                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Alias</label>
                         {{ form.alias }}
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
                         <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                            <label class="block text-sm font-bold text-[#2F4F4F] mb-1">อายุ</label>
+                            <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Age</label>
                             {{ form.age }}
                         </div>
                         <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                            <label class="block text-sm font-bold text-[#2F4F4F] mb-1">วันเกิด</label>
+                            <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Birthday</label>
                             {{ form.birth_date }}
                         </div>
                         <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                            <label class="block text-sm font-bold text-[#2F4F4F] mb-1">เพศ</label>
+                            <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Gender</label>
                             {{ form.gender }}
                         </div>
                         <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                            <label class="block text-sm font-bold text-[#2F4F4F] mb-1">เผ่าพันธุ์</label>
+                            <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Species</label>
                             {{ form.species }}
                         </div>
                     </div>
@@ -100,7 +100,7 @@
                      }"
                 >
                     <label class="block text-sm font-bold text-[#2F4F4F] mb-2">
-                        รูปประจำตัว (Portrait)
+                        Portrait
                     </label>
                 
                     <div class="relative w-full aspect-3/4 min-h-80
@@ -130,7 +130,7 @@
                                           d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                 </svg>
                                 <span class="text-xs font-bold">
-                                    คลิกเพื่ออัปโหลดรูปตัวละคร
+                                    Click to uploadรูปCharacters
                                 </span>
                             </div>
                         </template>
@@ -158,69 +158,69 @@
 
             <div class="flex items-center gap-2 mb-4 border-b border-[#FAEBD7] pb-2 pt-4">
                 <span class="text-[#DAA520]">⚓</span>
-                <h2 class="text-xl font-bold text-[#2F4F4F]">บทบาทและสถานะ</h2>
+                <h2 class="text-xl font-bold text-[#2F4F4F]">RoleและStatus</h2>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">บทบาท (Role)</label>
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Role (Role)</label>
                     {{ form.role }}
                 </div>
                 <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">สถานะ (Status)</label>
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Status (Status)</label>
                     {{ form.status }}
                 </div>
                 <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">อาชีพ</label>
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Occupation</label>
                     {{ form.occupation }}
                 </div>
             </div>
 
             <div class="flex items-center gap-2 mb-4 border-b border-[#FAEBD7] pb-2 pt-4">
                 <span class="text-[#DAA520]">♥</span>
-                <h2 class="text-xl font-bold text-[#2F4F4F]">รูปลักษณ์และจิตใจ</h2>
+                <h2 class="text-xl font-bold text-[#2F4F4F]">Appearance & personality</h2>
             </div>
 
             <div class="mb-6">
                 <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ลักษณะภายนอก (Appearance)</label>
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Appearance</label>
                     {{ form.appearance }}
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">บุคลิกภาพ (Personality)</label>
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Personality (Personality)</label>
                     {{ form.personality }}
                 </div>
                 <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ภูมิหลัง (Background)</label>
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Background (Background)</label>
                     {{ form.background }}
                 </div>
             </div>
 
             <div class="flex items-center gap-2 mb-4 border-b border-[#FAEBD7] pb-2 pt-4">
                 <span class="text-[#DAA520]">⚡</span>
-                <h2 class="text-xl font-bold text-[#2F4F4F]">ความสามารถและเป้าหมาย</h2>
+                <h2 class="text-xl font-bold text-[#2F4F4F]">ความสามารถและGoals</h2>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10 h-full">
-                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">เป้าหมาย (Goals)</label>
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Goals (Goals)</label>
                     {{ form.goals }}
                 </div>
                 
                 <div class="rounded-lg border border-[#FAEBD7] p-4 bg-[#FAEBD7]/20 space-y-4">
                     <div>
-                        <label class="block text-xs font-bold text-[#2F4F4F]/70 mb-1">ทักษะ (Skills)</label>
+                        <label class="block text-xs font-bold text-[#2F4F4F]/70 mb-1">Skills (Skills)</label>
                         {{ form.skills }}
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-green-700 mb-1">จุดแข็ง (Strengths)</label>
+                        <label class="block text-xs font-bold text-green-700 mb-1">Strengths (Strengths)</label>
                         {{ form.strengths }}
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-red-700 mb-1">จุดอ่อน (Weaknesses)</label>
+                        <label class="block text-xs font-bold text-red-700 mb-1">Weaknesses (Weaknesses)</label>
                         {{ form.weaknesses }}
                     </div>
                 </div>
@@ -228,19 +228,19 @@
 
             <div class="flex items-center gap-2 mb-4 border-b border-[#FAEBD7] pb-2 pt-4">
                 <span class="text-[#DAA520]"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M5 8h14M5 16h14M6.5 5.5l11 13M17.5 5.5l-11 13"/></svg>️</span>
-                <h2 class="text-xl font-bold text-[#2F4F4F]">ความสัมพันธ์และอื่นๆ</h2>
+                <h2 class="text-xl font-bold text-[#2F4F4F]">Relationshipsและอื่นๆ</h2>
             </div>
 
             <div class="grid grid-cols-1 gap-6 mb-6">
                 <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ที่อยู่ / บ้านเกิด (Location)</label>
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ที่อยู่ / Hometown (Location)</label>
                     {{ form.location }}
                 </div>
 
                 <div class="rounded-lg border border-[#FAEBD7] p-4 bg-[#FAEBD7]/10">
                     <label class="block text-sm font-bold text-[#2F4F4F] mb-3">
-                        ความสัมพันธ์ (Relationships) 
-                        <span class="text-xs font-normal text-gray-500 ml-2">* กดบันทึกเพื่อเพิ่มแถวใหม่</span>
+                        Relationships (Relationships) 
+                        <span class="text-xs font-normal text-gray-500 ml-2">* กดSaveเพื่อเพิ่มแถวใหม่</span>
                     </label>
 
                     {{ formset.management_form }}
@@ -259,12 +259,12 @@
                                 </div>
                                 
                                 <div class="w-full md:w-1/4">
-                                    <label class="text-xs text-gray-400 font-bold mb-1 block">สถานะ</label>
+                                    <label class="text-xs text-gray-400 font-bold mb-1 block">Status</label>
                                     {{ rel_form.status }}
                                 </div>
                                 
                                 <div class="flex-1 w-full">
-                                    <label class="text-xs text-gray-400 font-bold mb-1 block">รายละเอียดเพิ่มเติม</label>
+                                    <label class="text-xs text-gray-400 font-bold mb-1 block">Detailsเพิ่มเติม</label>
                                     {{ rel_form.note }}
                                 </div>
 
@@ -272,7 +272,7 @@
                                 <div class="flex items-center pt-5">
                                     <label class="text-red-500 text-xs font-bold cursor-pointer hover:bg-red-50 px-2 py-1 rounded transition flex items-center gap-1">
                                         {{ rel_form.DELETE }} 
-                                        <span>ลบออก</span>
+                                        <span>Remove</span>
                                     </label>
                                 </div>
                                 {% endif %}
@@ -282,38 +282,38 @@
                 </div>
             </div>
             <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10 mb-8">
-                <label class="block text-sm font-bold text-[#2F4F4F] mb-1">โน้ตเพิ่มเติม</label>
+                <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Additional notes</label>
                 {{ form.notes }}
             </div>
 
             <div class="mb-6 p-4 bg-purple-50 rounded-xl border border-purple-200">
-                <h3 class="font-bold text-purple-800 mb-2"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg> ให้ AI ช่วยคิดตัวละคร</h3>
+                <h3 class="font-bold text-purple-800 mb-2"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg> that AI ช่วยคิดCharacters</h3>
                 <div class="flex gap-2">
                     <input type="text" id="ai-concept" class="flex-1 border border-gray-300 rounded-lg px-3 py-2" 
                            placeholder="เช่น: จอมเวทหนุ่ม ขี้เก๊ก แต่กลัวแมว">
                     <button type="button" onclick="generateCharacter()" 
                             class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 font-bold whitespace-nowrap">
-                        <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><path d="M5 19h14M8 22h8"/></svg> เสกข้อมูล
+                        <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><path d="M5 19h14M8 22h8"/></svg> Generate
                     </button>
                 </div>
-                <p id="ai-loading" class="text-sm text-gray-500 mt-2 hidden"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M6 3h12M6 21h12M8 3c0 5 8 5 8 10s-8 5-8 8M16 3c0 5-8 5-8 10s8 5 8 8"/></svg> กำลังร่ายเวทมนตร์สร้างตัวละคร...</p>
+                <p id="ai-loading" class="text-sm text-gray-500 mt-2 hidden"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M6 3h12M6 21h12M8 3c0 5 8 5 8 10s-8 5-8 8M16 3c0 5-8 5-8 10s8 5 8 8"/></svg> กำลังร่ายเวทมนตร์สร้างCharacters...</p>
             </div>
 
             <div class="mt-10 flex items-center gap-4 border-t border-[#FAEBD7] pt-6">
                 <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-bold rounded-lg shadow-md text-[#FAEBD7] bg-[#2F4F4F] hover:bg-[#1a3030] hover:shadow-lg focus:outline-none transition duration-150">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    บันทึกข้อมูล
+                    Saveข้อมูล
                 </button>
                 
                 <a href="{% url 'plotcraft:character_list' %}" class="px-6 py-3 border border-gray-300 text-base font-medium text-gray-600 bg-white hover:bg-gray-50 rounded-lg transition duration-150">
-                    ยกเลิก
+                    Cancel
                 </a>
 
                 {% if character %}
                 <div class="ml-auto">
-                    <button type="submit" name="character_delete" class="inline-flex items-center px-4 py-2 border border-red-200 text-sm font-bold rounded-lg text-red-600 bg-red-50 hover:bg-red-100 hover:text-red-700 transition duration-150" onclick="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบตัวละครนี้? ถ้าลบแล้วไม่สามารถกู้คืนได้นะคะ!');">
+                    <button type="submit" name="character_delete" class="inline-flex items-center px-4 py-2 border border-red-200 text-sm font-bold rounded-lg text-red-600 bg-red-50 hover:bg-red-100 hover:text-red-700 transition duration-150" onclick="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบCharactersนี้? ถ้าลบแล้วไม่สามารถกู้คืนได้นะคะ!');">
                         <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5-4h4a1 1 0 011 1v1H9V4a1 1 0 011-1z"></path></svg>
-                        ลบตัวละคร
+                        ลบCharacters
                     </button>
                 </div>
                 {% endif %}
@@ -347,7 +347,7 @@
         const loading = document.getElementById('ai-loading');
         
         if (!concept) {
-            alert("ใส่คอนเซปต์สั้น ๆ ให้ AI หน่อยค่ะ");
+            alert("ใส่คอนเซปต์สั้น ๆ that AI หน่อยค่ะ");
             return;
         }
 
@@ -375,29 +375,29 @@
                 };
 
                 // 1. ข้อมูลทั่วไป
-                // ถ้าช่องชื่อยังว่างอยู่ ให้ AI เติมให้
+                // ถ้าช่องชื่อยังว่างอยู่ that AI เติมthat
                 if (!document.getElementById('id_name').value) setVal('id_name', d.name);
                 setVal('id_alias', d.alias);
                 setVal('id_age', d.age);
                 setVal('id_species', d.species); // ของคุณใช้ id_species ไม่ใช่ id_race
 
-                // 2. บทบาทและสถานะ
+                // 2. RoleและStatus
                 setVal('id_role', d.role);
                 setVal('id_status', d.status);
                 setVal('id_occupation', d.occupation);
 
-                // 3. รูปลักษณ์และจิตใจ (Textarea ยาว ๆ)
+                // 3. Appearance & personality (Textarea ยาว ๆ)
                 setVal('id_appearance', d.appearance);
                 setVal('id_personality', d.personality);
                 setVal('id_background', d.background);
 
-                // 4. ความสามารถและเป้าหมาย
+                // 4. ความสามารถและGoals
                 setVal('id_goals', d.goals);
                 setVal('id_skills', d.skills);
                 setVal('id_strengths', d.strengths);
                 setVal('id_weaknesses', d.weaknesses);
                 
-                alert("<svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg> เสกข้อมูลตัวละครเรียบร้อยแล้วค่ะ!");
+                alert("<svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg> GenerateCharactersเรียบร้อยแล้วค่ะ!");
             } else {
                 alert("เกิดข้อผิดพลาด: " + data.error);
             }
