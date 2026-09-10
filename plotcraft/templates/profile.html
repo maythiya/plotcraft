@@ -12,19 +12,19 @@
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(event) {
-                    // หา element รูปภาพและ placeholder
+                    // หา element imageand placeholder
                     const profileImg = document.getElementById('profile-preview');
                     const placeholder = document.getElementById('profile-placeholder');
                     const deleteBtn = document.getElementById('btn-delete-image');
                     
-                    // อัปเดต src ของรูปเป็นรูปใหม่ที่เพิ่งเลือก
+                    // อัปเดต src ofimageasimagenewthatเพิ่งSelect
                     profileImg.src = event.target.result;
                     
-                    // สั่งโชว์รูป และ ซ่อนcharactersย่อ
+                    // สั่งโชว์image and ซ่อนcharactersย่อ
                     profileImg.classList.remove('hidden');
                     if (placeholder) placeholder.classList.add('hidden');
                     
-                    // (Optional) ซ่อนปุ่มลบรูปชั่วคราว เพราะกำลังจะอัพรูปใหม่
+                    // (Optional) ซ่อนปุ่มDeleteimageชั่วคราว เพราะLoadingจะอัพimagenew
                     if (deleteBtn) deleteBtn.style.display = 'none';
                 };
                 reader.readAsDataURL(file);
@@ -40,7 +40,7 @@
     <div class="w-full md:w-72 bg-[#2F4F4F] p-8 flex flex-col justify-between text-[#FAEBD7]">
       <div>
         <h2 class="text-2xl font-bold mb-8 text-white flex items-center gap-2">
-            <span class="text-[#DAA520]"><svg class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.8 1.8 0 0 0 .36 2l.06.06-2.1 2.1-.06-.06a1.8 1.8 0 0 0-2-.36 1.8 1.8 0 0 0-1.1 1.65v.11h-3v-.11A1.8 1.8 0 0 0 10.46 18.7a1.8 1.8 0 0 0-2 .36l-.06.06-2.1-2.1.06-.06a1.8 1.8 0 0 0 .36-2 1.8 1.8 0 0 0-1.65-1.1H5v-3h.11a1.8 1.8 0 0 0 1.65-1.1 1.8 1.8 0 0 0-.36-2L6.34 7.7l2.1-2.1.06.06a1.8 1.8 0 0 0 2 .36A1.8 1.8 0 0 0 11.6 4.4v-.1h3v.1a1.8 1.8 0 0 0 1.1 1.66 1.8 1.8 0 0 0 2-.36l.06-.06 2.1 2.1-.06.06a1.8 1.8 0 0 0-.36 2 1.8 1.8 0 0 0 1.65 1.1h.11v3h-.11A1.8 1.8 0 0 0 19.4 15z"/></svg></span> ตั้งค่า
+            <span class="text-[#DAA520]"><svg class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.8 1.8 0 0 0 .36 2l.06.06-2.1 2.1-.06-.06a1.8 1.8 0 0 0-2-.36 1.8 1.8 0 0 0-1.1 1.65v.11h-3v-.11A1.8 1.8 0 0 0 10.46 18.7a1.8 1.8 0 0 0-2 .36l-.06.06-2.1-2.1.06-.06a1.8 1.8 0 0 0 .36-2 1.8 1.8 0 0 0-1.65-1.1H5v-3h.11a1.8 1.8 0 0 0 1.65-1.1 1.8 1.8 0 0 0-.36-2L6.34 7.7l2.1-2.1.06.06a1.8 1.8 0 0 0 2 .36A1.8 1.8 0 0 0 11.6 4.4v-.1h3v.1a1.8 1.8 0 0 0 1.1 1.66 1.8 1.8 0 0 0 2-.36l.06-.06 2.1 2.1-.06.06a1.8 1.8 0 0 0-.36 2 1.8 1.8 0 0 0 1.65 1.1h.11v3h-.11A1.8 1.8 0 0 0 19.4 15z"/></svg></span> Settings
         </h2>
         <ul class="space-y-2">
            <li><a href="{% url 'plotcraft:profile' %}" class="block px-4 py-3 bg-[#FAEBD7]/10 text-white rounded-lg font-medium border-l-4 border-[#DAA520] shadow-sm">Account</a></li>
@@ -57,7 +57,7 @@
 
     <div class="flex-1 p-8 md:p-12 overflow-y-auto">
         <h1 class="text-3xl font-extrabold text-[#2F4F4F] mb-2">Edit profile</h1>
-        <p class="text-gray-500 mb-8">Manageข้อมูลส่วนตัวและรูปภาพของคุณ</p>
+        <p class="text-gray-500 mb-8">Manageinformationส่วนตัวandimageyour</p>
 
         <form method="post" enctype="multipart/form-data" class="space-y-8">
             {% csrf_token %}
@@ -99,7 +99,7 @@
 
                     {% if user.profile.image %}
                     <div class="mt-3" id="btn-delete-image-container">
-                        <button type="submit" id="btn-delete-image" name="delete_image" onclick="return confirm('ต้องการRemove photoโปรไฟล์ใช่หรือไม่?');" class="px-3 py-1 bg-red-100 text-red-600 text-xs font-bold rounded-lg hover:bg-red-200 transition">
+                        <button type="submit" id="btn-delete-image" name="delete_image" onclick="return confirm('ต้องtheRemove photoโปรไฟล์ใช่ornot?');" class="px-3 py-1 bg-red-100 text-red-600 text-xs font-bold rounded-lg hover:bg-red-200 transition">
                             Remove photo
                         </button>
                     </div>
@@ -140,11 +140,11 @@
                 ⚠️ Danger Zone
             </h3>
             <div class="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 bg-red-50 rounded-xl border border-red-100">
-                <p class="text-red-800 text-sm">การลบบัญชีจะทำthatข้อมูลNovels Characters และการตั้งค่าAllหายไปถาวร</p>
-                <form method="post" onsubmit="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบบัญชีนี้? การกระทำนี้ไม่สามารถBackได้!');">
+                <p class="text-red-800 text-sm">theDeleteaccountจะทำthatinformationNovels Characters andtheSettingsAllหายgoถาวร</p>
+                <form method="post" onsubmit="return confirm('youแน่ใจornotว่าต้องtheDeleteaccountนี้? theกระทำนี้notสาcomeรถBackcan!');">
                     {% csrf_token %}
                     <button type="submit" name="delete_account" class="px-4 py-2 bg-white border border-red-200 text-red-600 font-bold rounded-lg hover:bg-red-600 hover:text-white transition shadow-sm whitespace-nowrap text-sm">
-                        ลบบัญชีถาวร
+                        Deleteaccountถาวร
                     </button>
                 </form>
             </div>
