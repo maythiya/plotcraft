@@ -8,7 +8,7 @@
         <div class="absolute top-0 left-0 w-full h-1.5 bg-linear-to-r from-[#2F4F4F] to-[#DAA520]"></div>
 
         <h1 class="text-2xl font-bold mb-6 flex items-center gap-2">
-            <span class="text-[#DAA520]"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 7h16v12H4zM4 7l3-4h10l3 4M8 3l3 4M14 3l3 4"/></svg></span> จัดการฉาก (Scene Editor)
+            <span class="text-[#DAA520]"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 7h16v12H4zM4 7l3-4h10l3 4M8 3l3 4M14 3l3 4"/></svg></span> ManageScenes (Scene Editor)
         </h1>
 
         <form method="post">
@@ -16,70 +16,70 @@
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <div>
-                    <label class="block font-bold text-sm mb-1">ชื่อฉาก *</label>
+                    <label class="block font-bold text-sm mb-1">nameScenes *</label>
                     {{ form.title }}
                 </div>
                 <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label class="block font-bold text-sm mb-1">ลำดับ (Order)</label>
+                        <label class="block font-bold text-sm mb-1">Order (Order)</label>
                         {{ form.order }}
                     </div>
                     <div>
-                        <label class="block font-bold text-sm mb-1">สถานะ</label>
+                        <label class="block font-bold text-sm mb-1">Status</label>
                         {{ form.status }}
                     </div>
                 </div>
                 <div class="md:col-span-2">
-                    <label class="block font-bold text-sm mb-1">อยู่ในเรื่อง (Project)</label>                                
+                    <label class="block font-bold text-sm mb-1">อยู่innovel(s) (Project)</label>                                
                     {{ form.project }}
                 </div>
             </div>
 
             <hr class="border-[#FAEBD7] my-6">
 
-            <h3 class="font-bold text-lg text-[#2F4F4F] mb-3">องค์ประกอบฉาก</h3>
+            <h3 class="font-bold text-lg text-[#2F4F4F] mb-3">elementsScenes</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <div>
-                    <label class="block font-bold text-sm mb-1">สถานที่ (Location)</label>
+                    <label class="block font-bold text-sm mb-1">Locations (Location)</label>
                     {{ form.location }}
                 </div>
                 <div>
-                    <label class="block font-bold text-sm mb-1">มุมมองตัวละคร (POV)</label>
+                    <label class="block font-bold text-sm mb-1">มุมมองCharacters (POV)</label>
                     {{ form.pov_character }}
                 </div>
             </div>
 
             <hr class="border-[#FAEBD7] my-6">
 
-            <h3 class="font-bold text-lg text-[#2F4F4F] mb-3">โครงสร้างการเล่าเรื่อง</h3>
+            <h3 class="font-bold text-lg text-[#2F4F4F] mb-3">โครงCreatetheเล่าnovel(s)</h3>
             <div class="space-y-4 mb-6">
                 <div>
-                    <label class="block font-bold text-sm mb-1 text-blue-800">เป้าหมาย (Goal)</label>
+                    <label class="block font-bold text-sm mb-1 text-blue-800">Goals (Goal)</label>
                     {{ form.goal }}
                 </div>
                 <div>
-                    <label class="block font-bold text-sm mb-1 text-red-800">อุปสรรค (Conflict)</label>
+                    <label class="block font-bold text-sm mb-1 text-red-800">obstacle (Conflict)</label>
                     {{ form.conflict }}
                 </div>
                 <div>
-                    <label class="block font-bold text-sm mb-1 text-green-800">ผลลัพธ์ (Outcome)</label>
+                    <label class="block font-bold text-sm mb-1 text-green-800">resultsลัพธ์ (Outcome)</label>
                     {{ form.outcome }}
                 </div>
             </div>
 
             <div class="mb-8">
-                <label class="block font-bold text-sm mb-1">เนื้อหา / บทร่าง</label>
+                <label class="block font-bold text-sm mb-1">content / บทDraft</label>
                 {{ form.content }}
             </div>
 
             <div class="mb-6 p-4 bg-purple-50 rounded-xl border border-purple-200">
-                <h3 class="font-bold text-purple-800 mb-2"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg> ให้ AI ช่วยร่างเนื้อหาฉาก</h3>
+                <h3 class="font-bold text-purple-800 mb-2"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg> that AI helpDraftcontentScenes</h3>
                 <div class="flex gap-2">
                     <input type="text" id="ai-scene-concept" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-purple-500" 
-                           placeholder="เช่น: พระเอกเดินเข้าไปในถ้ำมังกรด้วยความกลัว แต่ต้องแกล้งทำเป็นเก่ง">
+                           placeholder="เช่น: พระเอกเดินเข้าgoinถ้ำมังกรด้วยความกลัว แต่ต้องแกล้งทำasเก่ง">
                     <button type="button" onclick="generateSceneContent()" 
                             class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 font-bold whitespace-nowrap shadow-sm transition">
-                        <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><path d="M5 19h14M8 22h8"/></svg> เสกเนื้อหา
+                        <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><path d="M5 19h14M8 22h8"/></svg> Generatecontent
                     </button>
                 </div>
                 <p id="ai-loading" class="text-sm text-gray-500 mt-2 hidden items-center gap-2">
@@ -87,22 +87,22 @@
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    กำลังร่ายเวทมนตร์ร่างฉาก...
+                    Loadingร่ายเวทมนตร์DraftScenes...
                 </p>
                 <p id="ai-error" class="text-sm text-red-500 mt-2 hidden"></p>
             </div>
 
             <div class="flex gap-3 pt-4 border-t border-[#FAEBD7]">
                 <button type="submit" class="bg-[#2F4F4F] text-white px-6 py-2 rounded-lg font-bold hover:bg-[#1a3030] shadow-md transition">
-                    บันทึกฉาก
+                    SaveScenes
                 </button>
                 <a href="{% url 'plotcraft:scene_list' %}" class="border border-gray-300 px-6 py-2 rounded-lg hover:bg-gray-50 text-gray-600 font-medium transition">
-                    ยกเลิก
+                    Cancel
                 </a>
                 
                 {% if scene %}
-                <button type="submit" name="scene_delete" class="ml-auto text-red-600 hover:text-red-800 text-sm font-bold bg-red-50 px-4 py-2 rounded-lg hover:bg-red-100 transition" onclick="return confirm('ยืนยันการลบฉากนี้?');">
-                    ลบฉาก
+                <button type="submit" name="scene_delete" class="ml-auto text-red-600 hover:text-red-800 text-sm font-bold bg-red-50 px-4 py-2 rounded-lg hover:bg-red-100 transition" onclick="return confirm('ConfirmtheDeleteScenesนี้?');">
+                    DeleteScenes
                 </button>
                 {% endif %}
             </div>
@@ -111,7 +111,7 @@
 </div>
 
 <script>
-    // ฟังก์ชันสำหรับช่วยใส่ค่าลง Field (เลียนแบบ Character Form)
+    // ฟังก์ชันforhelpใส่ค่าลง Field (เลียนแบบ Character Form)
     function setVal(id, value) {
         const el = document.getElementById(id);
         if (el && value) {
@@ -125,16 +125,16 @@
         const loadingText = document.getElementById('ai-loading');
         const errorText = document.getElementById('ai-error');
         
-        // ใช้ if เช็คก่อนว่ามี scene ไหม ถ้ามีค่อยเอา id มา
+        // ใช้ if เช็คก่อนว่าhave scene ไหม ถ้าhaveค่อยเอา id come
         const currentSceneId = "{% if scene %}{{ scene.id }}{% endif %}";
 
         if (!concept) {
-            alert("กรุณาใส่ไอเดียหรือคำสั่งก่อนค่ะ!");
+            alert("กรุณาใส่ไอเดียorwordสั่งก่อนค่ะ!");
             return;
         }
         
         if (!currentSceneId) {
-             alert("⚠️ กรุณากด 'บันทึก' (Save) ข้อมูลฉากพื้นฐานก่อนใช้งาน AI ค่ะ!");
+             alert("⚠️ กรุณาclick 'Save' (Save) informationScenesพื้นฐานก่อนใช้งาน AI ค่ะ!");
              return;
         }
 
@@ -156,22 +156,22 @@
         .then(data => {
             loadingText.classList.add('hidden');
 
-            // ตรวจสอบว่ามีข้อมูลส่งกลับมาไหม
+            // Checkว่าhaveinformationSendBackcomeไหม
             if (data.draft) {
-                const d = data.draft; // d คือ object ข้อมูล (goal, conflict, etc.)
+                const d = data.draft; // d คือ object information (goal, conflict, etc.)
 
-                // 1. หยอดข้อมูลลงช่องโครงสร้าง (Goal, Conflict, Outcome) 
-                // ใช้ id_ นำหน้า เพราะ Django form มักจะตั้ง id แบบนี้
+                // 1. หยอดinformationลงช่องโครงCreate (Goal, Conflict, Outcome) 
+                // ใช้ id_ นำpage เพราะ Django form มักจะตั้ง id แบบนี้
                 setVal('id_goal', d.goal);
                 setVal('id_conflict', d.conflict);
                 setVal('id_outcome', d.outcome);
                 
-                // 2. หยอดข้อมูลลงช่องเนื้อหา (Content) 
+                // 2. หยอดinformationลงช่องcontent (Content) 
                 const contentField = document.getElementById('id_content') || document.querySelector('textarea[name="content"]');
                 
                 if (contentField && d.content) {
                     const currentContent = contentField.value;
-                    // ถ้ามีเนื้อหาเดิม ให้ต่อท้าย / ถ้าไม่มี ให้ใส่เลย
+                    // ถ้าhavecontentเดิม thatcontinueท้าย / ถ้าnothave thatใส่เลย
                     if (currentContent) {
                         contentField.value = currentContent + "\n\n" + d.content;
                     } else {
@@ -181,7 +181,7 @@
 
                 // เสร็จสิ้น
                 conceptInput.value = ''; 
-                alert("<svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg> AI ร่างฉากเรียบร้อยแล้วค่ะ!");
+                alert("<svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg> AI DraftScenescompleteyetค่ะ!");
                 
             } else if (data.error) {
                 errorText.textContent = "Error: " + data.error;
@@ -195,14 +195,14 @@
         });
     }
 
-    // ผูกปุ่มกด และตั้ง onchange ให้ Project/Location เป็นการรีโหลดเพจเพื่อให้ Form กรองฝั่งเซิร์ฟเวอร์
+    // ผูกbuttonclick andตั้ง onchange that Project/Location astheรีโหลดเพจtothat Form กรองฝั่งเซิร์ฟเวอร์
     document.addEventListener('DOMContentLoaded', function() {
-        const btn = document.getElementById('aiGenerateBtn'); // ถ้าปุ่มมี id นี้
+        const btn = document.getElementById('aiGenerateBtn'); // ถ้าbuttonhave id นี้
         if (btn) {
             btn.addEventListener('click', generateSceneContent);
         }
 
-        // project select: รีโหลดเป็น ?project=<id>
+        // project select: รีโหลดas ?project=<id>
         const projEl = document.getElementById('project-select') || document.querySelector('select[name="project"]');
         if (projEl) {
             projEl.addEventListener('change', function(e) {

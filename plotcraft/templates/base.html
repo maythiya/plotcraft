@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}PlotCraft{% endblock %}</title>
@@ -12,8 +12,8 @@
     {% include "navbar.html" %}
     <main class="pc-main">
       <header class="pc-topbar">
-        <div><div class="pc-eyebrow">พื้นที่ทำงาน PlotCraft</div><div class="pc-topbar__title">จัดวางโลกของเรื่องราวคุณให้มีชีวิต.</div></div>
-        <div class="pc-topbar__actions"><span class="pc-topbar__pill">โหมดเขียน</span><span class="pc-topbar__dot" aria-label="Online"></span></div>
+        <div><div class="pc-eyebrow">PlotCraft Workspace</div><div class="pc-topbar__title">Bring your story world to life.</div></div>
+        <div class="pc-topbar__actions"><span class="pc-topbar__pill">Writing mode</span><span class="pc-topbar__dot" aria-label="Online"></span></div>
       </header>
       {% block content %}
       {% endblock %}
@@ -37,7 +37,7 @@
         <div id="chat-messages" class="flex-1 p-4 h-80 overflow-y-auto bg-gray-50 space-y-3">
             <div class="flex justify-start">
                 <div class="bg-white border border-gray-200 rounded-lg rounded-tl-none p-3 max-w-[85%] text-sm shadow-sm text-gray-700">
-                    สวัสดีค่ะ! เราคือ AI ผู้ช่วยนักเขียนที่แสนน่ารัก มีอะไรให้เราช่วยหรือตรวจสอบไหมคะ? <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M7 12V6a1.5 1.5 0 0 1 3 0v4-6a1.5 1.5 0 0 1 3 0v6-5a1.5 1.5 0 0 1 3 0v6-3a1.5 1.5 0 0 1 3 0v6c0 4-3 7-7 7-4 0-7-3-7-7v-2z"/></svg>
+                    Hello! I’m your writing assistant. What would you like to create or check today? <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M7 12V6a1.5 1.5 0 0 1 3 0v4-6a1.5 1.5 0 0 1 3 0v6-5a1.5 1.5 0 0 1 3 0v6-3a1.5 1.5 0 0 1 3 0v6c0 4-3 7-7 7-4 0-7-3-7-7v-2z"/></svg>
                 </div>
             </div>
         </div>
@@ -46,7 +46,7 @@
             <form id="chat-form" onsubmit="sendMessage(event)" class="flex gap-2">
                 <input type="text" id="chat-input" 
                        class="flex-1 border border-gray-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-[#2F4F4F] focus:ring-1 focus:ring-[#2F4F4F]"
-                       placeholder="พิมพ์ข้อความ..." autocomplete="off">
+                       placeholder="Type a message..." autocomplete="off">
                 <button type="submit" class="bg-[#2F4F4F] text-white p-2 rounded-full hover:bg-[#1a3030] disabled:opacity-50 transition shadow-md">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform rotate-90" viewBox="0 0 20 20" fill="currentColor">
                         <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
@@ -66,117 +66,117 @@
     </div>
 
     <script>
-        // ฟังก์ชันเปิด/ปิด Chat
+        // ฟังก์ชันเClose/Close Chat
         function toggleChat() {
             const chatWindow = document.getElementById('ai-chat-window');
             
-            // เช็คว่าตอนนี้ "ซ่อน" อยู่หรือเปล่า?
+            // เช็คว่าchaptersนี้ "ซ่อน" อยู่orเปล่า?
             if (chatWindow.classList.contains('hidden')) {
-                // === ถ้าซ่อนอยู่ ให้เปิด ===
+                // === ถ้าซ่อนอยู่ thatเClose ===
 
-                // เอา class hidden ออกเพื่อให้มันมีตัวตนในหน้าเว็บ
+                // เอา class hidden ออกtothatมันhaveตัวตนinpageเว็บ
                 chatWindow.classList.remove('hidden');
 
-                // ใช้ setTimeout เล็กน้อยเพื่อให้ Animation ทำงาน (Transition จาก Opacity 0 -> 100)
+                // ใช้ setTimeout เล็กน้อยtothat Animation ทำงาน (Transition From Opacity 0 -> 100)
                 setTimeout(() => {
                     chatWindow.classList.remove('opacity-0', 'scale-95');
                     chatWindow.classList.add('opacity-100', 'scale-100');
                     document.getElementById('chat-input').focus();
                 }, 10);
             } else {
-                // === ถ้าเปิดอยู่ ให้ปิด ===
+                // === ถ้าเCloseอยู่ thatClose ===
 
-                // ทำให้จางและย่อลงก่อน (Animation กลับ)
+                // ทำthatจางandย่อลงก่อน (Animation Back)
                 chatWindow.classList.remove('opacity-100', 'scale-100');
                 chatWindow.classList.add('opacity-0', 'scale-95');
 
-                // รอ 300ms (เท่ากับเวลา Transition) แล้วค่อยใส่ hidden เพื่อซ่อนถาวร
+                // รอ 300ms (เท่าwithเวลา Transition) yetค่อยใส่ hidden toซ่อนpermanently
                 setTimeout(() => {
                     chatWindow.classList.add('hidden');
                 }, 300);
             }
         }
 
-        // ฟังก์ชันส่งข้อความ
+        // ฟังก์ชันSendข้อความ
         async function sendMessage(e) {
-            // ห้ามไม่ให้หน้าเว็บ Refresh เมื่อกด Submit
+            // ห้ามnotthatpageเว็บ Refresh whenclick Submit
             e.preventDefault();
 
             const input = document.getElementById('chat-input');
             const messagesDiv = document.getElementById('chat-messages');
             const message = input.value.trim();
             
-            // ถ้าไม่ได้พิมพ์อะไรมา ก็จบการทำงาน
+            // ถ้าnotcanพิมพ์อะไรcome ก็จบtheทำงาน
             if (!message) return;
 
             // แสดงข้อความฝั่ง User
             appendMessage(message, 'user');
             input.value = ''; // เคลียร์ช่องพิมพ์
 
-            // แสดง Loading "กำลังพิมพ์..."
+            // แสดง Loading "Thinking..."
             const loadingId = 'loading-' + Date.now();
             appendLoading(loadingId);
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
-            // ตรวจสอบว่าอยู่ในหน้านิยายหรือเปล่า? เป็น Novel ID จาก URL (สำหรับส่ง Context นิยายให้ AI)
-            // รูปแบบ URL : /notes/1/edit/ หรือ /scenes/?project=1
+            // Checkว่าอยู่inpageNovelsorเปล่า? as Novel ID From URL (forSend Context Novelsthat AI)
+            // imageแบบ URL : /notes/1/edit/ or /scenes/?project=1
             let novelId = null;
             const path = window.location.pathname;
             const searchParams = new URLSearchParams(window.location.search);
             
-            // กรณี 1: หน้า /notes/<id>/...
+            // กรณี 1: page /notes/<id>/...
             const notesMatch = path.match(/\/notes\/(\d+)\//);
             if (notesMatch) {
                 novelId = notesMatch[1];
             }
 
-            // กรณี 2: หน้า /scenes/?project=<id>
+            // กรณี 2: page /scenes/?project=<id>
             if (!novelId && searchParams.has('project')) {
                 novelId = searchParams.get('project');
             }
 
-            console.log("Context Novel ID:", novelId); // ไปเช็คใน Console ได้
+            console.log("Context Novel ID:", novelId); // goเช็คin Console can
 
             try {
-                // ยิง API ไปหา Backend
+                // ยิง API goหา Backend
                 const response = await fetch('/api/chat/general/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRFToken': '{{ csrf_token }}' // ต้องส่ง CSRF Token ไปด้วย ไม่งั้น Django จะตีกลับว่าไม่ปลอดภัย
+                        'X-CSRFToken': '{{ csrf_token }}' // ต้องSend CSRF Token goด้วย notงั้น Django จะตีBackว่าnotปลอดภัย
                     },
-                    // ส่ง novel_id ไปด้วย (ถ้ามี)
+                    // Send novel_id goด้วย (ถ้าhave)
                     body: JSON.stringify({
-                        message: message,   // ข้อความที่เราพิมพ์
-                        novel_id: novelId   // ID นิยาย (ถ้ามี)
+                        message: message,   // ข้อความthatเราพิมพ์
+                        novel_id: novelId   // ID Novels (ถ้าhave)
                     })
                 });
 
                 const data = await response.json();
                 
-                // ลบ Loading ออกเมื่อได้คำตอบ
+                // Delete Loading ออกwhencanwordตอบ
                 document.getElementById(loadingId).remove();
 
                 if (data.reply) {
-                    // แสดงข้อความตอบกลับจาก AI
+                    // แสดงข้อความตอบBackFrom AI
                     appendMessage(data.reply, 'bot');
                 } else {
-                    appendMessage('เกิดข้อผิดพลาดในการประมวลผล', 'bot', true);
+                    appendMessage('Something went wrong while processing your request.', 'bot', true);
                 }
             
-            // กรณีเน็ตหลุด หรือ Server พัง
+            // กรณีเน็ตหลุด or Server พัง
             } catch (error) {
                 if (document.getElementById(loadingId)) {
                     document.getElementById(loadingId).remove();
                 }
-                appendMessage('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้', 'bot', true);
+                appendMessage('Unable to connect to the server.', 'bot', true);
                 console.error(error);
             }
 
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }
 
-        // Helper: สร้างกล่องข้อความ
+        // Helper: Createกล่องข้อความ
         function appendMessage(text, sender, isError = false) {
             const messagesDiv = document.getElementById('chat-messages');
             const div = document.createElement('div');
@@ -186,14 +186,14 @@
                 div.innerHTML = `<div class="bg-[#2F4F4F] text-white rounded-lg rounded-tr-none p-3 max-w-[85%] text-sm shadow-md">${text}</div>`;
             } else {
                 div.className = 'flex justify-start';
-                // แปลง \n เป็น <br> เพื่อการแสดงผลที่ถูกต้อง
+                // แปลง \n as <br> totheแสดงresultsthatถูกต้อง
                 const formattedText = text.replace(/\n/g, '<br>');
                 div.innerHTML = `<div class="bg-white border border-gray-200 rounded-lg rounded-tl-none p-3 max-w-[85%] text-sm shadow-sm ${isError ? 'text-red-600 bg-red-50 border-red-200' : 'text-gray-700'}">${formattedText}</div>`;
             }
             messagesDiv.appendChild(div);
         }
 
-        // Helper: สร้างตัวโหลด (Loading Dots)
+        // Helper: Createตัวโหลด (Loading Dots)
         function appendLoading(id) {
             const messagesDiv = document.getElementById('chat-messages');
             const div = document.createElement('div');

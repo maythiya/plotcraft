@@ -16,10 +16,10 @@
             <div class="absolute top-0 left-0 w-2 h-full bg-[#DAA520]"></div>
             <div>
                 <h1 class="text-3xl font-bold text-[#2F4F4F] mb-2">{{ timeline.title }}</h1>
-                <p class="text-gray-600">{{ timeline.description|default:"(ไม่มีคำอธิบาย)" }}</p>
+                <p class="text-gray-600">{{ timeline.description|default:"(nothavewordอธิบาย)" }}</p>
                 {% if timeline.related_project %}
                     <div class="inline-flex items-center gap-1 mt-2 text-sm text-[#DAA520] font-bold">
-                        <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5V21.5M8 7h8M8 11h8"/></svg> โปรเจกต์: {{ timeline.related_project.title }}
+                        <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5V21.5M8 7h8M8 11h8"/></svg> project: {{ timeline.related_project.title }}
                     </div>
                 {% endif %}
             </div>
@@ -29,17 +29,17 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
-                    <span>เพิ่มเหตุการณ์</span>
+                    <span>Add event</span>
                 </button>
             
                 <form method="post" action="{% url 'plotcraft:timeline_delete' timeline.id %}" onsubmit="return confirm(
-                    'คุณแน่ใจหรือไม่ว่าต้องการลบ Timeline \'{{ timeline.title|escapejs }}\' ? หากลบแล้วทั้งหมดที่สร้างใน Timeline นี้จะหายไปด้วยนะคะ!');">
+                    'youแน่ใจornotว่าต้องtheDelete timeline \'{{ timeline.title|escapejs }}\' ? หากDeleteyetAllthatCreatein Timeline นี้จะหายgoด้วยนะคะ!');">
                     {% csrf_token %}
                     <button type="submit" class="w-full justify-center px-6 py-2 bg-red-50 text-red-600 border border-red-200 rounded-lg font-semibold hover:bg-red-100 hover:text-red-700 transition flex items-center gap-2 text-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
-                        <span>ลบ Timeline</span>
+                        <span>Delete timeline</span>
                     </button>
                 </form>
             </div>
@@ -68,10 +68,10 @@
                         "related_scene_id": "{% if event.related_scene %}{{ event.related_scene.id }}{% endif %}",
                         "scene_title": "{% if event.related_scene %}{{ event.related_scene.title|escapejs }}{% endif %}",
                         
-                        {# ---ส่วนลิงก์ฉาก--- #}
+                        {# ---ส่วนlinkScenes--- #}
                         "scene_url": "{% if event.related_scene and event.related_scene.project %}{% url 'plotcraft:scene_list' %}?project={{ event.related_scene.project.id }}#scene-{{ event.related_scene.id }}{% endif %}",
                         
-                        {# ---ส่วนปุ่มเริ่มเขียน (ถ้าไม่มีฉาก) --- #}
+                        {# ---ส่วนbuttonStart writing (ถ้าnothaveScenes) --- #}
                         "create_scene_url": "{% url 'plotcraft:scene_create' %}",
 
                         "characters": [
@@ -125,7 +125,7 @@
                 </div>
             </div>
             {% empty %}
-            <div class="text-center py-20 text-gray-400">ยังไม่มีเหตุการณ์ เริ่มสร้างได้เลย!</div>
+            <div class="text-center py-20 text-gray-400">No events yet. Create your first one!</div>
             {% endfor %}
         </div>
     </div>
@@ -146,20 +146,20 @@
                     </template>
                     <div class="flex items-center gap-2 mb-4">
                         <span class="bg-[#DAA520] text-white px-3 py-1 rounded-full text-sm font-bold" x-text="currentEvent.time_label"></span>
-                        <span class="text-gray-400 text-sm">ลำดับที่ <span x-text="currentEvent.order"></span></span>
+                        <span class="text-gray-400 text-sm">Order <span x-text="currentEvent.order"></span></span>
                     </div>
                     <h2 class="text-2xl font-bold text-[#2F4F4F] mb-4" x-text="currentEvent.title"></h2>
                     <div class="prose prose-sm text-gray-600 mb-6" x-html="currentEvent.description"></div>
 
                     <div class="mb-6">
-                        <h4 class="font-bold text-[#2F4F4F] mb-3 border-b pb-1"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 7h16v12H4zM4 7l3-4h10l3 4M8 3l3 4M14 3l3 4"/></svg> ฉากที่เกี่ยวข้อง</h4>
+                        <h4 class="font-bold text-[#2F4F4F] mb-3 border-b pb-1"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 7h16v12H4zM4 7l3-4h10l3 4M8 3l3 4M14 3l3 4"/></svg> Scenesthatrelated</h4>
                         
                         <template x-if="currentEvent.scene_title">
                             <a :href="currentEvent.scene_url" class="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-[#FAEBD7]/50 border border-gray-200 hover:border-[#DAA520] transition group cursor-pointer">
                                 <div class="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-xl group-hover:scale-110 transition"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 20h16M6 17.5V5a2 2 0 0 1 2-2h7"/><path d="m14 6 4-4 3 3-4 4-4 1z"/></svg></div>
                                 <div class="flex-1">
                                     <h5 class="font-bold text-[#2F4F4F] group-hover:text-[#DAA520]" x-text="currentEvent.scene_title"></h5>
-                                    <p class="text-xs text-gray-500">คลิกเพื่อเปิดดูซีนในโปรเจกต์นี้</p>
+                                    <p class="text-xs text-gray-500">ClicktoเCloseดูซีนinprojectนี้</p>
                                 </div>
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-300 group-hover:text-[#DAA520]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
                             </a>
@@ -167,13 +167,13 @@
 
                         <template x-if="!currentEvent.scene_title">
                             <a :href="currentEvent.create_scene_url" class="flex items-center justify-center gap-2 p-3 rounded-lg border-2 border-dashed border-gray-300 text-gray-400 hover:border-[#DAA520] hover:text-[#DAA520] hover:bg-[#DAA520]/5 transition cursor-pointer">
-                                <span>✍️ ยังไม่ได้เขียนฉากนี้... กดเพื่อเริ่มเขียน</span>
+                                <span>✍️ ยังnotcanเขียนScenesนี้... clicktoStart writing</span>
                             </a>
                         </template>
                     </div>
 
                     <div x-show="currentEvent.characters.length > 0">
-                        <h4 class="font-bold text-[#2F4F4F] mb-3 border-b pb-1"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 5c4 2 12 2 16 0v8c0 5-4 7-8 7s-8-2-8-7z"/><path d="M8 11h.01M16 11h.01M8 15c2 1 6 1 8 0"/></svg> ตัวละครในเหตุการณ์</h4>
+                        <h4 class="font-bold text-[#2F4F4F] mb-3 border-b pb-1"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 5c4 2 12 2 16 0v8c0 5-4 7-8 7s-8-2-8-7z"/><path d="M8 11h.01M16 11h.01M8 15c2 1 6 1 8 0"/></svg> Charactersinเหตุtheณ์</h4>
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
                             <template x-for="char in currentEvent.characters">
                                 <a :href="char.url" class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 border border-transparent hover:border-gray-200 transition">
@@ -187,9 +187,9 @@
 
                     <div class="mt-8 flex justify-between items-center pt-4 border-t border-gray-100">
                         <button @click="deleteEvent()" class="text-red-400 hover:text-red-600 text-sm font-bold flex items-center gap-1">
-                            ลบเหตุการณ์</button>
+                            Delete event</button>
                         <button @click="switchToEdit()" class="px-6 py-2 bg-[#2F4F4F] text-[#FAEBD7] rounded-lg font-bold hover:bg-[#1a3030]">
-                            ✏️ แก้ไขข้อมูล</button>
+                            ✏️ Editinformation</button>
                     </div>
                 </div>
 
@@ -197,29 +197,29 @@
                     <form method="post" :action="formAction" enctype="multipart/form-data" class="space-y-4" id="eventForm">
                         {% csrf_token %}
                         <div class="grid grid-cols-2 gap-4">
-                            <div><label class="block text-xs font-bold text-[#2F4F4F] mb-1">ช่วงเวลา *</label>{{ event_form.time_label }}</div>
-                            <div><label class="block text-xs font-bold text-[#2F4F4F] mb-1">ลำดับ</label>{{ event_form.order }}</div>
+                            <div><label class="block text-xs font-bold text-[#2F4F4F] mb-1">Time label *</label>{{ event_form.time_label }}</div>
+                            <div><label class="block text-xs font-bold text-[#2F4F4F] mb-1">Order</label>{{ event_form.order }}</div>
                         </div>
-                        <div><label class="block text-xs font-bold text-[#2F4F4F] mb-1">ชื่อเหตุการณ์ *</label>{{ event_form.title }}</div>
-                        <div><label class="block text-xs font-bold text-[#2F4F4F] mb-1">รายละเอียด</label>{{ event_form.description }}</div>
-                        <div><label class="block text-xs font-bold text-[#2F4F4F] mb-1">รูปประกอบ</label>{{ event_form.image }}</div>
+                        <div><label class="block text-xs font-bold text-[#2F4F4F] mb-1">nameเหตุtheณ์ *</label>{{ event_form.title }}</div>
+                        <div><label class="block text-xs font-bold text-[#2F4F4F] mb-1">Details</label>{{ event_form.description }}</div>
+                        <div><label class="block text-xs font-bold text-[#2F4F4F] mb-1">Image</label>{{ event_form.image }}</div>
                         <div class="h-px bg-gray-100 my-2"></div>
-                        <div><label class="block text-xs font-bold text-[#2F4F4F] mb-1">เชื่อมฉาก</label>{{ event_form.related_scene }}</div>
-                        <div><label class="block text-xs font-bold text-[#2F4F4F] mb-1">ตัวละคร</label>{{ event_form.characters }}</div>
+                        <div><label class="block text-xs font-bold text-[#2F4F4F] mb-1">เnameมScenes</label>{{ event_form.related_scene }}</div>
+                        <div><label class="block text-xs font-bold text-[#2F4F4F] mb-1">Characters</label>{{ event_form.characters }}</div>
                         <div class="space-y-2">
-                            <label class="block text-xs font-bold text-[#2F4F4F] mb-1">ร่างหรือสรุปเหตุการณ์ด้วย AI</label>
+                            <label class="block text-xs font-bold text-[#2F4F4F] mb-1">Draftorสรุปเหตุtheณ์ด้วย AI</label>
                             <div class="flex gap-2 items-start">
-                                <textarea id="modal-ai-prompt" name="ai_prompt" rows="2" class="flex-1 rounded-xl border border-[#2F4F4F]/20 p-3 text-sm" placeholder="เช่น อยากให้ AI สรุปเหตุการณ์จากฉากที่เลือก หรือร่างเหตุการณ์ใหม่จากเนื้อเรื่องย่อ..."></textarea>
+                                <textarea id="modal-ai-prompt" name="ai_prompt" rows="2" class="flex-1 rounded-xl border border-[#2F4F4F]/20 p-3 text-sm" placeholder="เช่น อยากthat AI สรุปเหตุtheณ์FromScenesthatSelect orDraftเหตุtheณ์newFromเนื้อnovel(s)ย่อ..."></textarea>
                                 <div class="flex flex-col gap-2">
-                                    <button type="button" @click="generateDraft()" class="px-4 py-2 bg-[#2F4F4F] text-white rounded-lg hover:bg-[#1a3030] text-sm"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><path d="M5 19h14M8 22h8"/></svg> ร่าง</button>
-                                    <p id="modal-ai-loading" class="text-xs text-gray-500 hidden"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M6 3h12M6 21h12M8 3c0 5 8 5 8 10s-8 5-8 8M16 3c0 5-8 5-8 10s8 5 8 8"/></svg> กำลังร่าง...</p>
+                                    <button type="button" @click="generateDraft()" class="px-4 py-2 bg-[#2F4F4F] text-white rounded-lg hover:bg-[#1a3030] text-sm"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><path d="M5 19h14M8 22h8"/></svg> Draft</button>
+                                    <p id="modal-ai-loading" class="text-xs text-gray-500 hidden"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M6 3h12M6 21h12M8 3c0 5 8 5 8 10s-8 5-8 8M16 3c0 5-8 5-8 10s8 5 8 8"/></svg> LoadingDraft...</p>
                                 </div>
                             </div>
-                            <p class="text-[10px] text-gray-400">ใส่คำอธิบายหรือแนวทางที่ต้องการให้ AI ช่วยร่างเหตุการณ์ เช่น "สรุปเหตุการณ์จากฉากที่เลือก" หรือ "แต่งเหตุการณ์ใหม่เกี่ยวกับตัวละครหลัก"</p>
+                            <p class="text-[10px] text-gray-400">ใส่wordอธิบายorแนวทางthatต้องthethat AI helpDraftเหตุtheณ์ เช่น "สรุปเหตุtheณ์FromScenesthatSelect" or "แต่งเหตุtheณ์newเกี่ยวwithCharactersmain"</p>
                         </div>
                         <div class="pt-4 flex gap-3">
-                            <button type="submit" class="flex-1 py-3 bg-[#DAA520] text-white font-bold rounded-lg hover:bg-[#b8860b] shadow-md transition">บันทึก</button>
-                            <button type="button" @click="mode === 'edit' ? mode = 'view' : closeModal()" class="px-6 py-3 border border-gray-300 rounded-lg text-gray-500 font-bold hover:bg-gray-50">ยกเลิก</button>
+                            <button type="submit" class="flex-1 py-3 bg-[#DAA520] text-white font-bold rounded-lg hover:bg-[#b8860b] shadow-md transition">Save</button>
+                            <button type="button" @click="mode === 'edit' ? mode = 'view' : closeModal()" class="px-6 py-3 border border-gray-300 rounded-lg text-gray-500 font-bold hover:bg-gray-50">Cancel</button>
                         </div>
                     </form>
                 </div>
@@ -228,7 +228,7 @@
     </div>
     
     <form id="deleteForm" method="post" action="" style="display:none;">{% csrf_token %}</form>
-    <div id="save-toast" class="fixed bottom-6 right-6 bg-[#2F4F4F] text-[#FAEBD7] px-6 py-3 rounded-lg shadow-xl transform translate-y-20 opacity-0 transition duration-500 font-bold flex items-center gap-2 z-50"><span>✅ บันทึกลำดับเรียบร้อย</span></div>
+    <div id="save-toast" class="fixed bottom-6 right-6 bg-[#2F4F4F] text-[#FAEBD7] px-6 py-3 rounded-lg shadow-xl transform translate-y-20 opacity-0 transition duration-500 font-bold flex items-center gap-2 z-50"><span>✅ SaveOrdercomplete</span></div>
 </div>
 
 <script>
@@ -253,7 +253,7 @@
                 const promptEl = document.getElementById('modal-ai-prompt');
                 const loadingEl = document.getElementById('modal-ai-loading');
                 const prompt = promptEl ? promptEl.value.trim() : '';
-                if (!prompt) { alert('กรุณาใส่คำอธิบายก่อนนะคะ'); return; }
+                if (!prompt) { alert('กรุณาใส่wordอธิบายก่อนนะคะ'); return; }
                 if (!loadingEl) return;
                 loadingEl.classList.remove('hidden');
 
@@ -267,20 +267,20 @@
                         const desc = data.description;
                         const descEl = document.querySelector('#eventForm [name="description"]') || document.getElementById('id_description');
                         if (descEl) descEl.value = desc;
-                        alert('<svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg> AI ร่างเหตุการณ์เรียบร้อยแล้ว');
+                        alert('<svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg> AI Draftเหตุtheณ์completeyet');
                         if (promptEl) promptEl.value = '';
                     } else {
-                        alert('เกิดข้อผิดพลาด: ' + (data.error || 'Unknown'));
+                        alert('An error occurred: ' + (data.error || 'Unknown'));
                     }
                 }).catch(err => {
                     loadingEl.classList.add('hidden');
-                    alert('เชื่อมต่อไม่ได้: ' + err);
+                    alert('เnameมcontinuenotcan: ' + err);
                 });
             },
             getHeaderTitle() {
-                if (this.mode === 'add') return '➕ เพิ่มเหตุการณ์ใหม่';
-                if (this.mode === 'edit') return '✏️ แก้ไขข้อมูล';
-                return '<svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M7 4h10v14a3 3 0 0 1-3 3H7a3 3 0 0 1 0-6h10"/><path d="M7 4a3 3 0 0 0 0 6h10"/></svg> รายละเอียดเหตุการณ์';
+                if (this.mode === 'add') return '➕ Add eventnew';
+                if (this.mode === 'edit') return '✏️ Editinformation';
+                return '<svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M7 4h10v14a3 3 0 0 1-3 3H7a3 3 0 0 1 0-6h10"/><path d="M7 4a3 3 0 0 0 0 6h10"/></svg> Detailsเหตุtheณ์';
             },
             openAddModal() {
                 this.mode = 'add'; this.currentEvent = {};
@@ -306,7 +306,7 @@
                 }
             },
             deleteEvent() {
-                if(confirm('คุณแน่ใจหรือไม่ที่จะลบเหตุการณ์นี้?')) {
+                if(confirm('youแน่ใจornotthatจะDelete eventนี้?')) {
                     const form = document.getElementById('deleteForm');
                     form.action = `/timeline/event/${this.currentEvent.id}/delete/`;
                     form.submit();
