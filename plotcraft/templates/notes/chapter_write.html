@@ -235,7 +235,7 @@
 
             // เClose Modal
             openSaveModal() {
-                this.updateStats(); // อัปเดตเนื้อหาก่อนเClose
+                this.updateStats(); // อัปเดตcontentก่อนเClose
                 this.showSaveModal = true;
             },
 
@@ -255,11 +255,11 @@
                 document.querySelector('input[name="is_draft"]').value = this.isDraftStatus;
                 
                 if (forceSubmit) {
-                    // Send Form ปกติ (เปลี่ยนpage)
+                    // Send Form ปกติ (Changepage)
                     document.getElementById('saveForm').submit();
                 } else {
                     // กรณี Autosave orSaveเบื้องหลัง (ถ้าต้องtheใช้อนาคต)
-                    // chaptersนี้ถ้ากดปุ่ม Save main เราใช้ forceSubmit ผ่าน Modal อยู่yet
+                    // chaptersนี้ถ้าclickbutton Save main เราใช้ forceSubmit ผ่าน Modal อยู่yet
                 }
             },
 
@@ -288,14 +288,14 @@
                     body: new URLSearchParams({
                         'title': this.title,
                         'content': currentContent,
-                        'is_draft': 'true' // Auto save thatถือas draft เสมอ ornotSendค่านี้ถ้าnotอยากเปลี่ยนStatus
+                        'is_draft': 'true' // Auto save thatถือas draft เสมอ ornotSendค่านี้ถ้าnotอยากChangeStatus
                     })
                 })
                 .then(response => {
                     if (response.redirected) {
-                        // ถ้า Django Redirect แปลว่าสำเร็จ (for View ปัจจุบัน)
-                        // แต่จริงๆ ถ้า AutoSave ควรทำ API แยก orแก้ View thatคืน JSON can
-                        // inthatนี้สมมติว่าสำเร็จ
+                        // ถ้า Django Redirect แปลว่าsuccessful (for View ปัจจุบัน)
+                        // แต่realๆ ถ้า AutoSave ควรทำ API แยก orแก้ View thatคืน JSON can
+                        // inthatนี้สมมติว่าsuccessful
                         return { status: 'success' };
                     }
                     return { status: 'success' }; 
