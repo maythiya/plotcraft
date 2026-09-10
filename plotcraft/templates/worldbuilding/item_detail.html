@@ -16,7 +16,7 @@
               <img src="{{ item.image.url }}" alt="{{ item.name }}" class="w-full h-full object-cover">
               
               <a href="{{ item.image.url }}" target="_blank" class="absolute bottom-2 right-2 p-2 bg-black/50 hover:bg-black/70 text-white rounded-lg opacity-0 group-hover:opacity-100 transition text-xs backdrop-blur-sm z-20">
-                  🔍 ขยายภาพ
+                  <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m16 16 5 5"/></svg> ขยายภาพ
               </a>
             {% else %}
               <div class="w-full h-full flex flex-col items-center justify-center text-[#FAEBD7]/30 border-b border-[#FAEBD7]/10">
@@ -34,7 +34,7 @@
             <div class="flex justify-center mb-3">
                 {% if item.project %}
                 <span class="inline-flex items-center gap-1 px-3 py-1 bg-[#DAA520]/20 text-[#DAA520] text-xs font-bold rounded-full border border-[#DAA520]/30 tracking-wide uppercase">
-                    📖 {{ item.project.title|default:item.project }}
+                    <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5V21.5M8 7h8M8 11h8"/></svg> {{ item.project.title|default:item.project }}
                 </span>
                 {% else %}
                 <span class="inline-block h-6"></span>
