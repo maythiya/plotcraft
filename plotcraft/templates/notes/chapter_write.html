@@ -138,7 +138,7 @@
             
                 <div class="p-6 text-center">
                     <p class="text-gray-600 mb-6 text-sm">
-                        ต้องการSavechaptersนี้เป็นStatusไหนดี? (สามารถEditได้ภายหลัง)
+                        ต้องtheSavechaptersนี้asStatusไหนดี? (สาcomeรถEditcanภายหลัง)
                     </p>
                 
                     <div class="grid grid-cols-1 gap-3">
@@ -190,7 +190,7 @@
             unsavedChanges: false,
             scrollTimeout: null,
             
-            // เพิ่มตัวแปรสำหรับ Modal
+            // Addตัวแปรfor Modal
             showSaveModal: false,
             isDraftStatus: '{{ chapter.is_draft|yesno:"true,false" }}',
 
@@ -239,7 +239,7 @@
                 this.showSaveModal = true;
             },
 
-            // ConfirmการSaveจาก Modal
+            // ConfirmtheSaveFrom Modal
             confirmSave(status) {
                 this.isDraftStatus = (status === 'draft') ? 'true' : 'false';
                 this.saveContent(true); // true = force submit
@@ -255,11 +255,11 @@
                 document.querySelector('input[name="is_draft"]').value = this.isDraftStatus;
                 
                 if (forceSubmit) {
-                    // ส่ง Form ปกติ (เปลี่ยนหน้า)
+                    // Send Form ปกติ (เปลี่ยนpage)
                     document.getElementById('saveForm').submit();
                 } else {
-                    // กรณี Autosave หรือSaveเบื้องหลัง (ถ้าต้องการใช้อนาคต)
-                    // chaptersนี้ถ้ากดปุ่ม Save หลัก เราใช้ forceSubmit ผ่าน Modal อยู่แล้ว
+                    // กรณี Autosave orSaveเบื้องหลัง (ถ้าต้องtheใช้อนาคต)
+                    // chaptersนี้ถ้ากดปุ่ม Save main เราใช้ forceSubmit ผ่าน Modal อยู่yet
                 }
             },
 
@@ -282,20 +282,20 @@
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
                         'X-CSRFToken': '{{ csrf_token }}',
-                        'X-Requested-With': 'XMLHttpRequest' // บอกว่าเป็น AJAX
+                        'X-Requested-With': 'XMLHttpRequest' // บอกว่าas AJAX
                     },
-                    // ส่งแบบ Form Data ปกติเพื่อthat Django เข้าใจง่าย
+                    // Sendแบบ Form Data ปกติtothat Django เข้าใจง่าย
                     body: new URLSearchParams({
                         'title': this.title,
                         'content': currentContent,
-                        'is_draft': 'true' // Auto save thatถือเป็น draft เสมอ หรือไม่ส่งค่านี้ถ้าไม่อยากเปลี่ยนStatus
+                        'is_draft': 'true' // Auto save thatถือas draft เสมอ ornotSendค่านี้ถ้าnotอยากเปลี่ยนStatus
                     })
                 })
                 .then(response => {
                     if (response.redirected) {
-                        // ถ้า Django Redirect แปลว่าสำเร็จ (สำหรับ View ปัจจุบัน)
-                        // แต่จริงๆ ถ้า AutoSave ควรทำ API แยก หรือแก้ View thatคืน JSON ได้
-                        // ในที่นี้สมมติว่าสำเร็จ
+                        // ถ้า Django Redirect แปลว่าสำเร็จ (for View ปัจจุบัน)
+                        // แต่จริงๆ ถ้า AutoSave ควรทำ API แยก orแก้ View thatคืน JSON can
+                        // inthatนี้สมมติว่าสำเร็จ
                         return { status: 'success' };
                     }
                     return { status: 'success' }; 
