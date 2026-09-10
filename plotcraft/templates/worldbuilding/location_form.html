@@ -15,20 +15,20 @@
 
             <div>
                 <h1 class="text-3xl font-bold text-[#2F4F4F] flex items-center gap-2">
-                    สร้าง / แก้ไข สถานที่ (Location)
+                    สร้าง / Edit Locations (Location)
                     <span class="text-sm text-gray-400 font-normal border border-gray-200 px-2 py-0.5 rounded-full bg-white">
-                        {% if form.instance.pk %}แก้ไข{% else %}สร้างใหม่{% endif %}
+                        {% if form.instance.pk %}Edit{% else %}Create new{% endif %}
                     </span>
                 </h1>
                 <p class="text-sm text-gray-500 mt-1 font-medium">
-                    ไม่จำเป็นต้องเขียนทั้งหมดก็ได้นะคะ!
+                    ไม่จำเป็นต้องเขียนAllก็ได้นะคะ!
                 </p>
             </div>
         </div>
 
         <a href="#" class="text-[#2F4F4F] hover:text-[#DAA520] transition duration-150 font-medium flex items-center text-sm">
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-            ย้อนกลับ
+            Back
         </a>
 
     </div>
@@ -53,23 +53,23 @@
                     </div>
 
                     <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/20">
-                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">อยู่ในเรื่อง / โปรเจกต์</label>
+                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">อยู่ในnovel(s) / โปรเจกต์</label>
                         {{ form.project }}
                     </div>
 
                     <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10 focus-within:ring-2 ring-[#DAA520]/50 transition">
-                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ชื่อสถานที่ <span class="text-red-500">*</span></label>
+                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ชื่อLocations <span class="text-red-500">*</span></label>
                         {{ form.name }}
                     </div>
 
                     <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ประเภทของโลก (World Type)</label>
+                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">World type</label>
                         {{ form.world_type }}
                         <p class="text-xs text-[#2F4F4F]/60 mt-1">เช่น Fantasy, Sci-Fi, Omegaverse, Dystopia</p>
                     </div>
 
                     <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ตัวละครที่เกี่ยวข้องกับสถานที่นี้</label>
+                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Charactersที่เกี่ยวข้องกับLocationsนี้</label>
                         {{ form.residents }}
                         <p class="text-xs text-[#2F4F4F]/60 mt-1">กด Ctrl (หรือ Command) ค้างไว้เพื่อเลือกหลายคน</p>
                     </div>
@@ -81,7 +81,7 @@
                      }">
                             
                     <label class="block text-sm font-bold text-[#2F4F4F] mb-2">
-                        แผนที่ / รูปภาพประกอบ
+                        แผนที่ / Image
                     </label>
                 
                     <div class="relative w-full aspect-4/3 min-h-64 rounded-xl
@@ -108,7 +108,7 @@
                                           d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
                                 </svg>
                                 <span class="text-xs font-bold text-center px-2">
-                                    คลิกเพื่ออัปโหลดแผนที่
+                                    Click to uploadแผนที่
                                 </span>
                             </div>
                         </template>
@@ -155,7 +155,7 @@
 
             <div class="flex items-center gap-2 mb-4 border-b border-[#FAEBD7] pb-2 pt-4">
                 <span class="text-[#DAA520]"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M7 4h10v14a3 3 0 0 1-3 3H7a3 3 0 0 1 0-6h10"/><path d="M7 4a3 3 0 0 0 0 6h10"/></svg></span>
-                <h2 class="text-xl font-bold text-[#2F4F4F]">ประวัติศาสตร์และความเป็นมา</h2>
+                <h2 class="text-xl font-bold text-[#2F4F4F]">History & background</h2>
             </div>
 
             <div class="grid grid-cols-1 gap-6 mb-8">
@@ -164,7 +164,7 @@
                     {{ form.history }}
                 </div>
                 <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ตำนานและเรื่องเล่า (Myths & Legends)</label>
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ตำนานและnovel(s)เล่า (Myths & Legends)</label>
                     {{ form.myths }}
                 </div>
             </div>
@@ -176,26 +176,26 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">การปกครอง & การเมือง (Politics)</label>
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Politics</label>
                     {{ form.politics }}
                 </div>
                 <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ระบบเศรษฐกิจ (Economy)</label>
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Economy</label>
                     {{ form.economy }}
                 </div>
                 <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">วัฒนธรรม & ความเชื่อ (Culture & Religion)</label>
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Culture & beliefs</label>
                     {{ form.culture }}
                 </div>
                 <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ภาษา (Language)</label>
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Language</label>
                     {{ form.language }}
                 </div>
             </div>
 
             <div class="mb-8 p-6 bg-indigo-50 rounded-2xl border border-indigo-100 shadow-sm">
                 <h3 class="font-bold text-indigo-800 text-lg mb-3 flex items-center gap-2">
-                    <span><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 21V7h4V4h3v3h2V4h3v3h4v14M8 21v-5h3v5M5 11h2M12 11h2M17 11h2"/></svg></span> ให้ AI ช่วยออกแบบสถานที่
+                    <span><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 21V7h4V4h3v3h2V4h3v3h4v14M8 21v-5h3v5M5 11h2M12 11h2M17 11h2"/></svg></span> that AI ช่วยออกแบบLocations
                 </h3>
                 <div class="flex gap-3">
                     <input type="text" id="ai-concept" 
@@ -203,7 +203,7 @@
                            placeholder="เช่น: ป่าต้องสาปที่มีหมอกสีม่วงปกคลุมตลอดเวลา, เมืองลอยฟ้าของเผ่าวิหค">
                     <button type="button" id="aiGenerateBtn"
                             class="bg-indigo-600 text-white px-6 py-3 rounded-xl hover:bg-indigo-700 font-bold shadow-md transition flex items-center gap-2 whitespace-nowrap">
-                        <span><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg></span> เสกสถานที่
+                        <span><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg></span> เสกLocations
                     </button>
                 </div>
                 <p id="ai-loading" class="text-sm text-indigo-600 mt-3 hidden flex items-center gap-2">
@@ -218,18 +218,18 @@
             <div class="mt-10 flex items-center gap-4 border-t border-[#FAEBD7] pt-6">
                 <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-bold rounded-lg shadow-md text-[#FAEBD7] bg-[#2F4F4F] hover:bg-[#1a3030] hover:shadow-lg focus:outline-none transition duration-150">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    บันทึกข้อมูล
+                    Saveข้อมูล
                 </button>
                 
                 <a href="#" class="px-6 py-3 border border-gray-300 text-base font-medium text-gray-600 bg-white hover:bg-gray-50 rounded-lg transition duration-150">
-                    ยกเลิก
+                    Cancel
                 </a>
 
                 {% if location %}
                 <div class="ml-auto">
-                    <button type="submit" name="location_delete" class="inline-flex items-center px-4 py-2 border border-red-200 text-sm font-bold rounded-lg text-red-600 bg-red-50 hover:bg-red-100 hover:text-red-700 transition duration-150" onclick="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบสถานที่นี้?');">
+                    <button type="submit" name="location_delete" class="inline-flex items-center px-4 py-2 border border-red-200 text-sm font-bold rounded-lg text-red-600 bg-red-50 hover:bg-red-100 hover:text-red-700 transition duration-150" onclick="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบLocationsนี้?');">
                         <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5-4h4a1 1 0 011 1v1H9V4a1 1 0 011-1z"></path></svg>
-                        ลบสถานที่
+                        ลบLocations
                     </button>
                 </div>
                 {% endif %}
@@ -256,7 +256,7 @@
             btn.addEventListener('click', function() {
                 const concept = conceptInput.value.trim();
                 if (!concept) {
-                    alert("กรุณาใส่คอนเซปต์ของสถานที่ก่อนค่ะ");
+                    alert("กรุณาใส่คอนเซปต์ของLocationsก่อนค่ะ");
                     return;
                 }
 
@@ -281,7 +281,7 @@
                     if (data.success) {
                         const d = data.data;
                         
-                        // หยอดข้อมูลลงช่อง (ปรับ ID ให้ตรงกับ forms.py) ---
+                        // หยอดข้อมูลลงช่อง (ปรับ ID thatตรงกับ forms.py) ---
                         if (!document.getElementById('id_name').value) setVal('id_name', d.name);
                         
                         // ข้อมูลกายภาพ
@@ -302,7 +302,7 @@
                         setVal('id_language', d.language);       // ภาษา
                         setVal('id_ecosystem', d.ecosystem); 
 
-                        alert("<svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg> สร้างสถานที่เรียบร้อยแล้ว!");
+                        alert("<svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg> สร้างLocationsเรียบร้อยแล้ว!");
                         conceptInput.value = '';
                     } else {
                         alert("เกิดข้อผิดพลาด: " + data.error);
