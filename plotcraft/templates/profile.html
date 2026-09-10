@@ -24,7 +24,7 @@
                     profileImg.classList.remove('hidden');
                     if (placeholder) placeholder.classList.add('hidden');
                     
-                    // (Optional) ซ่อนปุ่มDeleteimageชั่วคราว เพราะLoadingจะอัพimagenew
+                    // (Optional) ซ่อนbuttonDeleteimageชั่วคราว เพราะLoadingจะอัพimagenew
                     if (deleteBtn) deleteBtn.style.display = 'none';
                 };
                 reader.readAsDataURL(file);
@@ -99,7 +99,7 @@
 
                     {% if user.profile.image %}
                     <div class="mt-3" id="btn-delete-image-container">
-                        <button type="submit" id="btn-delete-image" name="delete_image" onclick="return confirm('ต้องtheRemove photoโปรไฟล์ใช่ornot?');" class="px-3 py-1 bg-red-100 text-red-600 text-xs font-bold rounded-lg hover:bg-red-200 transition">
+                        <button type="submit" id="btn-delete-image" name="delete_image" onclick="return confirm('ต้องtheRemove photoโปรfileใช่ornot?');" class="px-3 py-1 bg-red-100 text-red-600 text-xs font-bold rounded-lg hover:bg-red-200 transition">
                             Remove photo
                         </button>
                     </div>
@@ -140,11 +140,11 @@
                 ⚠️ Danger Zone
             </h3>
             <div class="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 bg-red-50 rounded-xl border border-red-100">
-                <p class="text-red-800 text-sm">theDeleteaccountจะทำthatinformationNovels Characters andtheSettingsAllหายgoถาวร</p>
+                <p class="text-red-800 text-sm">theDeleteaccountจะทำthatinformationNovels Characters andtheSettingsAllหายgopermanently</p>
                 <form method="post" onsubmit="return confirm('youแน่ใจornotว่าต้องtheDeleteaccountนี้? theกระทำนี้notสาcomeรถBackcan!');">
                     {% csrf_token %}
                     <button type="submit" name="delete_account" class="px-4 py-2 bg-white border border-red-200 text-red-600 font-bold rounded-lg hover:bg-red-600 hover:text-white transition shadow-sm whitespace-nowrap text-sm">
-                        Deleteaccountถาวร
+                        Deleteaccountpermanently
                     </button>
                 </form>
             </div>
