@@ -37,7 +37,7 @@
                 {% if scene.status == 'Finished' %}bg-green-800 text-green-100
                 {% elif scene.status == 'Draft' %}bg-gray-700 text-gray-200
                 {% else %}bg-yellow-800 text-yellow-100{% endif %}">
-                สถานะ: {{ scene.get_status_display }}
+                Status: {{ scene.get_status_display }}
             </span>
         </div>
 
@@ -47,7 +47,7 @@
 
       <section class="bg-white rounded-2xl p-6 shadow-md border border-[#FAEBD7]">
         <div class="text-xs text-[#2F4F4F]/70 space-y-1 mb-4 text-center">
-            <p>แก้ไขล่าสุด: {{ scene.updated_at|date:"d/m/Y H:i" }}</p>
+            <p>EditLatest: {{ scene.updated_at|date:"d/m/Y H:i" }}</p>
         </div>
 
         <div class="flex flex-col gap-3">
@@ -56,7 +56,7 @@
                     text-white text-center rounded-lg transition
                     text-sm font-bold shadow hover:shadow-lg flex items-center justify-center gap-2">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-            แก้ไขฉาก
+            EditScenes
           </a>
 
           <a href="{% url 'plotcraft:scene_list' %}"
@@ -75,7 +75,7 @@
       <section class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border-t-4 border-[#2F4F4F]">
         <header class="flex items-center gap-3 mb-6 border-b border-[#FAEBD7] pb-4">
           <div class="p-2 bg-[#FAEBD7] rounded-lg"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 7h16v12H4zM4 7l3-4h10l3 4M8 3l3 4M14 3l3 4"/></svg></div>
-          <h2 class="text-xl font-bold">ข้อมูลทั่วไปของฉาก</h2>
+          <h2 class="text-xl font-bold">ข้อมูลทั่วไปของScenes</h2>
         </header>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-[#FAEBD7]/30 p-5 rounded-xl border border-[#FAEBD7]/50 mb-6">
@@ -116,12 +116,12 @@
       <section class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border-t-4 border-[#DAA520]">
         <header class="flex items-center gap-3 mb-6 border-b border-[#FAEBD7] pb-4">
           <div class="p-2 bg-[#FAEBD7] rounded-lg text-[#DAA520]"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1"/></svg></div>
-          <h2 class="text-xl font-bold">โครงสร้างฉาก (Plot Points)</h2>
+          <h2 class="text-xl font-bold">โครงสร้างScenes (Plot Points)</h2>
         </header>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="bg-green-50/50 border-l-4 border-green-500 p-5 rounded-r-xl">
-                <h3 class="font-bold text-green-800 mb-2 uppercase text-sm tracking-wide">Goal (เป้าหมาย)</h3>
+                <h3 class="font-bold text-green-800 mb-2 uppercase text-sm tracking-wide">Goal (Goals)</h3>
                 <p class="text-gray-700 text-sm whitespace-pre-line leading-relaxed">
                     {{ scene.goal|default:"-" }}
                 </p>
@@ -154,7 +154,7 @@
             {% if scene.content %}
                 {{ scene.content|linebreaksbr }}
             {% else %}
-                <p class="text-gray-400">- ยังไม่มีเนื้อหา -</p>
+                <p class="text-gray-400">- No chapters yet -</p>
             {% endif %}
         </div>
       </section>
