@@ -74,7 +74,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {% for item in bookmarks %}
             
-            {# ✅ สำคัญ: เช็คว่า content_object ยังมีตัวตนอยู่หรือไม่ #}
+            {# ✅ important: เช็คว่า content_object ยังhaveตัวตนอยู่ornot #}
             {% if item.content_object %}
             
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col group h-full">
@@ -152,7 +152,7 @@
                 </div>
             </div>
             
-            {% endif %} {# จบการเช็ค content_object #}
+            {% endif %} {# จบtheเช็ค content_object #}
             
             {% endfor %}
         </div>
@@ -163,9 +163,9 @@
                 <h3 class="text-xl font-bold text-gray-400">Nothing saved in this category yet.</h3>
                 <p class="text-gray-400 mt-2">
                     {% if current_type != 'all' %}
-                        ลองเปลี่ยนCategoryหรือเลือก "All"
+                        Tryเปลี่ยนCategoryorSelect "All"
                     {% else %}
-                        คุณสามารถกดปุ่ม ⭐️ ที่CharactersหรือScenesเพื่อมาแสดงหน้านี้
+                        youสาcomeรถกดปุ่ม ⭐️ thatCharactersorScenestocomeแสดงpageนี้
                     {% endif %}
                 </p>
                 {% if current_type != 'all' %}
