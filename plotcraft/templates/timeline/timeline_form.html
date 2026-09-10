@@ -20,7 +20,7 @@
                 <h1 class="text-3xl font-bold text-[#2F4F4F]">
                     {% if form.instance.pk %}Edit timeline{% else %}Create timeline{% endif %}
                 </h1>
-                <p class="text-gray-500 text-sm mt-2">กำหนดชื่อและเลือกNovelsเพื่อCreateวางแผน</p>
+                <p class="text-gray-500 text-sm mt-2">กำหนดnameandSelectNovelstoCreateวางแผน</p>
             </div>
 
             <form method="post" class="space-y-6">
@@ -39,11 +39,11 @@
                 </div>
 
                 <div class="space-y-2">
-                    <label class="block text-xs font-bold text-[#2F4F4F] uppercase tracking-wider">ConnectกับNovels (Optional)</label>
+                    <label class="block text-xs font-bold text-[#2F4F4F] uppercase tracking-wider">ConnectwithNovels (Optional)</label>
                     <div class="relative">
                         {{ form.related_project }}
                     </div>
-                    <p class="text-[10px] text-gray-400">เลือกNovelsเพื่อดึงCharactersและScenesมาใช้ในการConnect</p>
+                    <p class="text-[10px] text-gray-400">SelectNovelstoดึงCharactersandScenescomeใช้intheConnect</p>
                 </div>
 
                 <div class="pt-6 flex items-center gap-4">
@@ -51,7 +51,7 @@
                         Cancel
                     </a>
                     <button type="submit" class="w-2/3 py-3 bg-[#2F4F4F] text-[#FAEBD7] rounded-xl font-bold shadow-lg hover:bg-[#1a3030] hover:shadow-xl transition transform hover:-translate-y-1 flex justify-center items-center gap-2">
-                        <span>Save & ไปต่อ</span>
+                        <span>Save & gocontinue</span>
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                         </svg>
@@ -63,7 +63,7 @@
 </div>
 
 <style>
-    /* บังคับ Style that Input ของ Django Form ดูดีขึ้น */
+    /* บังคับ Style that Input of Django Form ดูดีขึ้น */
     input[type="text"], textarea, select {
         width: 100%;
         padding: 0.75rem 1rem;
