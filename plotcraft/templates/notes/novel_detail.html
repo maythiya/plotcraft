@@ -68,7 +68,7 @@
                         <div class="text-xs text-gray-400 flex items-center gap-4">
                             <span class="flex items-center gap-1">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                อัปเดตLatest: {{ novel.updated_at|date:"d M Y H:i" }}
+                                Last updated: {{ novel.updated_at|date:"d M Y H:i" }}
                             </span>
                             <span class="flex items-center gap-1">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
@@ -193,7 +193,7 @@
                                     .then(response => {
                                         if (!response.ok) {
                                             this.isDraft = oldStatus;
-                                            alert('An error occurredintheSave กรุณาTrynew');
+                                            alert('An error occurred while saving. Please try again.');
                                         }
                                     })
                                     .catch(error => {
@@ -237,7 +237,7 @@
                                 <div class="flex items-center gap-3 text-xs text-gray-400">
                                     <span>{{ chapter.updated_at|date:"d M Y" }}</span>
                                     <span class="w-1 h-1 rounded-full bg-gray-300"></span>
-                                    <span>{{ chapter.content|striptags|cut:" "|length }} อักขระ</span>
+                                    <span>{{ chapter.content|striptags|cut:" "|length }} characters</span>
                                 </div>
                             </div>
                         </div>
@@ -282,7 +282,7 @@
                             </a>
                             
                             <form action="{% url 'plotcraft:chapter_delete' chapter.id %}" method="POST" onsubmit="return confirm(
-                            'แน่ใจyetใช่ไหมว่าจะDelete "{{ chapter.title }}" ? หากDeleteyetnotสาcomeรถกู้คืนcanนะคะ!');">
+                            'Are you sure you want to delete "{{ chapter.title }}" ? This action cannot be undone.');">
                                 {% csrf_token %}
                                 <button type="submit" class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition" title="Delete">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
@@ -301,9 +301,9 @@
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
                 </div>
                 <h3 class="text-lg font-bold text-gray-700 mb-1">No chapters yet</h3>
-                <p class="text-gray-500 text-sm mb-6">Start writingบทนำorFirst chapteryourcanเลย</p>
+                <p class="text-gray-500 text-sm mb-6">Start writing your introduction or first chapter.</p>
                 <a href="{% url 'plotcraft:chapter_create' novel.id %}" class="px-6 py-2 bg-[#2F4F4F] text-[#FAEBD7] rounded-lg text-sm font-bold hover:bg-[#1a3030] transition shadow-md">
-                    Start writingเลย
+                    Start writing
                 </a>
             </div>
 
