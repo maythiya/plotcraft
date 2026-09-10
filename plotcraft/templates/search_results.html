@@ -18,7 +18,7 @@
     <div class="max-w-6xl mx-auto">
         
         <div class="mb-12 border-b border-[#2F4F4F]/10 pb-8 text-center fade-in-up">
-            <span class="text-6xl mb-4 block">🔍</span>
+            <span class="text-6xl mb-4 block"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m16 16 5 5"/></svg></span>
             <h1 class="text-3xl md:text-4xl font-extrabold mb-3">ผลการค้นหาสำหรับ "<span class="text-[#DAA520]">{{ query }}</span>"</h1>
             <p class="text-gray-500">
                 {% if results.projects or results.characters or results.scenes or results.locations or results.items or results.timeline_events %}
@@ -34,7 +34,7 @@
             {% if results.projects %}
             <section class="fade-in-up delay-100">
                 <h2 class="text-2xl font-bold text-[#2F4F4F] mb-6 flex items-center gap-3">
-                    <span class="bg-[#2F4F4F]/10 p-2 rounded-lg">📚</span> นิยาย / โปรเจกต์ 
+                    <span class="bg-[#2F4F4F]/10 p-2 rounded-lg"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 5h4v15H4zM8 4h4v16H8zM12 6h4v14h-4zM16 5h4v15h-4z"/></svg></span> นิยาย / โปรเจกต์ 
                     <span class="bg-[#DAA520] text-white text-xs px-2 py-1 rounded-full">{{ results.projects.count }}</span>
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -44,7 +44,7 @@
                             {% if project.cover_image %}
                                 <img src="{{ project.cover_image.url }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                             {% else %}
-                                <div class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-100"><span class="text-2xl">📖</span></div>
+                                <div class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-100"><span class="text-2xl"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5V21.5M8 7h8M8 11h8"/></svg></span></div>
                             {% endif %}
                         </div>
                         <div class="p-4 flex flex-col justify-center">
@@ -60,7 +60,7 @@
             {% if results.characters %}
             <section class="fade-in-up delay-200">
                 <h2 class="text-2xl font-bold text-[#2F4F4F] mb-6 flex items-center gap-3">
-                    <span class="bg-blue-100 text-blue-600 p-2 rounded-lg">👤</span> ตัวละคร
+                    <span class="bg-blue-100 text-blue-600 p-2 rounded-lg"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 21a7 7 0 0 1 14 0"/></svg></span> ตัวละคร
                     <span class="bg-[#DAA520] text-white text-xs px-2 py-1 rounded-full">{{ results.characters.count }}</span>
                 </h2>
                 <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
@@ -86,7 +86,7 @@
             {% if results.locations %}
             <section class="fade-in-up delay-300">
                 <h2 class="text-2xl font-bold text-[#2F4F4F] mb-6 flex items-center gap-3">
-                    <span class="bg-green-100 text-green-600 p-2 rounded-lg">🗺️</span> สถานที่
+                    <span class="bg-green-100 text-green-600 p-2 rounded-lg"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg>️</span> สถานที่
                     <span class="bg-[#DAA520] text-white text-xs px-2 py-1 rounded-full">{{ results.locations.count }}</span>
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -95,7 +95,7 @@
                         {% if location.map_image %}
                             <img src="{{ location.map_image.url }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
                         {% else %}
-                            <div class="w-full h-full bg-[#f0fdf4] flex items-center justify-center text-green-200 text-4xl">🗺️</div>
+                            <div class="w-full h-full bg-[#f0fdf4] flex items-center justify-center text-green-200 text-4xl"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg>️</div>
                         {% endif %}
                         <div class="absolute inset-0 bg-linear-to-t from-black/60 to-transparent flex items-end p-4">
                             <h4 class="text-white font-bold text-lg shadow-black drop-shadow-md">{{ location.name }}</h4>
@@ -109,7 +109,7 @@
              {% if results.items %}
              <section class="fade-in-up delay-400">
                  <h2 class="text-2xl font-bold text-[#2F4F4F] mb-6 flex items-center gap-3">
-                     <span class="bg-purple-100 text-purple-600 p-2 rounded-lg">🔮</span> ไอเทม
+                     <span class="bg-purple-100 text-purple-600 p-2 rounded-lg"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><path d="M5 19h14M8 22h8"/></svg></span> ไอเทม
                      <span class="bg-[#DAA520] text-white text-xs px-2 py-1 rounded-full">{{ results.items.count }}</span>
                  </h2>
                  <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
@@ -119,7 +119,7 @@
                             {% if item.image %}
                                 <img src="{{ item.image.url }}" class="w-full h-full object-cover">
                             {% else %}
-                                <span class="text-2xl">📦</span>
+                                <span class="text-2xl"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m3 7 9-4 9 4-9 4zM3 7v10l9 4 9-4V7M12 11v10"/></svg></span>
                             {% endif %}
                         </div>
                          <h4 class="font-bold text-[#2F4F4F] text-sm group-hover:text-purple-600 line-clamp-1">{{ item.name }}</h4>
@@ -133,7 +133,7 @@
             {% if results.scenes %} 
             <section class="fade-in-up delay-500">
                 <h2 class="text-2xl font-bold text-[#2F4F4F] mb-6 flex items-center gap-3">
-                    <span class="bg-indigo-100 text-indigo-600 p-2 rounded-lg">🎬</span> ฉาก
+                    <span class="bg-indigo-100 text-indigo-600 p-2 rounded-lg"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 7h16v12H4zM4 7l3-4h10l3 4M8 3l3 4M14 3l3 4"/></svg></span> ฉาก
                     <span class="bg-[#DAA520] text-white text-xs px-2 py-1 rounded-full">{{ results.scenes.count }}</span>
                 </h2>
                 <div class="space-y-4">
