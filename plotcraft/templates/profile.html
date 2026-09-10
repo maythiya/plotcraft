@@ -40,11 +40,11 @@
     <div class="w-full md:w-72 bg-[#2F4F4F] p-8 flex flex-col justify-between text-[#FAEBD7]">
       <div>
         <h2 class="text-2xl font-bold mb-8 text-white flex items-center gap-2">
-            <span class="text-[#DAA520]">⚙️</span> Settings
+            <span class="text-[#DAA520]"><svg class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.8 1.8 0 0 0 .36 2l.06.06-2.1 2.1-.06-.06a1.8 1.8 0 0 0-2-.36 1.8 1.8 0 0 0-1.1 1.65v.11h-3v-.11A1.8 1.8 0 0 0 10.46 18.7a1.8 1.8 0 0 0-2 .36l-.06.06-2.1-2.1.06-.06a1.8 1.8 0 0 0 .36-2 1.8 1.8 0 0 0-1.65-1.1H5v-3h.11a1.8 1.8 0 0 0 1.65-1.1 1.8 1.8 0 0 0-.36-2L6.34 7.7l2.1-2.1.06.06a1.8 1.8 0 0 0 2 .36A1.8 1.8 0 0 0 11.6 4.4v-.1h3v.1a1.8 1.8 0 0 0 1.1 1.66 1.8 1.8 0 0 0 2-.36l.06-.06 2.1 2.1-.06.06a1.8 1.8 0 0 0-.36 2 1.8 1.8 0 0 0 1.65 1.1h.11v3h-.11A1.8 1.8 0 0 0 19.4 15z"/></svg></span> ตั้งค่า
         </h2>
         <ul class="space-y-2">
-           <li><a href="{% url 'plotcraft:profile' %}" class="block px-4 py-3 bg-[#FAEBD7]/10 text-white rounded-lg font-medium border-l-4 border-[#DAA520] shadow-sm">บัญชีผู้ใช้ (Account)</a></li>
-           <li><a href="{% url 'plotcraft:quickguide' %}" class="block px-4 py-3 text-[#FAEBD7]/70 hover:bg-[#FAEBD7]/5 hover:text-white rounded-lg transition">คู่มือการใช้งาน (Guide)</a></li>
+           <li><a href="{% url 'plotcraft:profile' %}" class="block px-4 py-3 bg-[#FAEBD7]/10 text-white rounded-lg font-medium border-l-4 border-[#DAA520] shadow-sm">บัญชีผู้ใช้</a></li>
+           <li><a href="{% url 'plotcraft:quickguide' %}" class="block px-4 py-3 text-[#FAEBD7]/70 hover:bg-[#FAEBD7]/5 hover:text-white rounded-lg transition">คู่มือการใช้งาน</a></li>
         </ul>
       </div>
       <div class="mt-8 pt-8 border-t border-[#FAEBD7]/10 space-y-4">
@@ -92,9 +92,9 @@
                 
                 <div class="flex-1">
                     <h3 class="font-bold text-xl text-[#2F4F4F]">{{ user.display_name|default:user.username }}</h3>
-                    <p class="text-sm text-gray-500 mb-2">Member since {{ user.date_joined|date:"F Y" }}</p>
+                    <p class="text-sm text-gray-500 mb-2">สมาชิกตั้งแต่ {{ user.date_joined|date:"F Y" }}</p>
                     <span class="inline-block px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full">
-                        {{ user.role|default:"Writer" }}
+                        {{ user.role|default:"นักเขียน" }}
                     </span>
 
                     {% if user.profile.image %}
@@ -109,16 +109,16 @@
 
             <div class="grid gap-6">
                 <div>
-                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ชื่อที่ใช้แสดง (Display Name)</label>
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ชื่อที่ใช้แสดง</label>
                     {{ u_form.display_name }}
                 </div>
                 <div>
-                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ชื่อผู้ใช้ (Username)</label>
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ชื่อผู้ใช้</label>
                     <input type="text" value="{{ user.username }}" readonly class="w-full px-4 py-2 bg-gray-100 text-gray-500 border border-gray-200 rounded-lg cursor-not-allowed" />
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">อีเมล (Email)</label>
+                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">อีเมล</label>
                         {{ u_form.email }}
                     </div>
                     <div>
