@@ -30,7 +30,7 @@
           {% if character.project %}
             <span class="inline-block px-3 py-1 bg-[#FAEBD7]/20 border border-[#FAEBD7]/30
                           text-[#FAEBD7] text-xs rounded-full mb-2 tracking-wide backdrop-blur-sm">
-              📖 {{ character.project.title|default:character.project }}
+              <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5V21.5M8 7h8M8 11h8"/></svg> {{ character.project.title|default:character.project }}
             </span>
           {% endif %}
 
@@ -126,7 +126,7 @@
 
       <section class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border-t-4 border-[#2F4F4F]">
         <header class="flex items-center gap-3 mb-6 border-b border-[#FAEBD7] pb-4">
-          <div class="p-2 bg-[#FAEBD7] rounded-lg">👤</div>
+          <div class="p-2 bg-[#FAEBD7] rounded-lg"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 21a7 7 0 0 1 14 0"/></svg></div>
           <h2 class="text-xl font-bold">ประวัติและข้อมูลทั่วไป</h2>
         </header>
 
@@ -150,7 +150,7 @@
               {% if character.location %}
                 <a href="{% url 'plotcraft:location_detail' character.location.id %}"
                    class="hover:text-[#DAA520] underline decoration-dashed underline-offset-4 transition">
-                  📍 {{ character.location.name }}
+                  <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0z"/><circle cx="12" cy="10" r="2.5"/></svg> {{ character.location.name }}
                 </a>
               {% else %}
                 <p>-</p>
@@ -171,7 +171,7 @@
 
       <section class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border-t-4 border-[#2F4F4F]">
         <header class="flex items-center gap-3 mb-6 border-b border-[#FAEBD7] pb-4">
-          <div class="p-2 bg-[#FAEBD7] rounded-lg">🕸️</div>
+          <div class="p-2 bg-[#FAEBD7] rounded-lg"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M5 8h14M5 16h14M6.5 5.5l11 13M17.5 5.5l-11 13"/></svg>️</div>
           <h2 class="text-xl font-bold">ความสัมพันธ์</h2>
         </header>
 
