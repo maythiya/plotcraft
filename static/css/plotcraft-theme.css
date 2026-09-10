@@ -1,0 +1,33 @@
+:root {
+  --pc-ink: #102b26;
+  --pc-forest: #183f36;
+  --pc-forest-deep: #0d2520;
+  --pc-gold: #b99035;
+  --pc-gold-soft: #f6eedb;
+  --pc-canvas: #faf9f5;
+  --pc-paper: #ffffff;
+  --pc-muted: #68746f;
+  --pc-line: #dce3dd;
+  --pc-shadow: 0 12px 32px rgba(16, 43, 38, .09);
+}
+body { background: var(--pc-canvas) !important; color: var(--pc-ink); }
+body::before { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: -1; background: radial-gradient(circle at 85% 0%, rgba(185,144,53,.10), transparent 30rem), linear-gradient(135deg, rgba(24,63,54,.025), transparent 42%); }
+main { max-width: 1600px; }
+.pc-icon { display: inline-block; width: 1.15em; height: 1.15em; flex: none; vertical-align: -.18em; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.pc-icon--lg { width: 1.5em; height: 1.5em; }
+input, textarea, select { border-color: var(--pc-line) !important; border-radius: .625rem !important; box-shadow: none !important; }
+input:focus, textarea:focus, select:focus { border-color: var(--pc-gold) !important; box-shadow: 0 0 0 3px rgba(185,144,53,.16) !important; }
+button, a { -webkit-tap-highlight-color: transparent; }
+.rounded-2xl { border-radius: 1rem !important; }
+.shadow-2xl, .shadow-xl, .shadow-lg, .shadow-md { box-shadow: var(--pc-shadow) !important; }
+.bg-white { border-color: var(--pc-line); }
+[class*="bg-[#2F4F4F]"] { background-color: var(--pc-forest) !important; }
+[class*="bg-[#1a3030]"] { background-color: var(--pc-forest-deep) !important; }
+[class*="text-[#2F4F4F]"] { color: var(--pc-ink) !important; }
+[class*="bg-[#DAA520]"] { background-color: var(--pc-gold) !important; }
+[class*="text-[#DAA520]"] { color: var(--pc-gold) !important; }
+[class*="bg-[#FAEBD7]"] { background-color: var(--pc-gold-soft) !important; }
+[class*="text-[#FAEBD7]"] { color: #fffdf7 !important; }
+aside { box-shadow: none !important; }
+aside nav a, aside nav button { border: 1px solid transparent; }
+aside nav a:hover, aside nav button:hover { border-color: rgba(255,255,255,.11); }
