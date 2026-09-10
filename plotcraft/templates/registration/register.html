@@ -18,13 +18,13 @@
     <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#DAA520] to-[#2F4F4F]"></div>
 
     <div class="text-center mb-8">
-        <h2 class="text-3xl font-bold text-[#2F4F4F]">สมัครสcomeชิก</h2>
-        <p class="text-gray-500 text-sm mt-2">Createเส้นทางWriteryourwith PlotCraft</p>
+        <h2 class="text-3xl font-bold text-[#2F4F4F]">Create account</h2>
+        <p class="text-gray-500 text-sm mt-2">Start your writing journey with PlotCraft.</p>
     </div>
 
     {% if form.errors %}
         <div class="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg">
-            โปรดCheckinformationthatถูกต้อง ({{ form.errors|striptags }})
+            Please check the information below ({{ form.errors|striptags }})
         </div>
     {% endif %}
 
@@ -75,18 +75,18 @@
       <div class="flex items-start mt-2">
           <input id="terms" name="terms" type="checkbox" required class="h-4 w-4 mt-0.5 text-[#DAA520] border-gray-300 rounded checkbox-theme focus:ring-[#DAA520]">
           <label for="terms" class="ml-2 block text-xs text-gray-600">
-            meaccept <a href="#" class="text-[#DAA520] hover:underline">termsthethatบริthe</a> and <a href="#" class="text-[#DAA520] hover:underline">policyความasส่วนตัว</a>
+            I accept the <a href="#" class="text-[#DAA520] hover:underline">terms of service</a> and <a href="#" class="text-[#DAA520] hover:underline">privacy policy</a>
           </label>
       </div>
 
       <button type="submit" class="w-full bg-[#DAA520] text-white font-bold py-3 rounded-lg hover:bg-[#b8860b] shadow-md hover:translate-y-[-2px] transition-all mt-6">
-          สมัครสcomeชิก
+          Create account
       </button>
 
     </form>
 
     <p class="mt-6 text-center text-sm text-gray-600">
-        haveaccountอยู่yet? <a href="{% url 'plotcraft:login' %}" class="text-[#2F4F4F] font-bold hover:underline">Sign in</a>
+        Already have an account? <a href="{% url 'plotcraft:login' %}" class="text-[#2F4F4F] font-bold hover:underline">Sign in</a>
     </p>
   </div>
 

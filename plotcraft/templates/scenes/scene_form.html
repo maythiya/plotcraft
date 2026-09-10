@@ -30,7 +30,7 @@
                     </div>
                 </div>
                 <div class="md:col-span-2">
-                    <label class="block font-bold text-sm mb-1">อยู่innovel(s) (Project)</label>                                
+                    <label class="block font-bold text-sm mb-1">Story / project</label>                                
                     {{ form.project }}
                 </div>
             </div>
@@ -44,14 +44,14 @@
                     {{ form.location }}
                 </div>
                 <div>
-                    <label class="block font-bold text-sm mb-1">มุมมองCharacters (POV)</label>
+                    <label class="block font-bold text-sm mb-1">Point-of-view character</label>
                     {{ form.pov_character }}
                 </div>
             </div>
 
             <hr class="border-[#FAEBD7] my-6">
 
-            <h3 class="font-bold text-lg text-[#2F4F4F] mb-3">โครงCreatetheเล่าnovel(s)</h3>
+            <h3 class="font-bold text-lg text-[#2F4F4F] mb-3">Story structure</h3>
             <div class="space-y-4 mb-6">
                 <div>
                     <label class="block font-bold text-sm mb-1 text-blue-800">Goals (Goal)</label>
@@ -62,13 +62,13 @@
                     {{ form.conflict }}
                 </div>
                 <div>
-                    <label class="block font-bold text-sm mb-1 text-green-800">resultsลัพธ์ (Outcome)</label>
+                    <label class="block font-bold text-sm mb-1 text-green-800">Outcome</label>
                     {{ form.outcome }}
                 </div>
             </div>
 
             <div class="mb-8">
-                <label class="block font-bold text-sm mb-1">content / บทDraft</label>
+                <label class="block font-bold text-sm mb-1">Content / draft</label>
                 {{ form.content }}
             </div>
 
@@ -76,7 +76,7 @@
                 <h3 class="font-bold text-purple-800 mb-2"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg> that AI helpDraftcontentScenes</h3>
                 <div class="flex gap-2">
                     <input type="text" id="ai-scene-concept" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-purple-500" 
-                           placeholder="เช่น: พระเอกเดินเข้าgoinถ้ำมังกรด้วยความกลัว แต่ต้องแกล้งทำasเก่ง">
+                           placeholder="For example: the hero enters the dragon's cave in fear while pretending to be brave">
                     <button type="button" onclick="generateSceneContent()" 
                             class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 font-bold whitespace-nowrap shadow-sm transition">
                         <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><path d="M5 19h14M8 22h8"/></svg> Generatecontent
@@ -87,7 +87,7 @@
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    Loadingร่ายเวทมนตร์DraftScenes...
+                    Generating scene draft...
                 </p>
                 <p id="ai-error" class="text-sm text-red-500 mt-2 hidden"></p>
             </div>
@@ -101,7 +101,7 @@
                 </a>
                 
                 {% if scene %}
-                <button type="submit" name="scene_delete" class="ml-auto text-red-600 hover:text-red-800 text-sm font-bold bg-red-50 px-4 py-2 rounded-lg hover:bg-red-100 transition" onclick="return confirm('ConfirmtheDeleteScenesนี้?');">
+                <button type="submit" name="scene_delete" class="ml-auto text-red-600 hover:text-red-800 text-sm font-bold bg-red-50 px-4 py-2 rounded-lg hover:bg-red-100 transition" onclick="return confirm('Delete this scene?');">
                     DeleteScenes
                 </button>
                 {% endif %}
@@ -129,12 +129,12 @@
         const currentSceneId = "{% if scene %}{{ scene.id }}{% endif %}";
 
         if (!concept) {
-            alert("กรุณาใส่ไอเดียorwordสั่งก่อนค่ะ!");
+            alert("Please enter an idea or prompt first.");
             return;
         }
         
         if (!currentSceneId) {
-             alert("⚠️ กรุณาclick 'Save' (Save) informationScenesพื้นฐานก่อนใช้งาน AI ค่ะ!");
+             alert("Please save the basic scene information before using AI.");
              return;
         }
 
@@ -181,7 +181,7 @@
 
                 // เสร็จสิ้น
                 conceptInput.value = ''; 
-                alert("<svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg> AI DraftScenescompleteyetค่ะ!");
+                alert("<svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg> AI scene draft completed!");
                 
             } else if (data.error) {
                 errorText.textContent = "Error: " + data.error;

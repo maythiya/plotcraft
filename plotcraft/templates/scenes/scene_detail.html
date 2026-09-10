@@ -63,7 +63,7 @@
              class="w-full py-2.5 bg-[#2F4F4F] hover:bg-[#1a3030]
                     text-[#FAEBD7] text-center rounded-lg transition
                     text-sm font-medium mt-2">
-            Backgopageรายthe
+            Back to list
           </a>
         </div>
       </section>
@@ -75,7 +75,7 @@
       <section class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border-t-4 border-[#2F4F4F]">
         <header class="flex items-center gap-3 mb-6 border-b border-[#FAEBD7] pb-4">
           <div class="p-2 bg-[#FAEBD7] rounded-lg"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 7h16v12H4zM4 7l3-4h10l3 4M8 3l3 4M14 3l3 4"/></svg></div>
-          <h2 class="text-xl font-bold">informationทั่วgoofScenes</h2>
+          <h2 class="text-xl font-bold">Scene information</h2>
         </header>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-[#FAEBD7]/30 p-5 rounded-xl border border-[#FAEBD7]/50 mb-6">
@@ -90,7 +90,7 @@
                             {{ scene.pov_character.name }}
                         </a>
                     {% else %}
-                        <p class="text-gray-400 font-medium">- notระบุ -</p>
+                        <p class="text-gray-400 font-medium">- Not specified -</p>
                     {% endif %}
                 </div>
             </div>
@@ -106,7 +106,7 @@
                             {{ scene.location.name }}
                         </a>
                     {% else %}
-                        <p class="text-gray-400 font-medium">- notระบุ -</p>
+                        <p class="text-gray-400 font-medium">- Not specified -</p>
                     {% endif %}
                 </div>
             </div>
@@ -116,7 +116,7 @@
       <section class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border-t-4 border-[#DAA520]">
         <header class="flex items-center gap-3 mb-6 border-b border-[#FAEBD7] pb-4">
           <div class="p-2 bg-[#FAEBD7] rounded-lg text-[#DAA520]"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1"/></svg></div>
-          <h2 class="text-xl font-bold">โครงCreateScenes (Plot Points)</h2>
+          <h2 class="text-xl font-bold">Scene structure</h2>
         </header>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -135,7 +135,7 @@
             </div>
 
             <div class="bg-blue-50/50 border-l-4 border-blue-500 p-5 rounded-r-xl">
-                <h3 class="font-bold text-blue-800 mb-2 uppercase text-sm tracking-wide">Outcome (resultsลัพธ์)</h3>
+                <h3 class="font-bold text-blue-800 mb-2 uppercase text-sm tracking-wide">Outcome</h3>
                 <p class="text-gray-700 text-sm whitespace-pre-line leading-relaxed">
                     {{ scene.outcome|default:"-" }}
                 </p>
@@ -147,7 +147,7 @@
         <header class="flex items-center justify-between mb-6 border-b border-[#FAEBD7] pb-4">
           <div class="flex items-center gap-3">
              <div class="p-2 bg-[#FAEBD7] rounded-lg"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 20h16M6 17.5V5a2 2 0 0 1 2-2h7"/><path d="m14 6 4-4 3 3-4 4-4 1z"/></svg></div>
-             <h2 class="text-xl font-bold">contentบรรยาย</h2>
+             <h2 class="text-xl font-bold">Scene content</h2>
           </div>
         </header>
         <div class="prose max-w-none text-gray-800 whitespace-pre-line">

@@ -20,7 +20,7 @@
                 <h1 class="text-3xl font-bold text-[#2F4F4F]">
                     {% if form.instance.pk %}Edit timeline{% else %}Create timeline{% endif %}
                 </h1>
-                <p class="text-gray-500 text-sm mt-2">กำหนดnameandSelectNovelstoCreateplan</p>
+                <p class="text-gray-500 text-sm mt-2">Choose a name and select a novel for this timeline.</p>
             </div>
 
             <form method="post" class="space-y-6">
@@ -43,7 +43,7 @@
                     <div class="relative">
                         {{ form.related_project }}
                     </div>
-                    <p class="text-[10px] text-gray-400">SelectNovelstopullCharactersandScenescomeใช้intheConnect</p>
+                    <p class="text-[10px] text-gray-400">Select a novel to make its characters and scenes available for linking.</p>
                 </div>
 
                 <div class="pt-6 flex items-center gap-4">

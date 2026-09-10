@@ -21,7 +21,7 @@
                     </span>
                 </h1>
                 <p class="text-sm text-gray-500 mt-1 font-medium">
-                    notrememberasต้องเขียนAllก็canนะคะ!
+                    You can leave optional details blank and return to them later.
                 </p>
             </div>
         </div>
@@ -49,11 +49,11 @@
                 <div class="flex-1 space-y-6">
                     <div class="flex items-center gap-2 mb-2 border-b border-[#FAEBD7] pb-2">
                         <span class="text-[#DAA520]">✦</span>
-                        <h2 class="text-xl font-bold text-[#2F4F4F]">informationทั่วgo (General Info)</h2>
+                        <h2 class="text-xl font-bold text-[#2F4F4F]">General information</h2>
                     </div>
 
                     <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/20">
-                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">อยู่innovel(s) / project</label>
+                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Story / project</label>
                         {{ form.project }}
                     </div>
 
@@ -65,11 +65,11 @@
                     <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
                         <label class="block text-sm font-bold text-[#2F4F4F] mb-1">World type</label>
                         {{ form.world_type }}
-                        <p class="text-xs text-[#2F4F4F]/60 mt-1">เช่น Fantasy, Sci-Fi, Omegaverse, Dystopia</p>
+                        <p class="text-xs text-[#2F4F4F]/60 mt-1">For example: Fantasy, Sci-Fi, Omegaverse, or Dystopia</p>
                     </div>
 
                     <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">CharactersthatrelatedwithLocationsนี้</label>
+                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Characters connected to this location</label>
                         {{ form.residents }}
                         <p class="text-xs text-[#2F4F4F]/60 mt-1">click Ctrl (or Command) to selecttoSelectmultiple people</p>
                     </div>
@@ -81,7 +81,7 @@
                      }">
                             
                     <label class="block text-sm font-bold text-[#2F4F4F] mb-2">
-                        แผนthat / Image
+                        Map / image
                     </label>
                 
                     <div class="relative w-full aspect-4/3 min-h-64 rounded-xl
@@ -108,7 +108,7 @@
                                           d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
                                 </svg>
                                 <span class="text-xs font-bold text-center px-2">
-                                    Click to uploadแผนthat
+                                    Click to upload a map
                                 </span>
                             </div>
                         </template>
@@ -128,7 +128,7 @@
                     </div>
                     
                     <p class="text-xs text-[#2F4F4F]/40 mt-2 text-center">
-                        recommendedภาพlandscape (Landscape 4:3)
+                        Landscape image recommended (4:3)
                     </p>
                 </div>
             </div>
@@ -148,7 +148,7 @@
                     {{ form.climate }}
                 </div>
                 <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">systemนิเวศ (Ecosystem)</label>
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Ecosystem</label>
                     {{ form.ecosystem }}
                 </div>
             </div>
@@ -160,11 +160,11 @@
 
             <div class="grid grid-cols-1 gap-6 mb-8">
                 <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">historyศาสตร์ (History)</label>
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">History</label>
                     {{ form.history }}
                 </div>
                 <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">mythsandnovel(s)เล่า (Myths & Legends)</label>
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Myths and legends</label>
                     {{ form.myths }}
                 </div>
             </div>
@@ -200,7 +200,7 @@
                 <div class="flex gap-3">
                     <input type="text" id="ai-concept" 
                            class="flex-1 border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition" 
-                           placeholder="เช่น: forestต้องสาปthathaveหมอกสีม่วงปกคลุมany time, cityลอยฟ้าofเผ่าวิหค">
+                           placeholder="For example: a cursed forest covered in purple mist, or a floating city">
                     <button type="button" id="aiGenerateBtn"
                             class="bg-indigo-600 text-white px-6 py-3 rounded-xl hover:bg-indigo-700 font-bold shadow-md transition flex items-center gap-2 whitespace-nowrap">
                         <span><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg></span> GenerateLocations
@@ -211,7 +211,7 @@
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    AI Loadingก่อDraftCreatecity... รอสักครู่นะคะ
+                    Generating location...
                 </p>
             </div>
 
@@ -227,7 +227,7 @@
 
                 {% if location %}
                 <div class="ml-auto">
-                    <button type="submit" name="location_delete" class="inline-flex items-center px-4 py-2 border border-red-200 text-sm font-bold rounded-lg text-red-600 bg-red-50 hover:bg-red-100 hover:text-red-700 transition duration-150" onclick="return confirm('youแน่ใจornotว่าต้องtheDeleteLocationsนี้?');">
+                    <button type="submit" name="location_delete" class="inline-flex items-center px-4 py-2 border border-red-200 text-sm font-bold rounded-lg text-red-600 bg-red-50 hover:bg-red-100 hover:text-red-700 transition duration-150" onclick="return confirm('Are you sure you want to delete this location?');">
                         <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5-4h4a1 1 0 011 1v1H9V4a1 1 0 011-1z"></path></svg>
                         DeleteLocations
                     </button>
@@ -256,7 +256,7 @@
             btn.addEventListener('click', function() {
                 const concept = conceptInput.value.trim();
                 if (!concept) {
-                    alert("กรุณาใส่คอนเซปต์ofLocationsก่อนค่ะ");
+                    alert("Please enter a location concept first.");
                     return;
                 }
 
@@ -302,7 +302,7 @@
                         setVal('id_language', d.language);       // language
                         setVal('id_ecosystem', d.ecosystem); 
 
-                        alert("<svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg> CreateLocationscompleteyet!");
+                        alert("<svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg> Location generated successfully!");
                         conceptInput.value = '';
                     } else {
                         alert("An error occurred: " + data.error);
@@ -312,7 +312,7 @@
                     loadingText.classList.add('hidden');
                     btn.disabled = false;
                     btn.classList.remove('opacity-50', 'cursor-not-allowed');
-                    alert("เnameมcontinueเซิร์ฟเวอร์notcan");
+                    alert("Could not connect to the server.");
                     console.error(err);
                 });
             });

@@ -21,7 +21,7 @@
                     </span>
                 </h1>
                 <p class="text-sm text-gray-500 mt-1 font-medium">
-                    notrememberasต้องเขียนAllก็canนะคะ!
+                    You can leave optional details blank and return to them later.
                 </p>
             </div>
         </div>
@@ -50,11 +50,11 @@
                     
                     <div class="flex items-center gap-2 mb-2 border-b border-[#FAEBD7] pb-2">
                         <span class="text-[#DAA520]">✦</span>
-                        <h2 class="text-xl font-bold text-[#2F4F4F]">informationทั่วgo (General Info)</h2>
+                        <h2 class="text-xl font-bold text-[#2F4F4F]">General information</h2>
                     </div>
 
                     <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/20">
-                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">อยู่innovel(s) / project</label>
+                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Story / project</label>
                         {{ form.project }}
                     </div>
 
@@ -74,12 +74,12 @@
                     </div>
 
                     <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ความสาcomeรถพิเศษ (Abilities)</label>
+                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Abilities</label>
                         {{ form.abilities }}
                     </div>
 
                     <div class="rounded-lg border border-red-200 p-3 bg-red-50/50">
-                        <label class="block text-sm font-bold text-red-800 mb-1">terms / ข้อrememberกัด (Limitations)</label>
+                        <label class="block text-sm font-bold text-red-800 mb-1">Conditions and limitations</label>
                         {{ form.limitations }}
                     </div>
 
@@ -147,11 +147,11 @@
                         <h2 class="text-xl font-bold text-[#2F4F4F]">History & appearance</h2>
                     </div>
                     <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">appearanceภายนอก</label>
+                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Appearance</label>
                         {{ form.appearance }}
                     </div>
                     <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">historyความascome</label>
+                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Origin and history</label>
                         {{ form.history }}
                     </div>
                 </div>
@@ -159,29 +159,29 @@
                 <div class="space-y-6">
                     <div class="flex items-center gap-2 mb-2 border-b border-[#FAEBD7] pb-2">
                         <span class="text-[#DAA520]"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.1.1l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1M14 11a5 5 0 0 0-7.1-.1l-2 2A5 5 0 0 0 12 20l1.1-1.1"/></svg></span>
-                        <h2 class="text-xl font-bold text-[#2F4F4F]">ความConnect</h2>
+                        <h2 class="text-xl font-bold text-[#2F4F4F]">Connections</h2>
                     </div>
                     <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
                         <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Owner</label>
                         {{ form.owner }}
-                        <p class="text-xs text-[#2F4F4F]/60 mt-1">SelectCharactersthatถือItemsนี้อยู่</p>
+                        <p class="text-xs text-[#2F4F4F]/60 mt-1">Select the character who owns this item.</p>
                     </div>
                     <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
                         <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Locationsstore (Location)</label>
                         {{ form.location }}
-                        <p class="text-xs text-[#2F4F4F]/60 mt-1">SelectLocationsthatItemsนี้ซ่อนอยู่ (ถ้าnothaveเจ้าof)</p>
+                        <p class="text-xs text-[#2F4F4F]/60 mt-1">Select where this item is kept if it has no owner.</p>
                     </div>
                 </div>
             </div>
 
             <div class="mb-8 p-6 bg-amber-50 rounded-2xl border border-amber-100 shadow-sm">
                 <h3 class="font-bold text-amber-800 text-lg mb-3 flex items-center gap-2">
-                    <span><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M12 3 20 6v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/></svg>️</span> that AI helpคิดItems
+                    <span><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M12 3 20 6v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/></svg>️</span> Let AI help shape this item
                 </h3>
                 <div class="flex gap-3">
                     <input type="text" id="ai-concept" 
                            class="flex-1 border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition" 
-                           placeholder="เช่น: ดาบthatทำFromเกล็ดมังกรเพลิง, ยาthatทำthatล่องหนcan 5 นาที">
+                           placeholder="For example: a sword forged from dragon scales, or a five-minute invisibility potion">
                     <button type="button" id="aiGenerateBtn"
                             class="bg-amber-600 text-white px-6 py-3 rounded-xl hover:bg-amber-700 font-bold shadow-md transition flex items-center gap-2 whitespace-nowrap">
                         <span><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg></span> GenerateItems
@@ -192,7 +192,7 @@
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    AI LoadingตีบวกItems... รอสักครู่นะคะ
+                    Generating item...
                 </p>
             </div>
 
@@ -208,7 +208,7 @@
 
                 {% if item %}
                 <div class="ml-auto">
-                    <button type="submit" name="item_delete" class="inline-flex items-center px-4 py-2 border border-red-200 text-sm font-bold rounded-lg text-red-600 bg-red-50 hover:bg-red-100 hover:text-red-700 transition duration-150" onclick="return confirm('youแน่ใจornotว่าต้องtheDeleteItemsนี้?');">
+                    <button type="submit" name="item_delete" class="inline-flex items-center px-4 py-2 border border-red-200 text-sm font-bold rounded-lg text-red-600 bg-red-50 hover:bg-red-100 hover:text-red-700 transition duration-150" onclick="return confirm('Are you sure you want to delete this item?');">
                         <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5-4h4a1 1 0 011 1v1H9V4a1 1 0 011-1z"></path></svg>
                         DeleteItems
                     </button>
@@ -236,7 +236,7 @@
             btn.addEventListener('click', function() {
                 const concept = conceptInput.value.trim();
                 if (!concept) {
-                    alert("กรุณาใส่คอนเซปต์ofItemsก่อนค่ะ");
+                    alert("Please enter an item concept first.");
                     return;
                 }
 
@@ -271,7 +271,7 @@
                         setVal('id_limitations', d.limitations);
                         
 
-                        alert("<svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg> CreateItemscompleteyet!");
+                        alert("<svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg> Item generated successfully!");
                         conceptInput.value = '';
                     } else {
                         alert("An error occurred: " + data.error);
@@ -281,7 +281,7 @@
                     loadingText.classList.add('hidden');
                     btn.disabled = false;
                     btn.classList.remove('opacity-50', 'cursor-not-allowed');
-                    alert("เnameมcontinueเซิร์ฟเวอร์notcan");
+                    alert("Could not connect to the server.");
                     console.error(err);
                 });
             });

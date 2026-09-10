@@ -15,7 +15,7 @@
             {% if location.map_image %}
               <img src="{{ location.map_image.url }}" alt="{{ location.name }}" class="w-full h-full object-cover">
               <a href="{{ location.map_image.url }}" target="_blank" class="absolute bottom-2 right-2 p-2 bg-black/50 hover:bg-black/70 text-white rounded-lg opacity-0 group-hover:opacity-100 transition text-xs backdrop-blur-sm">
-                  <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m16 16 5 5"/></svg> Expandภาพ
+                  <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m16 16 5 5"/></svg> Enlarge image
               </a>
             {% else %}
               <div class="w-full h-full flex flex-col items-center justify-center text-[#FAEBD7]/30 border-b border-[#FAEBD7]/10">
@@ -76,7 +76,7 @@
                     {% endfor %}
                 </div>
                 {% else %}
-                <p class="text-sm text-[#FAEBD7]/40 italic pl-2">- nothaveinformation -</p>
+                <p class="text-sm text-[#FAEBD7]/40 italic pl-2">- No information -</p>
                 {% endif %}
             </div>
 
@@ -96,7 +96,7 @@
                 Editinformation
             </a>
             <a href="{% url 'plotcraft:location_list' %}" class="w-full py-2.5 bg-[#2F4F4F] hover:bg-[#1a3030] text-[#FAEBD7] text-center rounded-lg transition text-sm font.medium">
-                Backgopageรายthe
+                Back to list
             </a>
         </div>
       </div>
@@ -127,7 +127,7 @@
                     <p class="text-gray-800 font-medium">{{ location.climate|default:"-" }}</p>
                 </div>
                 <div>
-                    <h3 class="text-sm font-bold text-[#2F4F4F] uppercase mb-2">systemนิเวศ (Ecosystem)</h3>
+                    <h3 class="text-sm font-bold text-[#2F4F4F] uppercase mb-2">Ecosystem</h3>
                     <p class="text-gray-800 font-medium">{{ location.ecosystem|default:"-" }}</p>
                 </div>
             </div>
@@ -141,12 +141,12 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                 </svg>
             </div>
-            <h2 class="text-xl font-bold text-[#2F4F4F]">historyศาสตร์andmyths</h2>
+            <h2 class="text-xl font-bold text-[#2F4F4F]">History and myths</h2>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
-                <h3 class="text-sm font-bold text-[#2F4F4F] uppercase mb-2">historyศาสตร์ (History)</h3>
+                <h3 class="text-sm font-bold text-[#2F4F4F] uppercase mb-2">History</h3>
                 <div class="bg-[#F9FAFB] p-4 rounded-xl border border-gray-100 h-full">
                      <p class="text-gray-700 whitespace-pre-line leading-relaxed">{{ location.history|default:"-" }}</p>
                 </div>
@@ -172,7 +172,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div class="bg-[#2F4F4F]/5 border-l-4 border-[#2F4F4F] p-4 rounded-r-xl">
-                <h3 class="text-[#2F4F4F] font-bold mb-2">theปกครอง (Politics)</h3>
+                <h3 class="text-[#2F4F4F] font-bold mb-2">Politics</h3>
                 <p class="text-gray-700 whitespace-pre-line text-sm">{{ location.politics|default:"-" }}</p>
             </div>
 
@@ -183,7 +183,7 @@
         </div>
 
         <div>
-            <h3 class="text-sm font-bold text-[#DAA520] uppercase mb-2 tracking-wide">culture & ความเname</h3>
+            <h3 class="text-sm font-bold text-[#DAA520] uppercase mb-2 tracking-wide">Culture and beliefs</h3>
             <div class="bg-[#2F4F4F] text-[#FAEBD7] p-4 rounded-xl">
                 <p class="whitespace-pre-line">{{ location.culture|default:"-" }}</p>
             </div>

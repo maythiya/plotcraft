@@ -19,12 +19,12 @@
 
         <div class="text-center mb-8">
             <h2 class="text-3xl font-bold text-[#2F4F4F]">WelcomeBackcome</h2>
-            <p class="text-gray-500 text-sm mt-2">Sign intoCreateสรรค์novel(s)ราวyourcontinue</p>
+            <p class="text-gray-500 text-sm mt-2">Sign in to continue creating your story.</p>
         </div>
 
         {% if form.errors %}
         <div class="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg text-center">
-            Usernameorpasswordnotถูกต้อง
+            The username or password is incorrect.
         </div>
         {% endif %}
 
@@ -54,7 +54,7 @@
             <div class="flex items-center justify-between text-sm">
                 <div class="flex items-center">
                     <input type="checkbox" name="remember_me" id="remember" class="h-4 w-4 text-[#DAA520] border-gray-300 rounded checkbox-theme focus:ring-[#DAA520]">
-                    <label for="remember" class="ml-2 block text-gray-600 cursor-pointer">จดremembermeไว้</label>
+                    <label for="remember" class="ml-2 block text-gray-600 cursor-pointer">Remember me</label>
                 </div>
                 <a href="{% url 'plotcraft:password_reset' %}" class="text-[#DAA520] font-bold hover:underline">Forgotpassword?</a>
             </div>
@@ -65,7 +65,7 @@
         </form>
 
         <p class="mt-8 text-center text-sm text-gray-600">
-            Noaccountใช่ไหม? <a href="{% url 'plotcraft:register' %}" class="text-[#DAA520] font-bold hover:underline">สมัครสcomeชิก</a>
+            Don't have an account? <a href="{% url 'plotcraft:register' %}" class="text-[#DAA520] font-bold hover:underline">Create one</a>
         </p>
     </div>
 
