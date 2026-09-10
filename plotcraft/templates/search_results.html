@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}ผลการค้นหา: {{ query }} | PlotCraft{% endblock %}
+{% block title %}resultstheSearch: {{ query }} | PlotCraft{% endblock %}
 
 {% block content %}
 <script src="https://cdn.tailwindcss.com"></script>
@@ -22,9 +22,9 @@
             <h1 class="text-3xl md:text-4xl font-extrabold mb-3">Search results for "<span class="text-[#DAA520]">{{ query }}</span>"</h1>
             <p class="text-gray-500">
                 {% if results.projects or results.characters or results.scenes or results.locations or results.items or results.timeline_events %}
-                    พบข้อมูลในจักรวาลของคุณดังนี้...
+                    foundinformationinuniverseyourดังนี้...
                 {% else %}
-                    จักรวาลเงียบเหงา... ไม่พบข้อมูลที่ตรงกัน
+                    universequiet... notfoundinformationthatตรงกัน
                 {% endif %}
             </p>
         </div>
