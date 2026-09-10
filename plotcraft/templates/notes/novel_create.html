@@ -1,146 +1,19 @@
 {% extends "base.html" %}
-{% block title %}{% if is_edit %}Edit{% else %}Create{% endif %}Novels | PlotCraft{% endblock %}
-
+{% block title %}Novel | PlotCraft{% endblock %}
 {% block content %}
-<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-<script src="https://cdn.tailwindcss.com"></script>
-
-<style>
-    @keyframes fadeInUp { from { opacity: 0; transform: translate3d(0, 20px, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
-    .card-enter { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
-    @keyframes dash { to { stroke-dashoffset: -20; } }
-    .dashed-border:hover { animation: dash 1s linear infinite; }
-</style>
-
-<div class="min-h-screen bg-[#F8F9FA] py-12 px-4 sm:px-6 lg:px-8 font-sans relative overflow-hidden">
-    
-    <div class="absolute top-0 left-0 w-96 h-96 bg-[#2F4F4F]/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
-    <div class="absolute bottom-0 right-0 w-96 h-96 bg-[#DAA520]/10 rounded-full blur-3xl translate-x-1/2 translate-y-1/2 pointer-events-none"></div>
-
-    <div class="max-w-4xl mx-auto relative z-10 card-enter">
-        
-        <div class="mb-8 text-center">
-            <h2 class="text-3xl font-extrabold text-[#2F4F4F] tracking-tight flex items-center justify-center gap-3">
-                <span class="text-4xl animate-bounce"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg></span>
-                {% if is_edit %}EditinformationNovels{% else %}Create a new novel{% endif %}
-            </h2>
-            <p class="text-gray-500 mt-2">Createสรรค์worldจินตนาtheyourthatasreal</p>
-        </div>
-
-        <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 hover:shadow-2xl transition-shadow duration-500">
-            <div class="h-2 w-full bg-linear-to-r from-[#2F4F4F] via-[#2F4F4F] to-[#DAA520]"></div>
-
-            <form method="post" enctype="multipart/form-data" class="p-8 md:p-10 space-y-8" x-data="{ imagePreview: '{% if form.instance.cover_image %}{{ form.instance.cover_image.url }}{% endif %}' }">
-                {% csrf_token %}
-                
-                <div class="grid grid-cols-1 md:grid-cols-12 gap-10">
-                    
-                    <div class="md:col-span-4 flex flex-col items-center">
-                        <label class="block text-sm font-bold text-gray-700 mb-3 self-start">imageปกNovels</label>
-                                        
-                        <div class="relative w-full aspect-2/3 min-h-[300px] bg-gray-50 rounded-xl border-2 border-dashed border-gray-300 hover:border-[#DAA520] transition-colors duration-300 group cursor-pointer overflow-hidden shadow-inner dashed-border flex items-center justify-center">
-                            
-                            <template x-if="imagePreview">
-                                <img :src="imagePreview" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                            </template>
-                            
-                            <template x-if="!imagePreview">
-                                <div class="absolute inset-0 flex flex-col items-center justify-center text-gray-400 group-hover:text-[#DAA520] transition-colors z-10">
-                                    <svg class="w-12 h-12 mb-2 group-hover:animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                    <span class="text-xs font-bold">Click to upload</span>
-                                </div>
-                            </template>
-                        
-                            <input type="file" name="cover_image" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
-                                   @change="const file = $event.target.files[0]; if(file){ const reader = new FileReader(); reader.onload = (e) => imagePreview = e.target.result; reader.readAsDataURL(file); }">
-                        </div>
-                        <p class="text-xs text-gray-400 mt-2 text-center">recommendedขนาดportrait (Ratio 2:3)</p>
-                    </div>
-
-                    <div class="md:col-span-8 space-y-6">
-                        <div class="group">
-                            <label class="block text-sm font-bold text-gray-700 mb-1 group-focus-within:text-[#DAA520] transition-colors">Title *</label>
-                            {{ form.title }}
-                        </div>
-                        
-                        <div class="group">
-                            <label class="block text-sm font-bold text-gray-700 mb-1 group-focus-within:text-[#DAA520] transition-colors">Synopsis</label>
-                            {{ form.synopsis }}
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-6">
-                            <div class="group">
-                                <label class="block text-sm font-bold text-gray-700 mb-1 group-focus-within:text-[#DAA520] transition-colors">Category</label>
-                                {{ form.category }}
-                            </div>
-                            <div class="group">
-                                <label class="block text-sm font-bold text-gray-700 mb-1 group-focus-within:text-[#DAA520] transition-colors">Content rating</label>
-                                {{ form.rating }}
-                            </div>
-                        </div>
-                        
-                        <div class="group">
-                            <label class="block text-sm font-bold text-gray-700 mb-1 group-focus-within:text-[#DAA520] transition-colors">Status</label>
-                            {{ form.status }}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pt-6 flex items-center justify-between border-t border-gray-100">
-
-                    <div>
-                        {% if form.instance.pk %}
-                            <a href="{% url 'plotcraft:novel_delete' form.instance.pk %}"
-                               onclick="return confirm('youแน่ใจornotว่าต้องtheDeleteNovelsnovel(s)นี้? หากDeleteyetchaptersAllthathaveก็จะถูกDeleteด้วยนะคะ!');"
-                               class="text-red-500 font-bold hover:text-red-700
-                                     hover:bg-red-50 px-4 py-2.5 rounded-lg transition 
-                                     flex items-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                                DeleteNovels
-                            </a>
-                        {% endif %}
-                    </div>
-
-                    <div class="flex gap-4">
-                        <!-- Cancel -->
-                        <a href="{% url 'plotcraft:novel_list' %}"
-                           class="px-6 py-2.5 rounded-lg border border-gray-300
-                                  text-gray-600 hover:bg-gray-50 hover:text-gray-800
-                                  transition font-bold">
-                            Cancel
-                        </a>
-                    
-                        <!-- buttonmain -->
-                        <button type="submit"
-                            class="px-8 py-2.5 rounded-lg font-bold
-                                   bg-[#DAA520] text-white
-                                   shadow-md
-                                   transform transition-all duration-200
-                                   hover:scale-105
-                                   hover:shadow-lg
-                                   active:scale-95
-                                   focus:outline-none focus:ring-2 focus:ring-[#DAA520]/40">
-
-                            {% if form.instance.pk %}
-                                <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M5 3h12l3 3v15H4V4zM8 3v6h8V3M8 21v-7h8v7"/></svg> SavetheEdit
-                            {% else %}
-                                <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M14 4c3-2 6-2 6-2s0 3-2 6l-7 7-5-5zM9 16l-3 3M6 14l-3 1 1-3M14 8h.01"/></svg> CreateNovels
-                            {% endif %}
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const inputs = document.querySelectorAll('input[type="text"], textarea, select');
-        inputs.forEach(input => {
-            input.classList.add('w-full', 'px-4', 'py-3', 'rounded-lg', 'bg-gray-50', 'border', 'border-gray-200', 'focus:bg-white', 'focus:ring-2', 'focus:ring-[#DAA520]', 'focus:border-transparent', 'transition-all', 'duration-300', 'outline-none');
-        });
-    });
-</script>
+<section class="pc-page-shell">
+  <div class="max-w-4xl mx-auto">
+    <div class="mb-7"><div class="pc-eyebrow">PlotCraft editor</div><h1 class="mt-2 text-3xl font-extrabold text-white">Novel</h1><p class="mt-2 text-white/65">Add the details that keep your story world consistent.</p></div>
+    <form method="post" enctype="multipart/form-data" class="pc-panel rounded-3xl border border-white/10 p-6 md:p-9">
+      {% csrf_token %}{{ form.media }}
+      {% if form.non_field_errors %}<div class="mb-6 rounded-xl border border-red-300/40 bg-red-900/20 p-4 text-red-100">{{ form.non_field_errors }}</div>{% endif %}
+      <div class="pc-form-fields">{{ form.as_p }}</div>
+      {% if formset %}
+        <section class="mt-8 pt-7 border-t border-white/10"><h2 class="text-xl font-bold text-white">Related entries</h2>{{ formset.management_form }}{% for related_form in formset %}<div class="mt-4 rounded-2xl bg-black/15 border border-white/10 p-4">{{ related_form.as_p }}</div>{% endfor %}</section>
+      {% endif %}
+      <div class="mt-8 pt-6 border-t border-white/10 flex flex-wrap gap-3"><button type="submit" class="pc-button pc-button--primary">Save novel</button><a href="javascript:history.back()" class="pc-button pc-button--quiet">Cancel</a></div>
+    </form>
+  </div>
+</section>
+<style>.pc-form-fields p{margin:0 0 1.25rem}.pc-form-fields label{display:block;color:#fff;font-weight:650;margin-bottom:.45rem}.pc-form-fields input,.pc-form-fields select,.pc-form-fields textarea{width:100%;border:1px solid rgba(255,255,255,.16);border-radius:.8rem;background:rgba(0,0,0,.16);color:#fff;padding:.75rem 1rem}.pc-form-fields textarea{min-height:8rem}.pc-form-fields .helptext{display:block;color:rgba(255,255,255,.55);font-size:.8rem;margin-top:.35rem}.pc-form-fields ul.errorlist{color:#fecaca;font-size:.85rem;margin:.35rem 0}</style>
 {% endblock %}

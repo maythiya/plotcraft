@@ -566,3 +566,68 @@ class EventForm(forms.ModelForm):
         model = TimelineEvent
         fields = ['time_label', 'order', 'title', 'description', 'image',
                   'related_scene', 'characters']
+
+
+# UI copy: keep form controls in English without modifying user-provided values.
+_ENGLISH_FIELD_LABELS = {
+    "username": "Username", "password": "Password", "password1": "Password",
+    "password2": "Confirm password", "email": "Email address", "phone": "Phone number",
+    "birthdate": "Date of birth", "terms": "I agree to the terms of service",
+    "display_name": "Display name", "image": "Profile photo", "title": "Title",
+    "synopsis": "Synopsis", "category": "Category", "rating": "Rating", "status": "Status",
+    "cover_image": "Cover image", "order": "Order", "content": "Content",
+    "project": "Manuscript", "name": "Name", "alias": "Alias", "age": "Age",
+    "birth_date": "Date of birth", "gender": "Gender", "species": "Species",
+    "role": "Role", "occupation": "Occupation", "appearance": "Appearance",
+    "personality": "Personality", "background": "Background", "goals": "Goals",
+    "strengths": "Strengths", "weaknesses": "Weaknesses", "skills": "Skills",
+    "location": "Location", "relationships": "Relationships", "notes": "Notes",
+    "portrait": "Portrait", "world_type": "World type", "residents": "Residents",
+    "terrain": "Terrain", "climate": "Climate", "ecosystem": "Ecosystem",
+    "history": "History", "myths": "Myths", "politics": "Politics",
+    "economy": "Economy", "culture": "Culture", "language": "Language",
+    "map_image": "Map image", "owner": "Owner", "item_type": "Item type",
+    "rarity": "Rarity", "origin": "Origin", "abilities": "Abilities",
+    "limitations": "Limitations", "description": "Description",
+    "related_project": "Related manuscript", "time_label": "Time label",
+    "related_scene": "Related scene", "characters": "Characters",
+    "scene": "Scene", "pov_character": "Point-of-view character",
+    "goal": "Goal", "conflict": "Conflict", "outcome": "Outcome",
+}
+_ENGLISH_PLACEHOLDERS = {
+    "display_name": "Pen name or display name", "title": "Enter a title",
+    "synopsis": "Write a short synopsis", "name": "Enter a name",
+    "alias": "Alternative name or nickname", "species": "Human, elf, or another species",
+    "role": "Protagonist, antagonist, or supporting role", "occupation": "Occupation",
+    "appearance": "Describe appearance and notable features",
+    "personality": "Describe personality, preferences, and habits",
+    "background": "Describe background and formative events",
+    "goals": "What does this character want most?",
+    "strengths": "Skills, talents, and strengths", "weaknesses": "Fears, limits, and weaknesses",
+    "skills": "Distinctive skills and abilities", "notes": "Add any useful notes",
+    "world_type": "Fantasy, science fiction, or another setting",
+    "terrain": "Landforms and notable geography", "climate": "Weather and seasons",
+    "ecosystem": "Plants, animals, and natural resources", "history": "Founding and major events",
+    "myths": "Local myths and beliefs", "politics": "Leadership, laws, and power groups",
+    "economy": "Trade, currency, and livelihoods", "culture": "Customs, food, and everyday life",
+    "language": "Languages, dialects, and expressions", "description": "Describe this item or event",
+    "origin": "Where did this come from?", "abilities": "What can it do?",
+    "limitations": "Rules, costs, and limitations", "content": "Start writing here",
+    "goal": "What should happen in this scene?", "conflict": "What stands in the way?",
+    "outcome": "What changes by the end?",
+}
+def _apply_english_form_copy(form_instance):
+    for field_name, field in form_instance.fields.items():
+        field.label = _ENGLISH_FIELD_LABELS.get(field_name, field_name.replace("_", " ").title())
+        if field_name in _ENGLISH_PLACEHOLDERS:
+            field.widget.attrs["placeholder"] = _ENGLISH_PLACEHOLDERS[field_name]
+        field.error_messages["required"] = "This field is required."
+        field.error_messages["invalid"] = "Enter a valid value."
+def _english_form_init(original_init):
+    def wrapped(self, *args, **kwargs):
+        original_init(self, *args, **kwargs)
+        _apply_english_form_copy(self)
+    return wrapped
+for _form_class in list(globals().values()):
+    if isinstance(_form_class, type) and getattr(_form_class, "__module__", None) == __name__ and issubclass(_form_class, forms.BaseForm):
+        _form_class.__init__ = _english_form_init(_form_class.__init__)
