@@ -24,10 +24,10 @@
 
         /* === Editส่วนปก (Cover) === */
         .cover-image-page {
-            /* 1. เปลี่ยนBackas relative tothatกินพื้นthatpageกระดาษ */
+            /* 1. ChangeBackas relative tothatกินพื้นthatpageกระดาษ */
             position: relative;
             
-            /* 2. บังคับขนาดthatเท่าwith A5 เป๊ะๆ (WeasyPrint จะรู้ว่าต้องจองพื้นthatทั้งpageนี้) */
+            /* 2. บังคับขนาดthatเท่าwith A5 เป๊ะๆ (WeasyPrint จะรู้ว่าต้องจองพื้นthatincludingpageนี้) */
             width: 148mm;
             height: 210mm;
             
@@ -87,7 +87,7 @@
         <div class="author-name">By {{ novel.author.display_name|default:novel.author.username }}</div>
     </div>
 
-    <!-- เนื้อหาบทต่างๆ -->
+    <!-- contentบทต่างๆ -->
     {% for chapter in chapters %}
     <div class="chapter-container">
         
