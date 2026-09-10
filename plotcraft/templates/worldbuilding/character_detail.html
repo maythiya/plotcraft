@@ -1,1 +1,287 @@
-{% extends "base.html" %}{% block title %}Character | PlotCraft{% endblock %}{% block content %}<section class="pc-page-shell"><article class="max-w-5xl mx-auto pc-panel rounded-3xl border border-white/10 p-7 md:p-10"><a href="{% url 'plotcraft:character_list' %}" class="text-sm font-semibold text-[#b7f34b]">← Back to characters</a><div class="pc-eyebrow mt-8">Character details</div><h1 class="mt-3 text-4xl font-extrabold text-white">{{ character.name }}</h1><div class="mt-7 border-t border-white/10 pt-7 text-white/75 leading-8 whitespace-pre-line">{{ character.background|default:"No details have been added yet." }}</div></article></section>{% endblock %}
+{% extends "base.html" %}
+{% block title %}Character | PlotCraft{% endblock %}
+{% block content %}
+<script src="https://cdn.tailwindcss.com"></script>
+
+<div class="min-h-screen font-sans p-4 md:p-8 text-[#2F4F4F] bg-[#f4f4f5]">
+
+  <div class="max-w-7xl mx-auto flex flex-col md:flex-row gap-6">
+
+    <aside class="w-full md:w-80 shrink-0 flex flex-col gap-6">
+
+      <section class="bg-[#2F4F4F] rounded-2xl p-6 shadow-xl relative overflow-hidden text-[#FAEBD7]">
+        <div class="absolute top-0 left-0 w-full h-24 bg-[#DAA520] opacity-20"></div>
+
+        <div class="relative z-10 flex justify-center mt-4">
+          <div class="w-36 h-36 rounded-full p-1.5 bg-[#DAA520] shadow-lg">
+            {% if character.portrait %}
+              <img src="{{ character.portrait.url }}"
+                   alt="{{ character.name }}"
+                   class="w-full h-full object-cover rounded-full border-4 border-[#2F4F4F]">
+            {% else %}
+              <div class="w-full h-full bg-[#FAEBD7] rounded-full flex items-center justify-center text-[#2F4F4F] font-bold text-sm">
+                No Image
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="relative z-10 text-center mt-5">
+          {% if character.project %}
+            <span class="inline-block px-3 py-1 bg-[#FAEBD7]/20 border border-[#FAEBD7]/30
+                          text-[#FAEBD7] text-xs rounded-full mb-2 tracking-wide backdrop-blur-sm">
+              <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5V21.5M8 7h8M8 11h8"/></svg> {{ character.project.title|default:character.project }}
+            </span>
+          {% endif %}
+
+          <h1 class="text-2xl font-bold text-white">{{ character.name }}</h1>
+
+          {% if character.alias %}
+            <p class="text-[#DAA520] text-sm mt-1 font-medium">
+              {{ character.alias }}
+            </p>
+          {% endif %}
+        </div>
+
+        {% if character.status %}
+        <div class="mt-4 flex justify-center">
+          <span class="px-3 py-1 bg-[#1a3030] border border-[#DAA520]/50
+                        text-[#FAEBD7] rounded-full text-xs">
+            Status: {{ character.status }}
+          </span>
+        </div>
+        {% endif %}
+
+        <hr class="border-[#FAEBD7]/20 my-6">
+
+        <div class="space-y-3 text-sm">
+          {% if character.age %}
+          <div class="flex justify-between items-center hover:bg-white/5 p-1 rounded transition">
+            <span class="text-[#FAEBD7]/70">Age</span>
+            <span class="font-medium text-white">{{ character.age }}</span>
+          </div>
+          {% endif %}
+
+          {% if character.birth_date %}
+          <div class="flex justify-between items-center hover:bg-white/5 p-1 rounded transition">
+            <span class="text-[#FAEBD7]/70">Birthday</span>
+            <span class="font-medium text-white">{{ character.birth_date }}</span>
+          </div>
+          {% endif %}
+
+          {% if character.gender %}
+          <div class="flex justify-between items-center hover:bg-white/5 p-1 rounded transition">
+            <span class="text-[#FAEBD7]/70">Gender</span>
+            <span class="font-medium text-white">
+              {{ character.get_gender_display }}
+            </span>
+          </div>
+          {% endif %}
+
+          {% if character.species %}
+          <div class="flex justify-between items-center hover:bg-white/5 p-1 rounded transition">
+            <span class="text-[#FAEBD7]/70">Species</span>
+            <span class="font-medium text-white">{{ character.species }}</span>
+          </div>
+          {% endif %}
+
+          {% if character.role %}
+          <div class="flex justify-between items-center hover:bg-white/5 p-1 rounded transition">
+            <span class="text-[#FAEBD7]/70">Role</span>
+            <span class="font-medium text-white">{{ character.role }}</span>
+          </div>
+          {% endif %}
+        </div>
+        
+        </section>
+
+      <section class="bg-white rounded-2xl p-6 shadow-md border border-[#FAEBD7]">
+        <div class="text-xs text-[#2F4F4F]/70 space-y-1 mb-4">
+          <p>Created: {{ character.created_at|date:"d/m/Y" }}</p>
+          {% if character.created_by %}
+            <p>By: {{ character.created_by.display_name|default:character.created_by.username }}</p>
+          {% endif %}
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <a href="{% url 'plotcraft:character_edit' character.id %}"
+             class="w-full py-2.5 bg-[#DAA520] hover:bg-[#b8860b]
+                    text-white text-center rounded-lg transition
+                    text-sm font-bold shadow hover:shadow-lg">
+            EditCharacters
+          </a>
+
+          <a href="{% url 'plotcraft:character_list' %}"
+             class="w-full py-2.5 bg-[#2F4F4F] hover:bg-[#1a3030]
+                    text-[#FAEBD7] text-center rounded-lg transition
+                    text-sm font-medium">
+            Backgopageรายthe
+          </a>
+        </div>
+      </section>
+
+    </aside>
+
+    <main class="flex-1 flex flex-col gap-6 overflow-y-auto">
+
+      <section class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border-t-4 border-[#2F4F4F]">
+        <header class="flex items-center gap-3 mb-6 border-b border-[#FAEBD7] pb-4">
+          <div class="p-2 bg-[#FAEBD7] rounded-lg"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 21a7 7 0 0 1 14 0"/></svg></div>
+          <h2 class="text-xl font-bold">Background & general information</h2>
+        </header>
+
+        <div class="space-y-8">
+          <div>
+            <h3 class="text-sm font-bold text-[#DAA520] uppercase mb-2">appearanceภายนอก</h3>
+            <p class="text-gray-700 whitespace-pre-line leading-relaxed">
+              {{ character.appearance|default:"-" }}
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-[#FAEBD7]/30 p-4 rounded-xl">
+            <div>
+              <h3 class="text-sm font-bold uppercase mb-2">Occupation</h3>
+              <p class="font-medium">
+                {{ character.occupation|default:"-" }}
+              </p>
+            </div>
+            <div>
+              <h3 class="text-sm font-bold uppercase mb-2">Hometown</h3>
+              {% if character.location %}
+                <a href="{% url 'plotcraft:location_detail' character.location.id %}"
+                   class="hover:text-[#DAA520] underline decoration-dashed underline-offset-4 transition">
+                  <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0z"/><circle cx="12" cy="10" r="2.5"/></svg> {{ character.location.name }}
+                </a>
+              {% else %}
+                <p>-</p>
+              {% endif %}
+            </div>
+          </div>
+
+          <div>
+            <h3 class="text-sm font-bold text-[#DAA520] uppercase mb-2">Background</h3>
+            <div class="bg-[#F9FAFB] p-5 rounded-xl border border-gray-100">
+              <p class="whitespace-pre-line">
+                {{ character.background|default:"-" }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border-t-4 border-[#2F4F4F]">
+        <header class="flex items-center gap-3 mb-6 border-b border-[#FAEBD7] pb-4">
+          <div class="p-2 bg-[#FAEBD7] rounded-lg"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M5 8h14M5 16h14M6.5 5.5l11 13M17.5 5.5l-11 13"/></svg>️</div>
+          <h2 class="text-xl font-bold">Relationships</h2>
+        </header>
+
+        {% if character.relationships_from.exists %}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {% for rel in character.relationships_from.all %}
+                <div class="flex items-start gap-4 p-4 rounded-xl border transition hover:shadow-md
+                            {% if rel.status == 'ENEMY' %}bg-red-50 border-red-100{% elif rel.status == 'FAMILY' %}bg-blue-50 border-blue-100{% else %}bg-[#FAEBD7]/20 border-[#FAEBD7]/50{% endif %}">
+                    
+                    <a href="{% url 'plotcraft:character_detail' rel.to_character.id %}" class="shrink-0">
+                        <div class="w-12 h-12 rounded-full bg-gray-200 overflow-hidden shadow-sm border-2 border-white">
+                            {% if rel.to_character.portrait %}
+                                <img src="{{ rel.to_character.portrait.url }}" class="w-full h-full object-cover">
+                            {% else %}
+                                <div class="w-full h-full flex items-center justify-center text-xs font-bold text-gray-400">No Pic</div>
+                            {% endif %}
+                        </div>
+                    </a>
+
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start">
+                            <a href="{% url 'plotcraft:character_detail' rel.to_character.id %}" class="font-bold text-[#2F4F4F] hover:underline">
+                                {{ rel.to_character.name }}
+                            </a>
+                            <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full
+                                        {% if rel.status == 'ENEMY' %}bg-red-200 text-red-800{% else %}bg-[#2F4F4F]/10 text-[#2F4F4F]{% endif %}">
+                                {{ rel.get_status_display }}
+                            </span>
+                        </div>
+                        
+                        {% if rel.note %}
+                        <p class="text-sm text-gray-600 mt-1 italic">
+                            "{{ rel.note }}"
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-8 bg-gray-50 rounded-xl border border-dashed border-gray-300">
+                <p class="text-gray-400 italic">NoRelationshipswithใครinnovel(s)...</p>
+            </div>
+        {% endif %}
+      </section>
+      <section class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border-t-4 border-[#DAA520]">
+        <header class="flex items-center gap-3 mb-6 border-b border-[#FAEBD7] pb-4">
+          <div class="p-2 bg-[#FAEBD7] rounded-lg text-[#DAA520]">❤️</div>
+          <h2 class="text-xl font-bold">Personality & goals</h2>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <h3 class="text-sm font-bold uppercase mb-2">Personality</h3>
+            <p class="whitespace-pre-line">
+              {{ character.personality|default:"-" }}
+            </p>
+          </div>
+
+          <div>
+            <h3 class="text-sm font-bold uppercase mb-2">Goals</h3>
+            <p class="whitespace-pre-line">
+              {{ character.goals|default:"-" }}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border-t-4 border-[#2F4F4F] mb-8">
+        <header class="flex items-center gap-3 mb-6 border-b border-[#FAEBD7] pb-4">
+          <div class="p-2 bg-[#FAEBD7] rounded-lg">⚡</div>
+          <h2 class="text-xl font-bold">Abilities & skills</h2>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-green-50 border-l-4 border-green-600 p-4 rounded-r-xl">
+            <h3 class="font-bold mb-2">Strengths</h3>
+            <p class="whitespace-pre-line text-sm">
+              {{ character.strengths|default:"-" }}
+            </p>
+          </div>
+
+          <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-xl">
+            <h3 class="font-bold mb-2">Weaknesses</h3>
+            <p class="whitespace-pre-line text-sm">
+              {{ character.weaknesses|default:"-" }}
+            </p>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-sm font-bold text-[#DAA520] uppercase mb-2">Skills</h3>
+          <div class="bg-[#2F4F4F] text-[#FAEBD7] p-4 rounded-xl">
+            <p class="whitespace-pre-line">
+              {{ character.skills|default:"-" }}
+            </p>
+          </div>
+        </div>
+
+        {% if character.notes %}
+        <div class="mt-8 pt-6 border-t border-gray-200">
+          <h3 class="text-sm font-bold text-gray-500 uppercase mb-2">Additional notes</h3>
+          <p class="italic text-sm whitespace-pre-line bg-[#FAEBD7]/30 p-3 rounded-lg">
+            {{ character.notes }}
+          </p>
+        </div>
+        {% endif %}
+      </section>
+
+    </main>
+  </div>
+</div>
+{% endblock %}
