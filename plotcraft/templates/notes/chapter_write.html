@@ -38,7 +38,7 @@
             <div class="h-8 w-px bg-gray-200 mx-2"></div>
             <div class="flex-1 max-w-xl">
                 <div class="text-[10px] text-[#DAA520] font-bold uppercase tracking-wider mb-0.5">{{ novel.title }}</div>
-                <input type="text" x-model="title" @input="unsavedChanges = true" class="font-bold text-[#2F4F4F] text-xl bg-transparent w-full border-none p-0 focus:ring-0 placeholder-gray-300 hover:opacity-80 transition" placeholder="ตั้งชื่อตอน...">
+                <input type="text" x-model="title" @input="unsavedChanges = true" class="font-bold text-[#2F4F4F] text-xl bg-transparent w-full border-none p-0 focus:ring-0 placeholder-gray-300 hover:opacity-80 transition" placeholder="Chapter title...">
             </div>
         </div>
 
@@ -54,15 +54,15 @@
 
             <a href="{% url 'plotcraft:chapter_preview' pk=chapter.id %}" target="_blank"
                class="p-2 rounded-lg transition-colors border bg-white text-gray-400 border-gray-200 hover:border-[#DAA520] hover:text-[#DAA520] flex items-center gap-2"
-               title="ดูตัวอย่าง">
+               title="Preview">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                <span class="text-xs font-bold hidden sm:inline">ดูตัวอย่าง</span>
+                <span class="text-xs font-bold hidden sm:inline">Preview</span>
             </a>
 
             <button @click="openSaveModal()" class="group relative overflow-hidden bg-[#2F4F4F] text-[#FAEBD7] px-6 py-2.5 rounded-full font-bold shadow-lg hover:shadow-xl hover:bg-[#1a3030] transition-all transform active:scale-95 flex items-center gap-2">
                 <span class="relative z-10 flex items-center gap-2">
                     <svg x-show="!isSaving" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
-                    <span x-text="isSaving ? 'Saving...' : 'บันทึก'"></span>
+                    <span x-text="isSaving ? 'Saving...' : 'Save'"></span>
                 </span>
                 <div class="absolute inset-0 bg-white/10 -translate-x-full group-hover:translate-x-full transition-transform duration-500 skew-x-12"></div>
             </button>
@@ -96,7 +96,7 @@
                      <div x-ref="editor"
                           contenteditable="true"
                           class="outline-none text-lg leading-loose text-gray-800 font-serif min-h-full selection:bg-[#DAA520]/30 break-word"
-                          placeholder="เริ่มบรรเลงจินตนาการของคุณที่นี่..."
+                          placeholder="Start writing your imagination here..."
                           @input="updateStats(); unsavedChanges = true"
                           @mouseup="checkActiveButtons()"
                           @keyup="checkActiveButtons()"
@@ -130,7 +130,7 @@
                  @click.away="showSaveModal = false">
                  
                 <div class="bg-[#2F4F4F] px-6 py-4 flex items-center justify-between">
-                    <h3 class="text-[#FAEBD7] font-bold text-lg">บันทึกการเปลี่ยนแปลง</h3>
+                    <h3 class="text-[#FAEBD7] font-bold text-lg">Save changes</h3>
                     <button @click="showSaveModal = false" class="text-white/70 hover:text-white">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
@@ -138,7 +138,7 @@
             
                 <div class="p-6 text-center">
                     <p class="text-gray-600 mb-6 text-sm">
-                        ต้องการบันทึกตอนนี้เป็นสถานะไหนดี? (สามารถแก้ไขได้ภายหลัง)
+                        ต้องการSavechaptersนี้เป็นStatusไหนดี? (สามารถEditได้ภายหลัง)
                     </p>
                 
                     <div class="grid grid-cols-1 gap-3">
@@ -147,7 +147,7 @@
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                             </div>
                             <div class="text-left">
-                                <div class="font-bold text-gray-800">บันทึกเป็นแบบร่าง (Draft)</div>
+                                <div class="font-bold text-gray-800">Save as draft</div>
                             </div>
                         </button>
                     
@@ -156,7 +156,7 @@
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                             </div>
                             <div class="text-left">
-                                <div class="font-bold text-[#2F4F4F]">บันทึกเป็นเสร็จสมบูรณ์ (Finished)</div>
+                                <div class="font-bold text-[#2F4F4F]">Mark as finished</div>
                             </div>
                         </button>
                     </div>
@@ -164,7 +164,7 @@
             
                 <div class="px-6 py-4 bg-gray-50 flex justify-center border-t border-gray-100">
                     <button @click="showSaveModal = false" class="text-gray-400 hover:text-gray-600 text-sm font-semibold transition-colors">
-                        อยู่หน้านี้ต่อดีกว่า
+                        Stay on this page
                     </button>
                 </div>
             </div>
@@ -233,13 +233,13 @@
                 this.wordCount = text.trim() ? text.split(/\s+/).length : 0;
             },
 
-            // เปิด Modal
+            // เClose Modal
             openSaveModal() {
-                this.updateStats(); // อัปเดตเนื้อหาก่อนเปิด
+                this.updateStats(); // อัปเดตเนื้อหาก่อนเClose
                 this.showSaveModal = true;
             },
 
-            // ยืนยันการบันทึกจาก Modal
+            // ConfirmการSaveจาก Modal
             confirmSave(status) {
                 this.isDraftStatus = (status === 'draft') ? 'true' : 'false';
                 this.saveContent(true); // true = force submit
@@ -258,8 +258,8 @@
                     // ส่ง Form ปกติ (เปลี่ยนหน้า)
                     document.getElementById('saveForm').submit();
                 } else {
-                    // กรณี Autosave หรือบันทึกเบื้องหลัง (ถ้าต้องการใช้อนาคต)
-                    // ตอนนี้ถ้ากดปุ่ม Save หลัก เราใช้ forceSubmit ผ่าน Modal อยู่แล้ว
+                    // กรณี Autosave หรือSaveเบื้องหลัง (ถ้าต้องการใช้อนาคต)
+                    // chaptersนี้ถ้ากดปุ่ม Save หลัก เราใช้ forceSubmit ผ่าน Modal อยู่แล้ว
                 }
             },
 
@@ -284,17 +284,17 @@
                         'X-CSRFToken': '{{ csrf_token }}',
                         'X-Requested-With': 'XMLHttpRequest' // บอกว่าเป็น AJAX
                     },
-                    // ส่งแบบ Form Data ปกติเพื่อให้ Django เข้าใจง่าย
+                    // ส่งแบบ Form Data ปกติเพื่อthat Django เข้าใจง่าย
                     body: new URLSearchParams({
                         'title': this.title,
                         'content': currentContent,
-                        'is_draft': 'true' // Auto save ให้ถือเป็น draft เสมอ หรือไม่ส่งค่านี้ถ้าไม่อยากเปลี่ยนสถานะ
+                        'is_draft': 'true' // Auto save thatถือเป็น draft เสมอ หรือไม่ส่งค่านี้ถ้าไม่อยากเปลี่ยนStatus
                     })
                 })
                 .then(response => {
                     if (response.redirected) {
                         // ถ้า Django Redirect แปลว่าสำเร็จ (สำหรับ View ปัจจุบัน)
-                        // แต่จริงๆ ถ้า AutoSave ควรทำ API แยก หรือแก้ View ให้คืน JSON ได้
+                        // แต่จริงๆ ถ้า AutoSave ควรทำ API แยก หรือแก้ View thatคืน JSON ได้
                         // ในที่นี้สมมติว่าสำเร็จ
                         return { status: 'success' };
                     }
