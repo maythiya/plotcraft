@@ -64,7 +64,7 @@
             {% if item.project %}
             <div class="mb-2">
                <span class="inline-block px-2 py-1 bg-[#FAEBD7] text-[#2F4F4F] text-[10px] font-bold rounded-md border border-[#2F4F4F]/10 truncate max-w-full">
-                 📖 {{ item.project.title|default:item.project }}
+                 <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5V21.5M8 7h8M8 11h8"/></svg> {{ item.project.title|default:item.project }}
                </span>
             </div>
             {% endif %}
@@ -106,7 +106,7 @@
     {% else %}
     <div class="bg-white rounded-xl p-12 text-center border border-[#FAEBD7] shadow-sm flex flex-col items-center justify-center min-h-[300px]">
         <div class="w-20 h-20 bg-[#FAEBD7] rounded-full flex items-center justify-center text-4xl mb-6 text-[#2F4F4F]">
-            📦
+            <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m3 7 9-4 9 4-9 4zM3 7v10l9 4 9-4V7M12 11v10"/></svg>
         </div>
         <h3 class="text-2xl font-bold text-[#2F4F4F] mb-2">คลังสมบัติว่างเปล่า</h3>
         <p class="text-gray-500 mb-8 max-w-md">เริ่มสร้างไอเทม อาวุธ หรือวัตถุสำคัญชิ้นแรกของคุณ</p>
