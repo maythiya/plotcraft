@@ -1,19 +1,292 @@
 {% extends "base.html" %}
 {% block title %}Item | PlotCraft{% endblock %}
 {% block content %}
-<section class="pc-page-shell">
-  <div class="max-w-4xl mx-auto">
-    <div class="mb-7"><div class="pc-eyebrow">PlotCraft editor</div><h1 class="mt-2 text-3xl font-extrabold text-white">Item</h1><p class="mt-2 text-white/65">Add the details that keep your story world consistent.</p></div>
-    <form method="post" enctype="multipart/form-data" class="pc-panel rounded-3xl border border-white/10 p-6 md:p-9">
-      {% csrf_token %}{{ form.media }}
-      {% if form.non_field_errors %}<div class="mb-6 rounded-xl border border-red-300/40 bg-red-900/20 p-4 text-red-100">{{ form.non_field_errors }}</div>{% endif %}
-      <div class="pc-form-fields">{{ form.as_p }}</div>
-      {% if formset %}
-        <section class="mt-8 pt-7 border-t border-white/10"><h2 class="text-xl font-bold text-white">Related entries</h2>{{ formset.management_form }}{% for related_form in formset %}<div class="mt-4 rounded-2xl bg-black/15 border border-white/10 p-4">{{ related_form.as_p }}</div>{% endfor %}</section>
-      {% endif %}
-      <div class="mt-8 pt-6 border-t border-white/10 flex flex-wrap gap-3"><button type="submit" class="pc-button pc-button--primary">Save item</button><a href="javascript:history.back()" class="pc-button pc-button--quiet">Cancel</a></div>
-    </form>
-  </div>
-</section>
-<style>.pc-form-fields p{margin:0 0 1.25rem}.pc-form-fields label{display:block;color:#fff;font-weight:650;margin-bottom:.45rem}.pc-form-fields input,.pc-form-fields select,.pc-form-fields textarea{width:100%;border:1px solid rgba(255,255,255,.16);border-radius:.8rem;background:rgba(0,0,0,.16);color:#fff;padding:.75rem 1rem}.pc-form-fields textarea{min-height:8rem}.pc-form-fields .helptext{display:block;color:rgba(255,255,255,.55);font-size:.8rem;margin-top:.35rem}.pc-form-fields ul.errorlist{color:#fecaca;font-size:.85rem;margin:.35rem 0}</style>
+<script src="https://cdn.tailwindcss.com"></script>
+
+<div class="min-h-screen py-8 px-4 sm:px-6 lg:px-8 font-sans text-[#2F4F4F]">
+    
+    <div class="max-w-5xl mx-auto flex items-center justify-between mb-8">
+        <div class="flex items-start gap-3">
+            <span class="p-2 bg-[#2F4F4F] rounded-lg text-[#FAEBD7] mt-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+            </span>
+
+            <div>
+                <h1 class="text-3xl font-bold text-[#2F4F4F] flex items-center gap-2">
+                    Create / Edit Items (Item)
+                    <span class="text-sm text-gray-400 font-normal border border-gray-200 px-2 py-0.5 rounded-full bg-white">
+                        {% if form.instance.pk %}Edit{% else %}Create new{% endif %}
+                    </span>
+                </h1>
+                <p class="text-sm text-gray-500 mt-1 font-medium">
+                    notrememberasต้องเขียนAllก็canนะคะ!
+                </p>
+            </div>
+        </div>
+
+        <a href="{% url 'plotcraft:item_list' %}" class="text-[#2F4F4F] hover:text-[#DAA520] transition duration-150 font-medium flex items-center text-sm">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back
+        </a>
+
+    </div>
+
+    <div class="max-w-5xl mx-auto bg-white shadow-xl rounded-2xl p-8 border border-[#2F4F4F]/10 relative overflow-hidden">
+        
+        <div class="absolute top-0 left-0 w-full h-1.5 bg-linear-to-r from-[#2F4F4F] to-[#DAA520]"></div>
+
+        <form method="post" enctype="multipart/form-data" id="item-form">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+                <div class="mb-6 p-4 text-sm text-red-700 bg-red-100 border border-red-400 rounded-lg">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <div class="flex flex-col-reverse md:flex-row gap-8 mb-10">
+                
+                <div class="flex-1 space-y-6">
+                    
+                    <div class="flex items-center gap-2 mb-2 border-b border-[#FAEBD7] pb-2">
+                        <span class="text-[#DAA520]">✦</span>
+                        <h2 class="text-xl font-bold text-[#2F4F4F]">informationทั่วgo (General Info)</h2>
+                    </div>
+
+                    <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/20">
+                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">อยู่innovel(s) / project</label>
+                        {{ form.project }}
+                    </div>
+
+                    <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10 focus-within:ring-2 ring-[#DAA520]/50 transition">
+                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">nameItems <span class="text-red-500">*</span></label>
+                        {{ form.name }}
+                    </div>
+
+                    <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
+                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Category</label>
+                        {{ form.category }}
+                    </div>
+
+                    <div class="flex items-center gap-2 mb-2 border-b border-[#FAEBD7] pb-2 pt-4">
+                        <span class="text-[#DAA520]">⚡</span>
+                        <h2 class="text-xl font-bold text-[#2F4F4F]">Properties</h2>
+                    </div>
+
+                    <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
+                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">ความสาcomeรถพิเศษ (Abilities)</label>
+                        {{ form.abilities }}
+                    </div>
+
+                    <div class="rounded-lg border border-red-200 p-3 bg-red-50/50">
+                        <label class="block text-sm font-bold text-red-800 mb-1">terms / ข้อrememberกัด (Limitations)</label>
+                        {{ form.limitations }}
+                    </div>
+
+                </div>
+
+                <div class="w-full md:w-1/3 flex flex-col"
+                     x-data="{
+                       imagePreview: {% if form.instance.image %}'{{ form.instance.image.url }}'{% else %}null{% endif %}
+                     }">
+
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-2">
+                        Image
+                    </label>
+                
+                    <div class="relative w-full aspect-square rounded-xl
+                                border-2 border-dashed border-[#DAA520]/50
+                                bg-[#FAEBD7]/10 hover:border-[#DAA520]
+                                transition cursor-pointer group overflow-hidden
+                                flex items-center justify-center shadow-inner">
+                
+                        <!-- Preview -->
+                        <template x-if="imagePreview">
+                            <img :src="imagePreview"
+                                 class="w-full h-full object-cover
+                                        transition-transform duration-700
+                                        group-hover:scale-110">
+                        </template>
+                    
+                        <!-- Placeholder -->
+                        <template x-if="!imagePreview">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center
+                                        text-[#2F4F4F]/40 group-hover:text-[#DAA520]
+                                        transition-colors z-10">
+                                <svg class="w-12 h-12 mb-2 group-hover:animate-pulse"
+                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                          stroke-width="2"
+                                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                                <span class="text-xs font-bold">Click to uploadimageItems</span>
+                            </div>
+                        </template>
+                    
+                        <input type="file"
+                               name="image"
+                               accept="image/*"
+                               class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
+                               @change="
+                                 const file = $event.target.files[0];
+                                 if (file) {
+                                   const reader = new FileReader();
+                                   reader.onload = e => imagePreview = e.target.result;
+                                   reader.readAsDataURL(file);
+                                 }
+                               ">
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                
+                <div class="space-y-6">
+                    <div class="flex items-center gap-2 mb-2 border-b border-[#FAEBD7] pb-2">
+                        <span class="text-[#DAA520]"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M7 4h10v14a3 3 0 0 1-3 3H7a3 3 0 0 1 0-6h10"/><path d="M7 4a3 3 0 0 0 0 6h10"/></svg></span>
+                        <h2 class="text-xl font-bold text-[#2F4F4F]">History & appearance</h2>
+                    </div>
+                    <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
+                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">appearanceภายนอก</label>
+                        {{ form.appearance }}
+                    </div>
+                    <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
+                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">historyความascome</label>
+                        {{ form.history }}
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="flex items-center gap-2 mb-2 border-b border-[#FAEBD7] pb-2">
+                        <span class="text-[#DAA520]"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.1.1l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1M14 11a5 5 0 0 0-7.1-.1l-2 2A5 5 0 0 0 12 20l1.1-1.1"/></svg></span>
+                        <h2 class="text-xl font-bold text-[#2F4F4F]">ความConnect</h2>
+                    </div>
+                    <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
+                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Owner</label>
+                        {{ form.owner }}
+                        <p class="text-xs text-[#2F4F4F]/60 mt-1">SelectCharactersthatถือItemsนี้อยู่</p>
+                    </div>
+                    <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
+                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Locationsstore (Location)</label>
+                        {{ form.location }}
+                        <p class="text-xs text-[#2F4F4F]/60 mt-1">SelectLocationsthatItemsนี้ซ่อนอยู่ (ถ้าnothaveเจ้าof)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-8 p-6 bg-amber-50 rounded-2xl border border-amber-100 shadow-sm">
+                <h3 class="font-bold text-amber-800 text-lg mb-3 flex items-center gap-2">
+                    <span><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M12 3 20 6v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/></svg>️</span> that AI helpคิดItems
+                </h3>
+                <div class="flex gap-3">
+                    <input type="text" id="ai-concept" 
+                           class="flex-1 border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition" 
+                           placeholder="เช่น: ดาบthatทำFromเกล็ดมังกรเพลิง, ยาthatทำthatล่องหนcan 5 นาที">
+                    <button type="button" id="aiGenerateBtn"
+                            class="bg-amber-600 text-white px-6 py-3 rounded-xl hover:bg-amber-700 font-bold shadow-md transition flex items-center gap-2 whitespace-nowrap">
+                        <span><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg></span> GenerateItems
+                    </button>
+                </div>
+                <p id="ai-loading" class="text-sm text-amber-700 mt-3 hidden flex items-center gap-2">
+                    <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    AI LoadingตีบวกItems... รอสักครู่นะคะ
+                </p>
+            </div>
+
+            <div class="mt-10 flex items-center gap-4 border-t border-[#FAEBD7] pt-6">
+                <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-bold rounded-lg shadow-md text-[#FAEBD7] bg-[#2F4F4F] hover:bg-[#1a3030] hover:shadow-lg focus:outline-none transition duration-150">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Saveinformation
+                </button>
+                
+                <a href="{% url 'plotcraft:item_list' %}" class="px-6 py-3 border border-gray-300 text-base font-medium text-gray-600 bg-white hover:bg-gray-50 rounded-lg transition duration-150">
+                    Cancel
+                </a>
+
+                {% if item %}
+                <div class="ml-auto">
+                    <button type="submit" name="item_delete" class="inline-flex items-center px-4 py-2 border border-red-200 text-sm font-bold rounded-lg text-red-600 bg-red-50 hover:bg-red-100 hover:text-red-700 transition duration-150" onclick="return confirm('youแน่ใจornotว่าต้องtheDeleteItemsนี้?');">
+                        <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5-4h4a1 1 0 011 1v1H9V4a1 1 0 011-1z"></path></svg>
+                        DeleteItems
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://unpkg.com/alpinejs" defer></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const btn = document.getElementById('aiGenerateBtn');
+        const conceptInput = document.getElementById('ai-concept');
+        const loadingText = document.getElementById('ai-loading');
+
+        const setVal = (id, val) => {
+            const el = document.getElementById(id);
+            if (el && val) el.value = val;
+        };
+
+        if (btn) {
+            btn.addEventListener('click', function() {
+                const concept = conceptInput.value.trim();
+                if (!concept) {
+                    alert("กรุณาใส่คอนเซปต์ofItemsก่อนค่ะ");
+                    return;
+                }
+
+                loadingText.classList.remove('hidden');
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+
+                fetch("{% url 'plotcraft:ai_generate_item' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({ concept: concept })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    loadingText.classList.add('hidden');
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-50', 'cursor-not-allowed');
+
+                    if (data.success) {
+                        const d = data.data;
+                        
+                        // --- หยอดinformationลงช่อง (ปรับ ID thatตรงwith forms.py) ---
+                        if (!document.getElementById('id_name').value) setVal('id_name', d.name);
+                        
+                        setVal('id_history', d.history);
+                        setVal('id_abilities', d.abilities);
+                        setVal('id_description', d.description);
+                        setVal('id_appearance', d.appearance);
+                        setVal('id_limitations', d.limitations);
+                        
+
+                        alert("<svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg> CreateItemscompleteyet!");
+                        conceptInput.value = '';
+                    } else {
+                        alert("An error occurred: " + data.error);
+                    }
+                })
+                .catch(err => {
+                    loadingText.classList.add('hidden');
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    alert("เnameมcontinueเซิร์ฟเวอร์notcan");
+                    console.error(err);
+                });
+            });
+        }
+    });
+</script>
+
 {% endblock %}
