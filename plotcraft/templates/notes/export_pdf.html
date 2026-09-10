@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>{{ novel.title }}</title>
@@ -22,12 +22,12 @@
             @top-right { content: none; }
         }
 
-        /* === แก้ไขส่วนปก (Cover) === */
+        /* === Editส่วนปก (Cover) === */
         .cover-image-page {
-            /* 1. เปลี่ยนกลับเป็น relative เพื่อให้กินพื้นที่หน้ากระดาษ */
+            /* 1. เปลี่ยนกลับเป็น relative เพื่อthatกินพื้นที่หน้ากระดาษ */
             position: relative;
             
-            /* 2. บังคับขนาดให้เท่ากับ A5 เป๊ะๆ (WeasyPrint จะรู้ว่าต้องจองพื้นที่ทั้งหน้านี้) */
+            /* 2. บังคับขนาดthatเท่ากับ A5 เป๊ะๆ (WeasyPrint จะรู้ว่าต้องจองพื้นที่ทั้งหน้านี้) */
             width: 148mm;
             height: 210mm;
             
@@ -84,7 +84,7 @@
 
     <div class="title-page">
         <div class="novel-title">{{ novel.title }}</div>
-        <div class="author-name">โดย {{ novel.author.display_name|default:novel.author.username }}</div>
+        <div class="author-name">By {{ novel.author.display_name|default:novel.author.username }}</div>
     </div>
 
     <!-- เนื้อหาบทต่างๆ -->
