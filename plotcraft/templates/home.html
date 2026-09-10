@@ -25,7 +25,7 @@
         <form action="{% url 'plotcraft:global_search' %}" method="GET" class="relative w-full max-w-2xl group">
             <input type="text" 
                    name="q" 
-                   placeholder="SearchCharacters, Scenes, or Timeline..." 
+                   placeholder="Search characters, scenes, or timelines..." 
                    class="w-full pl-14 pr-6 py-4 rounded-full border-2 border-gray-100 shadow-lg bg-white text-[#2F4F4F] placeholder-gray-400 text-lg focus:border-[#DAA520]/50 focus:ring-4 focus:ring-[#DAA520]/10 focus:outline-none transition-all duration-300 transform group-hover:scale-[1.01]">
             <div class="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-[#DAA520] transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
@@ -51,7 +51,7 @@
             </div>
             <a href="{% url 'plotcraft:novel_create' %}" class="px-6 py-3 bg-[#2F4F4F] hover:bg-[#1a3030] text-[#FAEBD7] rounded-xl font-bold shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex items-center gap-2 whitespace-nowrap">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                CreateNovels
+                Create a novel
             </a>
         </div>
     </div>
@@ -63,7 +63,7 @@
             </h2>
             {% if novels %}
             <a href="{% url 'plotcraft:novel_list' %}" class="text-sm font-bold text-[#DAA520] hover:text-[#2F4F4F] transition flex items-center gap-1 group">
-                ดูAll
+                View all
                 <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
             </a>
             {% endif %}
@@ -98,13 +98,13 @@
                             {{ novel.title }}
                         </h3>
                         <p class="text-xs text-gray-500 line-clamp-2 leading-relaxed">
-                            {{ novel.synopsis|default:"No synopsis yet... ClicktoStart writingDetailsNovelsyour" }}
+                            {{ novel.synopsis|default:"No synopsis yet. Start writing your story details." }}
                         </p>
                     </div>
 
                     <div class="flex items-center gap-2 mt-2">
                         <span class="text-xs font-bold text-[#2F4F4F] bg-gray-100 px-2 py-1 rounded-md border border-gray-200">
-                            {{ novel.get_category_display|default:'ทั่วgo' }}
+                            {{ novel.get_category_display|default:'General' }}
                         </span>
                     </div>
                 </div>
@@ -116,14 +116,14 @@
                     <div class="w-10 h-10 rounded-full bg-[#DAA520]/10 flex items-center justify-center group-hover:scale-110 group-hover:rotate-90 transition-all duration-500">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                     </div>
-                    <span class="font-bold text-sm">CreateNovelsnovel(s)new</span>
+                    <span class="font-bold text-sm">Create a new novel</span>
                 </div>
             </a>
         </div>
         {% else %}
         <div class="bg-white rounded-2xl p-10 text-center border-2 border-dashed border-[#2F4F4F]/10">
             <div class="text-6xl mb-4 grayscale opacity-50">✍️</div>
-            <h3 class="text-xl font-bold text-[#2F4F4F] mb-2">Start writingNovelsnovel(s)first</h3>
+            <h3 class="text-xl font-bold text-[#2F4F4F] mb-2">Start your first novel</h3>
             <p class="text-gray-500 mb-6">Your imagination is waiting to be set free.</p>
             <a href="{% url 'plotcraft:novel_create' %}" class="inline-block px-6 py-2 bg-[#DAA520] text-white rounded-lg font-bold hover:bg-[#b8860b] transition shadow-md hover:-translate-y-0.5 transform">
                 + Create a new work
@@ -137,11 +137,11 @@
     <div class="mb-16 fade-in-up delay-300">
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-2xl font-bold flex items-center gap-3">
-                <span class="p-2 bg-blue-100 rounded-lg text-2xl"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 21a7 7 0 0 1 14 0"/></svg></span> Charactersyour
+                <span class="p-2 bg-blue-100 rounded-lg text-2xl"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 21a7 7 0 0 1 14 0"/></svg></span> Your characters
             </h2>
             {% if characters %}
             <a href="{% url 'plotcraft:character_list' %}" class="text-sm font-bold text-[#DAA520] hover:text-[#2F4F4F] transition flex items-center gap-1 group">
-                ดูAll
+                View all
                 <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
             </a>
             {% endif %}
@@ -169,7 +169,7 @@
                 </div>
                 <div class="p-5 flex-1 flex flex-col justify-between">
                     <p class="text-sm text-gray-500 line-clamp-2 mb-3">
-                        {{ character.appearance|default:"nothavewordอธิบาย" }}
+                        {{ character.appearance|default:"No description yet." }}
                     </p>
                     <div class="text-xs text-[#2F4F4F]/60 flex justify-between items-center border-t border-gray-100 pt-3 mt-auto">
                         <span class="text-[#DAA520] font-bold group-hover:underline flex items-center gap-1">
@@ -183,16 +183,16 @@
                 <div class="w-12 h-12 rounded-full bg-[#DAA520]/10 flex items-center justify-center mb-3">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                 </div>
-                <span class="font-bold">CreateCharactersAdd</span>
+                <span class="font-bold">Add a character</span>
             </a>
         </div>
         {% else %}
         <div class="bg-white rounded-2xl p-10 text-center border-2 border-dashed border-[#2F4F4F]/10">
             <div class="text-6xl mb-4 grayscale opacity-50"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 21a7 7 0 0 1 14 0"/></svg></div>
-            <h3 class="text-xl font-bold text-[#2F4F4F] mb-2">NoCharacters</h3>
-            <p class="text-gray-500 mb-6">StartCreateCharactersfirstyour toเติมเต็มworldใบนี้</p>
+            <h3 class="text-xl font-bold text-[#2F4F4F] mb-2">No characters yet</h3>
+            <p class="text-gray-500 mb-6">Create your first character to bring this world to life.</p>
             <a href="{% url 'plotcraft:character_create' %}" class="inline-block px-6 py-2 bg-[#DAA520] text-white rounded-lg font-bold hover:bg-[#b8860b] transition shadow-md hover:-translate-y-0.5 transform">
-                + CreateCharacters
+                + Create a character
             </a>
         </div>
         {% endif %}
@@ -203,11 +203,11 @@
     <div class="mb-12 fade-in-up delay-300">
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-2xl font-bold flex items-center gap-3">
-                <span class="p-2 bg-[#DAA520]/10 rounded-lg text-2xl"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg>️</span> Locationsyour
+                <span class="p-2 bg-[#DAA520]/10 rounded-lg text-2xl"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg>️</span> Your locations
             </h2>
             {% if locations %}
             <a href="{% url 'plotcraft:location_list' %}" class="text-sm font-bold text-[#DAA520] hover:text-[#2F4F4F] transition flex items-center gap-1 group">
-                ดูAll
+                View all
                 <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
             </a>
             {% endif %}
@@ -229,7 +229,7 @@
                 </div>
 
                 <div class="p-5 flex-1 flex flex-col">
-                    <h3 class="font-bold text-lg text-[#2F4F4F] mb-1 group-hover:text-[#DAA520] transition-colors truncate">{{ location.name|default:'(nothavename)' }}</h3>
+                    <h3 class="font-bold text-lg text-[#2F4F4F] mb-1 group-hover:text-[#DAA520] transition-colors truncate">{{ location.name|default:'(Untitled location)' }}</h3>
                     <div class="grow"></div>
                     <div class="text-xs text-[#2F4F4F]/60 flex justify-between items-center border-t border-gray-100 pt-3 mt-4">
                         <span class="text-[#DAA520] font-bold group-hover:underline text-xs flex items-center gap-1">
@@ -243,16 +243,16 @@
                 <div class="w-12 h-12 rounded-full bg-[#DAA520]/10 flex items-center justify-center mb-3">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                 </div>
-                <span class="font-bold">CreateLocationsAdd</span>
+                <span class="font-bold">Add a location</span>
             </a>
         </div>
         {% else %}
         <div class="bg-white rounded-2xl p-10 text-center border-2 border-dashed border-[#2F4F4F]/10">
             <div class="text-6xl mb-4 grayscale opacity-50"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg>️</div>
-            <h3 class="text-xl font-bold text-[#2F4F4F] mb-2">NoLocations</h3>
-            <p class="text-gray-500 mb-6">StartCreateLocationsfirstyour toเติมเต็มworldใบนี้</p>
+            <h3 class="text-xl font-bold text-[#2F4F4F] mb-2">No locations yet</h3>
+            <p class="text-gray-500 mb-6">Create your first location to bring this world to life.</p>
             <a href="{% url 'plotcraft:location_create' %}" class="inline-block px-6 py-2 bg-[#DAA520] text-white rounded-lg font-bold hover:bg-[#b8860b] transition shadow-md hover:-translate-y-0.5 transform">
-                + CreateLocations
+                + Create a location
             </a>
         </div>
         {% endif %}
