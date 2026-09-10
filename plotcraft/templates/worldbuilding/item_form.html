@@ -54,7 +54,7 @@
                     </div>
 
                     <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/20">
-                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">อยู่innovel(s) / โปรเจกต์</label>
+                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">อยู่innovel(s) / project</label>
                         {{ form.project }}
                     </div>
 
@@ -184,7 +184,7 @@
                            placeholder="เช่น: ดาบthatทำFromเกล็ดมังกรเพลิง, ยาthatทำthatล่องหนcan 5 นาที">
                     <button type="button" id="aiGenerateBtn"
                             class="bg-amber-600 text-white px-6 py-3 rounded-xl hover:bg-amber-700 font-bold shadow-md transition flex items-center gap-2 whitespace-nowrap">
-                        <span><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg></span> เสกItems
+                        <span><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg></span> GenerateItems
                     </button>
                 </div>
                 <p id="ai-loading" class="text-sm text-amber-700 mt-3 hidden flex items-center gap-2">
@@ -271,10 +271,10 @@
                         setVal('id_limitations', d.limitations);
                         
 
-                        alert("<svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg> CreateItemsเรียบร้อยyet!");
+                        alert("<svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg> CreateItemscompleteyet!");
                         conceptInput.value = '';
                     } else {
-                        alert("เกิดข้อผิดพลาด: " + data.error);
+                        alert("An error occurred: " + data.error);
                     }
                 })
                 .catch(err => {
