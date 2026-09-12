@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block title %}{% if form.instance.pk %}Edit Timeline{% else %}Create new timeline{% endif %} | PlotCraft{% endblock %}
 {% block content %}
-<script src="https://cdn.tailwindcss.com"></script>
 
 
 <div class="min-h-screen py-12 px-4 font-sans flex items-center justify-center">
@@ -34,12 +33,12 @@
                 </div>
 
                 <div class="space-y-2">
-                    <label class="block text-xs font-bold text-[#2F4F4F] uppercase tracking-wider">Detailsbrief</label>
+                    <label class="block text-xs font-bold text-[#2F4F4F] uppercase tracking-wider">Description</label>
                     {{ form.description }}
                 </div>
 
                 <div class="space-y-2">
-                    <label class="block text-xs font-bold text-[#2F4F4F] uppercase tracking-wider">ConnectwithNovels (Optional)</label>
+                    <label class="block text-xs font-bold text-[#2F4F4F] uppercase tracking-wider">Related novel (optional)</label>
                     <div class="relative">
                         {{ form.related_project }}
                     </div>
@@ -51,7 +50,7 @@
                         Cancel
                     </a>
                     <button type="submit" class="w-2/3 py-3 bg-[#2F4F4F] text-[#FAEBD7] rounded-xl font-bold shadow-lg hover:bg-[#1a3030] hover:shadow-xl transition transform hover:-translate-y-1 flex justify-center items-center gap-2">
-                        <span>Save & gocontinue</span>
+                        <span>Save & continue</span>
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                         </svg>

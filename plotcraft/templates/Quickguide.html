@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Quick Guide | PlotCraft{% endblock %}
 {% block content %}
-<script src="https://cdn.tailwindcss.com"></script>
 
 <div class="min-h-screen bg-transparent font-sans flex justify-center py-10 px-4">
   
@@ -10,28 +9,31 @@
     <div class="w-full md:w-72 bg-[#2F4F4F] p-8 flex flex-col justify-between text-[#FAEBD7] shrink-0">
       <div>
         <h2 class="text-2xl font-bold mb-8 text-white flex items-center gap-2">
-            <span class="text-[#DAA520]">⚙️</span> Settings
+            <svg aria-hidden="true" class="pc-icon text-[#DAA520]" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.8 1.8 0 0 0 .36 2l.06.06-2.1 2.1-.06-.06a1.8 1.8 0 0 0-2-.36 1.8 1.8 0 0 0-1.1 1.65v.11h-3v-.11A1.8 1.8 0 0 0 10.46 18.7a1.8 1.8 0 0 0-2 .36l-.06.06-2.1-2.1.06-.06a1.8 1.8 0 0 0 .36-2 1.8 1.8 0 0 0-1.65-1.1H5v-3h.11a1.8 1.8 0 0 0 1.65-1.1 1.8 1.8 0 0 0-.36-2L6.34 7.7l2.1-2.1.06.06a1.8 1.8 0 0 0 2 .36A1.8 1.8 0 0 0 11.6 4.4v-.1h3v.1a1.8 1.8 0 0 0 1.1 1.66 1.8 1.8 0 0 0 2-.36l.06-.06 2.1 2.1-.06.06a1.8 1.8 0 0 0-.36 2 1.8 1.8 0 0 0 1.65 1.1h.11v3h-.11A1.8 1.8 0 0 0 19.4 15z"/></svg> Settings
         </h2>
 
         <ul class="space-y-2">
            <li>
                <a href="{% url 'plotcraft:profile' %}" class="block px-4 py-3 text-[#FAEBD7]/70 hover:bg-[#FAEBD7]/5 hover:text-white rounded-lg transition">
-                   Account (Account)
+                   Account
                </a>
            </li>
            <li>
                <a href="{% url 'plotcraft:quickguide' %}" class="block px-4 py-3 bg-[#FAEBD7]/10 text-white rounded-lg font-medium border-l-4 border-[#DAA520] shadow-sm">
-                   Guide (Guide)
+                   Guide
                </a>
            </li>
         </ul>
       </div>
 
       <div class="mt-8 pt-8 border-t border-[#FAEBD7]/10 space-y-4">
-                        <a href="{% url 'plotcraft:landing' %}" class="flex items-center gap-2 text-[#FAEBD7]/70 hover:text-white transition px-4">
+          <form method="post" action="{% url 'plotcraft:logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="flex w-full items-center gap-2 text-[#FAEBD7]/70 hover:text-white transition px-4">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
               Log out
-          </a>
+            </button>
+          </form>
       </div>
     </div>
 
@@ -51,14 +53,14 @@
         <div class="bg-[#FAEBD7]/20 p-6 rounded-xl border border-[#FAEBD7] mb-12">
             <div class="flex items-center gap-2 mb-4">
                 <span class="text-2xl"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="m14.5 9.5-2 4-4 2 2-4z"/></svg></span>
-                <h2 class="text-xl font-bold text-[#2F4F4F]">overviewsystem (System Overview)</h2>
+                <h2 class="text-xl font-bold text-[#2F4F4F]">System overview</h2>
             </div>
             <p class="text-gray-700 mb-6 leading-relaxed">
                 PlotCraft helps writers stay focused by organizing the creative process into connected sections:
             </p>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm font-medium text-[#2F4F4F]">
                 <div class="flex items-center gap-2 bg-white p-3 rounded-lg border border-[#2F4F4F]/10 shadow-sm">
-                    <span class="text-[#DAA520]">1.</span> <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 20h16M6 17.5V5a2 2 0 0 1 2-2h7"/><path d="m14 6 4-4 3 3-4 4-4 1z"/></svg> My Notes (manuscript writing)
+                    <span class="text-[#DAA520]">1.</span> <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 20h16M6 17.5V5a2 2 0 0 1 2-2h7"/><path d="m14 6 4-4 3 3-4 4-4 1z"/></svg> My novels
                 </div>
                 <div class="flex items-center gap-2 bg-white p-3 rounded-lg border border-[#2F4F4F]/10 shadow-sm">
                     <span class="text-[#DAA520]">2.</span> <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg> Worldbuilding (story reference)
@@ -79,13 +81,13 @@
             <div class="flex items-center gap-4 mb-6 border-b border-[#FAEBD7] pb-3">
                 <div class="w-10 h-10 rounded-full bg-[#2F4F4F] flex items-center justify-center text-white font-bold text-lg">1</div>
                 <div>
-                    <h2 class="text-2xl font-bold text-[#2F4F4F]">My Notes — manuscript management</h2>
+                <h2 class="text-2xl font-bold text-[#2F4F4F]">My novels — manuscript management</h2>
                     <p class="text-sm text-gray-500">A focused space for writing and organizing chapters.</p>
                 </div>
             </div>
             
             <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:border-[#DAA520] transition-colors">
-                <h3 class="font-bold text-[#2F4F4F] mb-4 text-lg">featuresmain:</h3>
+                <h3 class="font-bold text-[#2F4F4F] mb-4 text-lg">Main features</h3>
                 <ul class="space-y-3 text-gray-600">
                     <li class="flex items-start gap-3">
                         <svg class="w-5 h-5 text-[#DAA520] mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -103,7 +105,7 @@
             <div class="flex items-center gap-4 mb-6 border-b border-[#FAEBD7] pb-3">
                 <div class="w-10 h-10 rounded-full bg-[#2F4F4F] flex items-center justify-center text-white font-bold text-lg">2</div>
                 <div>
-                    <h2 class="text-2xl font-bold text-[#2F4F4F]">Worldbuilding — systemBuild a world</h2>
+                    <h2 class="text-2xl font-bold text-[#2F4F4F]">Worldbuilding — build a connected universe</h2>
                     <p class="text-sm text-gray-500">A reference library for your story, organized into clear categories.</p>
                 </div>
             </div>
@@ -111,33 +113,33 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="bg-white border border-[#2F4F4F]/10 rounded-xl p-5 shadow-sm hover:shadow-md transition group">
                     <h3 class="text-lg font-bold text-[#2F4F4F] mb-3 flex items-center gap-2 group-hover:text-[#DAA520] transition">
-                        <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 21a7 7 0 0 1 14 0"/></svg> Characters (Characters)
+                        <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 21a7 7 0 0 1 14 0"/></svg> Characters
                     </h3>
                     <p class="text-xs text-gray-500 mb-4 h-10">Create layered characters with names, backstories, and goals.</p>
                     <ul class="text-sm text-gray-600 space-y-2 list-disc list-inside bg-gray-50 p-3 rounded-lg">
-                        <li>Image (Portrait)</li>
-                        <li>Goals (Goals)</li>
+                        <li>Portrait</li>
+                        <li>Goals</li>
                         <li>Strengths/Weaknesses</li>
-                        <li>traitsandBackground</li>
+                        <li>Traits and background</li>
                     </ul>
                 </div>
             
                 <div class="bg-white border border-[#2F4F4F]/10 rounded-xl p-5 shadow-sm hover:shadow-md transition group">
                     <h3 class="text-lg font-bold text-[#2F4F4F] mb-3 flex items-center gap-2 group-hover:text-[#DAA520] transition">
-                        <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 21V9l5-3v15M9 21V4l6-2v19M15 21v-9l5 2v7M6 12h1M11 7h1M11 11h1M17 16h1"/></svg> Locations (Locations)
+                        <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 21V9l5-3v15M9 21V4l6-2v19M15 21v-9l5 2v7M6 12h1M11 7h1M11 11h1M17 16h1"/></svg> Locations
                     </h3>
                     <p class="text-xs text-gray-500 mb-4 h-10">Design believable settings, environments, and societies.</p>
                     <ul class="text-sm text-gray-600 space-y-2 list-disc list-inside bg-gray-50 p-3 rounded-lg">
-                        <li>terrain & climate</li>
-                        <li>thecity & economy</li>
+                        <li>Terrain and climate</li>
+                        <li>Society and economy</li>
                         <li>History and myths</li>
-                        <li>culture</li>
+                        <li>Culture</li>
                     </ul>
                 </div>
             
                 <div class="bg-white border border-[#2F4F4F]/10 rounded-xl p-5 shadow-sm hover:shadow-md transition group">
                     <h3 class="text-lg font-bold text-[#2F4F4F] mb-3 flex items-center gap-2 group-hover:text-[#DAA520] transition">
-                        <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m4 9 3-5h10l3 5-8 11zM4 9h16M9 4l3 16 3-16"/></svg> Items (Items)
+                        <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m4 9 3-5h10l3 5-8 11zM4 9h16M9 4l3 16 3-16"/></svg> Items & artifacts
                     </h3>
                     <p class="text-xs text-gray-500 mb-4 h-10">Track important objects, weapons, and magical artifacts.</p>
                     <ul class="text-sm text-gray-600 space-y-2 list-disc list-inside bg-gray-50 p-3 rounded-lg">
@@ -162,7 +164,7 @@
             <div class="bg-[#F9FAFB] rounded-xl p-6 border border-gray-200">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
-                        <h3 class="font-bold text-[#2F4F4F] mb-3 text-lg">elementsofScenes (Scene Elements)</h3>
+                        <h3 class="font-bold text-[#2F4F4F] mb-3 text-lg">Scene elements</h3>
                         <p class="text-gray-600 text-sm mb-4">The Scenes workspace provides the key details writers need:</p>
                         <ul class="space-y-3">
                             <li class="flex items-center gap-3 bg-white p-2 rounded border border-gray-100 shadow-sm">
@@ -171,7 +173,7 @@
                             </li>
                             <li class="flex items-center gap-3 bg-white p-2 rounded border border-gray-100 shadow-sm">
                                 <span class="bg-red-100 text-red-800 text-xs font-bold px-2 py-1 rounded">Conflict</span>
-                                <span class="text-sm text-gray-700">obstacleorconflictthatoccurs?</span>
+                                <span class="text-sm text-gray-700">What obstacle or conflict occurs?</span>
                             </li>
                             <li class="flex items-center gap-3 bg-white p-2 rounded border border-gray-100 shadow-sm">
                                 <span class="bg-green-100 text-green-800 text-xs font-bold px-2 py-1 rounded">Outcome</span>
@@ -180,7 +182,7 @@
                         </ul>
                     </div>
                     <div>
-                        <h3 class="font-bold text-[#2F4F4F] mb-3 text-lg">theConnect (Linking)</h3>
+                        <h3 class="font-bold text-[#2F4F4F] mb-3 text-lg">Linking</h3>
                         <div class="bg-white p-4 rounded-xl border border-dashed border-[#DAA520] text-center">
                             <p class="text-gray-600 text-sm mb-2">Connect worldbuilding information directly to a scene:</p>
                             <div class="flex flex-wrap justify-center gap-2 mt-2">
@@ -212,7 +214,7 @@
     
         <section id="tech-stack">
             <div class="flex items-center gap-3 mb-6">
-                <span class="text-2xl">⚡</span>
+                <svg aria-hidden="true" class="pc-icon text-[#DAA520]" viewBox="0 0 24 24"><path d="m13 2-9 12h7l-1 8 9-12h-7z"/></svg>
                 <h2 class="text-2xl font-bold text-[#2F4F4F]">Technology behind PlotCraft</h2>
             </div>
             
@@ -234,9 +236,9 @@
             
         <div class="mt-8 p-6 bg-[#2F4F4F] rounded-xl text-[#FAEBD7] text-center">
             <h3 class="font-bold text-lg mb-2">Need more help?</h3>
-            <p class="text-sm opacity-80 mb-4">If you find a problem or have feedback, contact the development team at any time.</p>
-            <a href="#" class="inline-block px-6 py-2 bg-[#DAA520] text-white font-bold rounded-lg hover:bg-[#b8860b] transition shadow">
-                Contact us
+            <p class="text-sm opacity-80 mb-4">Return to your workspace whenever you are ready to continue writing.</p>
+            <a href="{% url 'plotcraft:home' %}" class="inline-block px-6 py-2 bg-[#DAA520] text-white font-bold rounded-lg hover:bg-[#b8860b] transition shadow">
+                Back to workspace
             </a>
         </div>
     </div>

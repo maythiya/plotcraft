@@ -1,9 +1,8 @@
 {% extends "base.html" %}
 {% block title %}Character | PlotCraft{% endblock %}
 {% block content %}
-<script src="https://cdn.tailwindcss.com"></script>
 
-<div class="min-h-screen font-sans p-4 md:p-8 text-[#2F4F4F] bg-[#f4f4f5]">
+<div class="pc-detail-page min-h-screen font-sans p-4 md:p-8 text-[#2F4F4F] bg-[#f4f4f5]">
 
   <div class="max-w-7xl mx-auto flex flex-col md:flex-row gap-6">
 
@@ -108,7 +107,7 @@
              class="w-full py-2.5 bg-[#DAA520] hover:bg-[#b8860b]
                     text-white text-center rounded-lg transition
                     text-sm font-bold shadow hover:shadow-lg">
-            EditCharacters
+            Edit character
           </a>
 
           <a href="{% url 'plotcraft:character_list' %}"
@@ -160,7 +159,7 @@
 
           <div>
             <h3 class="text-sm font-bold text-[#DAA520] uppercase mb-2">Background</h3>
-            <div class="bg-[#F9FAFB] p-5 rounded-xl border border-gray-100">
+            <div class="pc-readable-panel bg-[#F9FAFB] p-5 rounded-xl border border-gray-100">
               <p class="whitespace-pre-line">
                 {{ character.background|default:"-" }}
               </p>
@@ -171,7 +170,7 @@
 
       <section class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border-t-4 border-[#2F4F4F]">
         <header class="flex items-center gap-3 mb-6 border-b border-[#FAEBD7] pb-4">
-          <div class="p-2 bg-[#FAEBD7] rounded-lg"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M5 8h14M5 16h14M6.5 5.5l11 13M17.5 5.5l-11 13"/></svg>️</div>
+          <div class="p-2 bg-[#FAEBD7] rounded-lg"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M5 8h14M5 16h14M6.5 5.5l11 13M17.5 5.5l-11 13"/></svg></div>
           <h2 class="text-xl font-bold">Relationships</h2>
         </header>
 
@@ -219,7 +218,7 @@
       </section>
       <section class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border-t-4 border-[#DAA520]">
         <header class="flex items-center gap-3 mb-6 border-b border-[#FAEBD7] pb-4">
-          <div class="p-2 bg-[#FAEBD7] rounded-lg text-[#DAA520]">❤️</div>
+          <div class="p-2 bg-[#FAEBD7] rounded-lg text-[#DAA520]"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8z"/></svg></div>
           <h2 class="text-xl font-bold">Personality & goals</h2>
         </header>
 
@@ -242,7 +241,7 @@
 
       <section class="bg-white rounded-2xl p-6 md:p-8 shadow-lg border-t-4 border-[#2F4F4F] mb-8">
         <header class="flex items-center gap-3 mb-6 border-b border-[#FAEBD7] pb-4">
-          <div class="p-2 bg-[#FAEBD7] rounded-lg">⚡</div>
+          <div class="p-2 bg-[#FAEBD7] rounded-lg"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m13 2-9 12h7l-1 8 9-12h-7z"/></svg></div>
           <h2 class="text-xl font-bold">Abilities & skills</h2>
         </header>
 

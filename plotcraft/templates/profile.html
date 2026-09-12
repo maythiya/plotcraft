@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% block title %}Profile | PlotCraft{% endblock %}
 {% block content %}
-<script src="https://cdn.tailwindcss.com"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const imageInput = document.getElementById('id_image');
-        
+        if (!imageInput) return;
+
         imageInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -48,10 +48,13 @@
         </ul>
       </div>
       <div class="mt-8 pt-8 border-t border-[#FAEBD7]/10 space-y-4">
-          <a href="{% url 'plotcraft:landing' %}" class="flex items-center gap-2 text-[#FAEBD7]/70 hover:text-white transition px-4">
+          <form method="post" action="{% url 'plotcraft:logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="flex w-full items-center gap-2 text-[#FAEBD7]/70 hover:text-white transition px-4">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
               Log out
-          </a>
+            </button>
+          </form>
       </div>
     </div>
 
@@ -62,7 +65,7 @@
         <form method="post" enctype="multipart/form-data" class="space-y-8">
             {% csrf_token %}
             
-            <div class="flex items-center gap-8 pb-8 border-b border-gray-100">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-8 pb-8 border-b border-gray-100">
                 <div class="relative group">
                     <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-[#DAA520]/20 shadow-md bg-[#2F4F4F] flex items-center justify-center relative">
 
@@ -137,7 +140,7 @@
 
         <div class="mt-16 pt-8 border-t-2 border-red-50">
             <h3 class="text-red-600 font-bold mb-4 text-sm uppercase tracking-wide flex items-center gap-2">
-                ⚠️ Danger Zone
+                <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M12 3 22 20H2z"/><path d="M12 9v5M12 17h.01"/></svg> Danger zone
             </h3>
             <div class="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 bg-red-50 rounded-xl border border-red-100">
                 <p class="text-red-800 text-sm">Deleting your account permanently removes its novels, characters, and settings.</p>

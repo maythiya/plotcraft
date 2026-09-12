@@ -1,9 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}{{ novel.title }} | Dashboard{% endblock %}
+{% block title %}{{ novel.title }} | PlotCraft{% endblock %}
 {% block content %}
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-<script src="https://cdn.tailwindcss.com"></script>
 
 <div class="min-h-screen bg-[#F8F9FA] font-sans pb-12">
     
@@ -129,7 +128,7 @@
         </div>
 
         <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 md:p-8">
-            <div class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
                 <h2 class="text-2xl font-bold text-[#2F4F4F] flex items-center gap-3">
                     <span class="bg-[#2F4F4F] text-white p-1.5 rounded-lg">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
@@ -138,7 +137,7 @@
                     <span class="text-sm font-normal text-gray-400 ml-2">({{ chapters.count }} chapters)</span>
                 </h2>
                 
-                <div class="flex items-center gap-3" x-data="{ exportOpen: false }">
+                <div class="flex flex-wrap items-center gap-3" x-data="{ exportOpen: false }">
     
                     <div class="relative">
                         <button @click="exportOpen = !exportOpen" @click.away="exportOpen = false" 
@@ -189,7 +188,10 @@
                                 const oldStatus = this.isDraft;
                                 this.isDraft = (status === 'draft');
                                 const url = `{% url 'plotcraft:change_chapter_status' chapter.id 'PLACEHOLDER' %}`.replace('PLACEHOLDER', status);
-                                fetch(url + '?t=' + new Date().getTime())
+                                fetch(url, {
+                                    method: 'POST',
+                                    headers: { 'X-CSRFToken': '{{ csrf_token }}' }
+                                })
                                     .then(response => {
                                         if (!response.ok) {
                                             this.isDraft = oldStatus;
@@ -202,13 +204,13 @@
                                     });
                             }
                         }"
-                        class="p-4 hover:bg-[#FAF9F6] transition-colors duration-200 flex items-center justify-between group relative overflow-visible first:rounded-t-xl last:rounded-b-xl" 
+                        class="p-4 hover:bg-[#FAF9F6] transition-colors duration-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 group relative overflow-visible first:rounded-t-xl last:rounded-b-xl"
                         style="z-index: {{ forloop.revcounter }};"> 
 
                         <div class="absolute left-0 top-0 bottom-0 w-1 transition-colors duration-300"
                              :class="isDraft ? 'bg-gray-300' : 'bg-[#DAA520]'"></div>
 
-                        <div class="flex items-center gap-4 md:gap-6 flex-1 pl-2">
+                        <div class="flex items-center gap-3 md:gap-6 w-full min-w-0 flex-1 pl-2">
                             <div class="shrink-0 w-12 h-12 rounded-xl bg-gray-50 text-[#2F4F4F] font-bold text-lg flex items-center justify-center border border-gray-100 group-hover:border-[#DAA520] group-hover:text-[#DAA520] transition-colors">
                                 {{ chapter.order }}
                             </div>
@@ -242,10 +244,10 @@
                             </div>
                         </div>
                         
-                        <div class="flex items-center gap-1 opacity-100 pl-4 relative">
+                        <div class="flex items-center gap-1 opacity-100 self-end sm:self-auto pl-0 sm:pl-4 relative">
                             
                             <div x-data="{ open: false }" class="relative" @click.outside="open = false">
-                                <button @click="open = !open" class="p-2 rounded-lg transition border border-transparent hover:border-gray-200 hover:bg-white text-gray-400 hover:text-[#2F4F4F]" title="ChangeStatus">
+                                <button type="button" @click="open = !open" class="p-2 rounded-lg transition border border-transparent hover:border-gray-200 hover:bg-white text-gray-400 hover:text-[#2F4F4F]" title="Change status" aria-label="Change chapter status">
                                     <template x-if="isDraft">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                                     </template>
@@ -262,7 +264,7 @@
                                      style="display: none;">
                                     
                                     <div class="px-4 py-2 bg-gray-50 border-b border-gray-100 text-xs font-bold text-gray-500">
-                                        SettingsStatuschapters
+                                        Chapter status
                                     </div>
                                     
                                     <button @click="updateStatus('finish'); open = false" class="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 flex items-center gap-2 transition-colors">
@@ -277,7 +279,7 @@
                                 </div>
                             </div>
 
-                            <a href="{% url 'plotcraft:chapter_edit' novel.id chapter.id %}" class="p-2 text-gray-400 hover:text-[#DAA520] hover:bg-[#DAA520]/10 rounded-lg transition" title="Editcontent">
+                            <a href="{% url 'plotcraft:chapter_edit' novel.id chapter.id %}" class="p-2 text-gray-400 hover:text-[#DAA520] hover:bg-[#DAA520]/10 rounded-lg transition" title="Edit content" aria-label="Edit chapter">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                             </a>
                             

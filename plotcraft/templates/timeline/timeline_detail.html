@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 {% block title %}{{ timeline.title }} | PlotCraft{% endblock %}
 {% block content %}
-<script src="https://cdn.tailwindcss.com"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.9/dist/cdn.min.js"></script>
 
 <div x-data="timelineApp()" class="min-h-screen py-8 px-4 font-sans text-[#2F4F4F]">
     
@@ -19,11 +20,15 @@
                 <p class="text-gray-600">{{ timeline.description|default:"(No description)" }}</p>
                 {% if timeline.related_project %}
                     <div class="inline-flex items-center gap-1 mt-2 text-sm text-[#DAA520] font-bold">
-                        <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5V21.5M8 7h8M8 11h8"/></svg> project: {{ timeline.related_project.title }}
+                        <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5V21.5M8 7h8M8 11h8"/></svg> Novel: {{ timeline.related_project.title }}
                     </div>
                 {% endif %}
             </div>
             <div class="flex flex-col gap-3 w-full md:w-auto">
+                <a href="{% url 'plotcraft:timeline_edit' timeline.id %}" class="w-full justify-center px-6 py-2.5 border border-[#DAA520]/40 text-[#DAA520] rounded-lg font-bold hover:bg-[#DAA520]/10 transition flex items-center gap-2">
+                    <svg class="pc-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4l11-11-4-4L4 16zM13.5 6.5l4 4"/></svg>
+                    <span>Edit timeline</span>
+                </a>
         
                 <button @click="openAddModal()" class="w-full justify-center px-6 py-2.5 bg-[#2F4F4F] text-[#FAEBD7] rounded-lg font-bold shadow-md hover:bg-[#1a3030] hover:scale-105 transition flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -60,10 +65,12 @@
                         "id": {{ event.id }},
                         "title": "{{ event.title|escapejs }}",
                         "time_label": "{{ event.time_label|escapejs }}",
-                        "description": "{{ event.description|escapejs|linebreaksbr }}",
+                        "description": "{{ event.description|escapejs }}",
                         "raw_description": "{{ event.description|escapejs }}",
                         "order": {{ event.order }},
                         "image_url": "{% if event.image %}{{ event.image.url }}{% endif %}",
+                        "update_url": "{% url 'plotcraft:timeline_event_update' event.id %}",
+                        "delete_url": "{% url 'plotcraft:timeline_event_delete' event.id %}",
                         
                         "related_scene_id": "{% if event.related_scene %}{{ event.related_scene.id }}{% endif %}",
                         "scene_title": "{% if event.related_scene %}{{ event.related_scene.title|escapejs }}{% endif %}",
@@ -82,7 +89,8 @@
                                 "image": "{% if char.portrait %}{{ char.portrait.url }}{% endif %}"
                             }{% if not forloop.last %},{% endif %}
                             {% endfor %}
-                        ]
+                        ],
+                        "character_ids": [{% for char in event.characters.all %}{{ char.id }}{% if not forloop.last %}, {% endif %}{% endfor %}]
                     }
                 </script>
 
@@ -101,7 +109,10 @@
                             {% endif %}
                             <div class="p-5">
                                 {% if not event.image %}
-                                <div class="inline-block bg-[#2F4F4F]/10 text-[#2F4F4F] text-xs font-bold px-2 py-1 rounded mb-2">⏱ {{ event.time_label }}</div>
+                                <div class="inline-flex items-center gap-1.5 bg-[#2F4F4F]/10 text-[#2F4F4F] text-xs font-bold px-2 py-1 rounded mb-2">
+                                    <svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg>
+                                    {{ event.time_label }}
+                                </div>
                                 {% endif %}
                                 <h3 class="text-lg font-bold text-[#2F4F4F] mb-2 leading-tight">{{ event.title }}</h3>
                                 <p class="text-sm text-gray-600 line-clamp-2">{{ event.description|default:"-" }}</p>
@@ -130,13 +141,13 @@
         </div>
     </div>
 
-    <div x-show="isOpen" style="display: none;" 
+    <div x-show="isOpen" x-cloak style="display: none;"
          class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 transition-opacity"
          @keydown.escape.window="closeModal()">
         <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden relative flex flex-col max-h-[90vh] animate-fade-in-up">
             <div class="bg-[#2F4F4F] p-4 flex justify-between items-center text-[#FAEBD7] shrink-0">
                 <h3 class="font-bold text-lg" x-text="getHeaderTitle()"></h3>
-                <button @click="closeModal()" class="text-[#FAEBD7]/70 hover:text-white text-2xl leading-none">&times;</button>
+                <button type="button" aria-label="Close dialog" @click="closeModal()" class="text-[#FAEBD7]/70 hover:text-white text-2xl leading-none">&times;</button>
             </div>
             <div class="p-6 overflow-y-auto custom-scrollbar flex-1">
                 
@@ -149,10 +160,10 @@
                         <span class="text-gray-400 text-sm">Order <span x-text="currentEvent.order"></span></span>
                     </div>
                     <h2 class="text-2xl font-bold text-[#2F4F4F] mb-4" x-text="currentEvent.title"></h2>
-                    <div class="prose prose-sm text-gray-600 mb-6" x-html="currentEvent.description"></div>
+                    <div class="prose prose-sm text-gray-600 whitespace-pre-line mb-6" x-text="currentEvent.description"></div>
 
                     <div class="mb-6">
-                        <h4 class="font-bold text-[#2F4F4F] mb-3 border-b pb-1"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 7h16v12H4zM4 7l3-4h10l3 4M8 3l3 4M14 3l3 4"/></svg> Scenesthatrelated</h4>
+                        <h4 class="font-bold text-[#2F4F4F] mb-3 border-b pb-1"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 7h16v12H4zM4 7l3-4h10l3 4M8 3l3 4M14 3l3 4"/></svg> Related scene</h4>
                         
                         <template x-if="currentEvent.scene_title">
                             <a :href="currentEvent.scene_url" class="flex items-center gap-3 p-3 rounded-lg bg-gray-50 hover:bg-[#FAEBD7]/50 border border-gray-200 hover:border-[#DAA520] transition group cursor-pointer">
@@ -189,7 +200,7 @@
                         <button @click="deleteEvent()" class="text-red-400 hover:text-red-600 text-sm font-bold flex items-center gap-1">
                             Delete event</button>
                         <button @click="switchToEdit()" class="px-6 py-2 bg-[#2F4F4F] text-[#FAEBD7] rounded-lg font-bold hover:bg-[#1a3030]">
-                            ✏️ Editinformation</button>
+                            Edit event</button>
                     </div>
                 </div>
 
@@ -228,16 +239,35 @@
     </div>
     
     <form id="deleteForm" method="post" action="" style="display:none;">{% csrf_token %}</form>
-    <div id="save-toast" class="fixed bottom-6 right-6 bg-[#2F4F4F] text-[#FAEBD7] px-6 py-3 rounded-lg shadow-xl transform translate-y-20 opacity-0 transition duration-500 font-bold flex items-center gap-2 z-50"><span>✅ SaveOrdercomplete</span></div>
+    <div id="save-toast" class="fixed bottom-6 right-6 bg-[#2F4F4F] text-[#FAEBD7] px-6 py-3 rounded-lg shadow-xl transform translate-y-20 opacity-0 transition duration-500 font-bold flex items-center gap-2 z-50"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg><span>Order saved</span></div>
 </div>
 
 <script>
     function timelineApp() {
         return {
-            isOpen: false, mode: 'view', currentEvent: {}, formAction: '',
+            isOpen: false,
+            mode: 'view',
+            currentEvent: {
+                id: null,
+                title: '',
+                time_label: '',
+                description: '',
+                raw_description: '',
+                order: 0,
+                image_url: '',
+                update_url: '',
+                delete_url: '',
+                related_scene_id: '',
+                scene_title: '',
+                scene_url: '',
+                create_scene_url: '',
+                characters: [],
+                character_ids: []
+            },
+            formAction: '',
             init() {
                 const container = document.getElementById('timeline-container');
-                if(container) {
+                if(container && typeof Sortable !== 'undefined') {
                     new Sortable(container, {
                         animation: 150, handle: '.handle-btn', ghostClass: 'opacity-50',
                         onEnd: (evt) => {
@@ -247,7 +277,43 @@
                             this.saveOrder(itemIds);
                         }
                     });
+                } else if (container) {
+                    this.initNativeSorting(container);
                 }
+            },
+            initNativeSorting(container) {
+                let draggedItem = null;
+
+                container.querySelectorAll('.timeline-item').forEach((item) => {
+                    const handle = item.querySelector('.handle-btn');
+                    if (!handle) return;
+
+                    handle.addEventListener('pointerdown', () => item.setAttribute('draggable', 'true'));
+                    handle.addEventListener('pointerup', () => item.removeAttribute('draggable'));
+                    item.addEventListener('dragstart', (event) => {
+                        draggedItem = item;
+                        item.classList.add('opacity-50');
+                        event.dataTransfer.effectAllowed = 'move';
+                    });
+                    item.addEventListener('dragend', () => {
+                        item.classList.remove('opacity-50');
+                        item.removeAttribute('draggable');
+                        draggedItem = null;
+                        this.updateOrderNumbers();
+                        const ids = [...container.querySelectorAll('.timeline-item')].map((row) => row.dataset.id);
+                        this.saveOrder(ids);
+                    });
+                });
+
+                container.addEventListener('dragover', (event) => {
+                    event.preventDefault();
+                    if (!draggedItem) return;
+                    const target = event.target.closest('.timeline-item');
+                    if (!target || target === draggedItem) return;
+                    const box = target.getBoundingClientRect();
+                    const afterTarget = event.clientY > box.top + box.height / 2;
+                    container.insertBefore(draggedItem, afterTarget ? target.nextSibling : target);
+                });
             },
             generateDraft() {
                 const promptEl = document.getElementById('modal-ai-prompt');
@@ -267,7 +333,7 @@
                         const desc = data.description;
                         const descEl = document.querySelector('#eventForm [name="description"]') || document.getElementById('id_description');
                         if (descEl) descEl.value = desc;
-                        alert('<svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg> AI event draft completed!');
+                        alert('AI event draft completed.');
                         if (promptEl) promptEl.value = '';
                     } else {
                         alert('An error occurred: ' + (data.error || 'Unknown'));
@@ -278,14 +344,16 @@
                 });
             },
             getHeaderTitle() {
-                if (this.mode === 'add') return '➕ Add eventnew';
-                if (this.mode === 'edit') return '✏️ Editinformation';
-                return '<svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M7 4h10v14a3 3 0 0 1-3 3H7a3 3 0 0 1 0-6h10"/><path d="M7 4a3 3 0 0 0 0 6h10"/></svg> Event details';
+                if (this.mode === 'add') return 'Add event';
+                if (this.mode === 'edit') return 'Edit event';
+                return 'Event details';
             },
             openAddModal() {
-                this.mode = 'add'; this.currentEvent = {};
+                this.mode = 'add';
                 this.formAction = "{% url 'plotcraft:timeline_event_create' timeline.id %}";
-                document.getElementById('eventForm').reset(); this.isOpen = true;
+                const form = document.getElementById('eventForm');
+                if (form) form.reset();
+                this.isOpen = true;
             },
             openViewModal(eventId) {
                 const dataScript = document.getElementById(`event-data-${eventId}`);
@@ -295,20 +363,33 @@
                 }
             },
             switchToEdit() {
-                this.mode = 'edit'; const id = this.currentEvent.id;
-                this.formAction = `/timeline/event/${id}/update/`;
-                document.querySelector('[name="time_label"]').value = this.currentEvent.time_label;
-                document.querySelector('[name="title"]').value = this.currentEvent.title;
-                document.querySelector('[name="description"]').value = this.currentEvent.raw_description;
-                document.querySelector('[name="order"]').value = this.currentEvent.order;
-                if(this.currentEvent.related_scene_id) {
-                     document.querySelector('[name="related_scene"]').value = this.currentEvent.related_scene_id;
+                this.mode = 'edit';
+                this.formAction = this.currentEvent.update_url;
+                const form = document.getElementById('eventForm');
+                if (form) form.reset();
+
+                const setValue = (name, value) => {
+                    const field = document.querySelector(`#eventForm [name="${name}"]`);
+                    if (field) field.value = value ?? '';
+                };
+                setValue('time_label', this.currentEvent.time_label);
+                setValue('title', this.currentEvent.title);
+                setValue('description', this.currentEvent.raw_description);
+                setValue('order', this.currentEvent.order);
+                setValue('related_scene', this.currentEvent.related_scene_id);
+
+                const characterField = document.querySelector('#eventForm [name="characters"]');
+                if (characterField) {
+                    const selectedIds = new Set((this.currentEvent.character_ids || []).map(String));
+                    [...characterField.options].forEach((option) => {
+                        option.selected = selectedIds.has(option.value);
+                    });
                 }
             },
             deleteEvent() {
                 if(confirm('Are you sure you want to delete this event?')) {
                     const form = document.getElementById('deleteForm');
-                    form.action = `/timeline/event/${this.currentEvent.id}/delete/`;
+                    form.action = this.currentEvent.delete_url;
                     form.submit();
                 }
             },
@@ -340,6 +421,7 @@
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     .animate-fade-in-up { animation: fadeInUp 0.3s ease-out; }
     .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { bg-color: #ccc; border-radius: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #ccc; border-radius: 4px; }
+    [x-cloak] { display: none !important; }
 </style>
 {% endblock %}

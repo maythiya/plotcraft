@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Character | PlotCraft{% endblock %}
 {% block content %}
-<script src="https://cdn.tailwindcss.com"></script>
 
 <div class="min-h-screen py-8 px-4 sm:px-6 lg:px-8 font-sans text-[#2F4F4F]">
     
@@ -15,7 +14,7 @@
         
             <div>
                 <h1 class="text-3xl font-bold text-[#2F4F4F] flex items-center gap-2">
-                    Create / Edit Characters (Character)
+                    {% if character %}Edit character{% else %}Create character{% endif %}
                     <span class="text-sm text-gray-400 font-normal border border-gray-200 px-2 py-0.5 rounded-full bg-white">
                         {% if form.instance.pk %}Edit{% else %}Create new{% endif %}
                     </span>
@@ -49,7 +48,7 @@
                 
                 <div class="flex-1 space-y-6">
                     <div class="flex items-center gap-2 mb-2 border-b border-[#FAEBD7] pb-2">
-                        <span class="text-[#DAA520]">✦</span>
+                        <svg aria-hidden="true" class="pc-icon text-[#DAA520]" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5z"/></svg>
                         <h2 class="text-xl font-bold text-[#2F4F4F]">Identity</h2>
                     </div>
 
@@ -64,7 +63,7 @@
                     </div>
 
                     <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10 focus-within:ring-2 ring-[#DAA520]/50 transition">
-                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">nameCharacters <span class="text-red-500">*</span></label>
+                        <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Character name <span class="text-red-500">*</span></label>
                         {{ form.name }}
                         {% if form.name.errors %}<p class="text-red-600 text-xs mt-1">{{ form.name.errors.0 }}</p>{% endif %}
                     </div>
@@ -94,11 +93,7 @@
                     </div>
                 </div>
 
-                <div class="w-full md:w-1/3 flex flex-col"
-                     x-data="{
-                        imagePreview: {% if form.instance.portrait %}'{{ form.instance.portrait.url }}'{% else %}null{% endif %}
-                     }"
-                >
+                <div class="w-full md:w-1/3 flex flex-col">
                     <label class="block text-sm font-bold text-[#2F4F4F] mb-2">
                         Portrait
                     </label>
@@ -110,19 +105,16 @@
                                 group cursor-pointer overflow-hidden
                                 flex items-center justify-center shadow-inner">
                 
-                        <!-- Preview -->
-                        <template x-if="imagePreview">
-                            <img :src="imagePreview"
-                                 class="w-full h-full object-cover
-                                        transition-transform duration-700
-                                        group-hover:scale-110">
-                        </template>
+                        <img id="character-portrait-preview"
+                             {% if form.instance.portrait %}src="{{ form.instance.portrait.url }}"{% endif %}
+                             alt="Character portrait preview"
+                             class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105{% if not form.instance.portrait %} hidden{% endif %}">
                     
                         <!-- Placeholder -->
-                        <template x-if="!imagePreview">
-                            <div class="absolute inset-0 flex flex-col items-center justify-center
+                        <div id="character-portrait-placeholder"
+                             class="absolute inset-0 flex flex-col items-center justify-center
                                         text-[#2F4F4F]/40 group-hover:text-[#DAA520]
-                                        transition-colors z-10">
+                                        transition-colors z-10{% if form.instance.portrait %} hidden{% endif %}">
                                 <svg class="w-12 h-12 mb-2 group-hover:animate-pulse"
                                      fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -130,24 +122,16 @@
                                           d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                 </svg>
                                 <span class="text-xs font-bold">
-                                    Click to uploadimageCharacters
+                                    Click to upload a portrait
                                 </span>
-                            </div>
-                        </template>
+                        </div>
                     
                         <!-- File input -->
                         <input type="file"
                                name="portrait"
                                accept="image/*"
                                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
-                               @change="
-                                 const file = $event.target.files[0];
-                                 if (file) {
-                                   const reader = new FileReader();
-                                   reader.onload = (e) => imagePreview = e.target.result;
-                                   reader.readAsDataURL(file);
-                                 }
-                               ">
+                               onchange="previewCharacterPortrait(event)">
                     </div>
                 
                     <p class="text-xs text-[#2F4F4F]/40 mt-2 text-center">
@@ -157,17 +141,17 @@
             </div>
 
             <div class="flex items-center gap-2 mb-4 border-b border-[#FAEBD7] pb-2 pt-4">
-                <span class="text-[#DAA520]">⚓</span>
-                <h2 class="text-xl font-bold text-[#2F4F4F]">RoleandStatus</h2>
+                <svg aria-hidden="true" class="pc-icon text-[#DAA520]" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v7M5 12H2m20 0h-3M12 15v7M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1m0-12.8-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg>
+                <h2 class="text-xl font-bold text-[#2F4F4F]">Role and status</h2>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Role (Role)</label>
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Role</label>
                     {{ form.role }}
                 </div>
                 <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Status (Status)</label>
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Status</label>
                     {{ form.status }}
                 </div>
                 <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
@@ -177,7 +161,7 @@
             </div>
 
             <div class="flex items-center gap-2 mb-4 border-b border-[#FAEBD7] pb-2 pt-4">
-                <span class="text-[#DAA520]">♥</span>
+                <svg aria-hidden="true" class="pc-icon text-[#DAA520]" viewBox="0 0 24 24"><path d="M12 20S4 15.5 4 9.5A4.5 4.5 0 0 1 12 7a4.5 4.5 0 0 1 8 2.5C20 15.5 12 20 12 20z"/></svg>
                 <h2 class="text-xl font-bold text-[#2F4F4F]">Appearance & personality</h2>
             </div>
 
@@ -190,44 +174,44 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Personality (Personality)</label>
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Personality</label>
                     {{ form.personality }}
                 </div>
                 <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10">
-                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Background (Background)</label>
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Background</label>
                     {{ form.background }}
                 </div>
             </div>
 
             <div class="flex items-center gap-2 mb-4 border-b border-[#FAEBD7] pb-2 pt-4">
-                <span class="text-[#DAA520]">⚡</span>
+                <svg aria-hidden="true" class="pc-icon text-[#DAA520]" viewBox="0 0 24 24"><path d="m13 2-9 12h7l-1 8 9-12h-7z"/></svg>
                 <h2 class="text-xl font-bold text-[#2F4F4F]">Abilities and goals</h2>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div class="rounded-lg border border-[#FAEBD7] p-3 bg-[#FAEBD7]/10 h-full">
-                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Goals (Goals)</label>
+                    <label class="block text-sm font-bold text-[#2F4F4F] mb-1">Goals</label>
                     {{ form.goals }}
                 </div>
                 
                 <div class="rounded-lg border border-[#FAEBD7] p-4 bg-[#FAEBD7]/20 space-y-4">
                     <div>
-                        <label class="block text-xs font-bold text-[#2F4F4F]/70 mb-1">Skills (Skills)</label>
+                        <label class="block text-xs font-bold text-[#2F4F4F]/70 mb-1">Skills</label>
                         {{ form.skills }}
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-green-700 mb-1">Strengths (Strengths)</label>
+                        <label class="block text-xs font-bold text-green-700 mb-1">Strengths</label>
                         {{ form.strengths }}
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-red-700 mb-1">Weaknesses (Weaknesses)</label>
+                        <label class="block text-xs font-bold text-red-700 mb-1">Weaknesses</label>
                         {{ form.weaknesses }}
                     </div>
                 </div>
             </div>
 
             <div class="flex items-center gap-2 mb-4 border-b border-[#FAEBD7] pb-2 pt-4">
-                <span class="text-[#DAA520]"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M5 8h14M5 16h14M6.5 5.5l11 13M17.5 5.5l-11 13"/></svg>️</span>
+                <span class="text-[#DAA520]"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M5 8h14M5 16h14M6.5 5.5l11 13M17.5 5.5l-11 13"/></svg></span>
                 <h2 class="text-xl font-bold text-[#2F4F4F]">Relationships and other details</h2>
             </div>
 
@@ -239,7 +223,7 @@
 
                 <div class="rounded-lg border border-[#FAEBD7] p-4 bg-[#FAEBD7]/10">
                     <label class="block text-sm font-bold text-[#2F4F4F] mb-3">
-                        Relationships (Relationships) 
+                        Relationships
                         <span class="text-xs font-normal text-gray-500 ml-2">* Save to add another row</span>
                     </label>
 
@@ -254,7 +238,7 @@
                                 {% endfor %}
 
                                 <div class="flex-1 w-full">
-                                    <label class="text-xs text-gray-400 font-bold mb-1 block">counterpart</label>
+                                    <label class="text-xs text-gray-400 font-bold mb-1 block">Character</label>
                                     {{ rel_form.to_character }}
                                 </div>
                                 
@@ -302,7 +286,7 @@
             <div class="mt-10 flex items-center gap-4 border-t border-[#FAEBD7] pt-6">
                 <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-bold rounded-lg shadow-md text-[#FAEBD7] bg-[#2F4F4F] hover:bg-[#1a3030] hover:shadow-lg focus:outline-none transition duration-150">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    Saveinformation
+                    Save character
                 </button>
                 
                 <a href="{% url 'plotcraft:character_list' %}" class="px-6 py-3 border border-gray-300 text-base font-medium text-gray-600 bg-white hover:bg-gray-50 rounded-lg transition duration-150">
@@ -313,7 +297,7 @@
                 <div class="ml-auto">
                     <button type="submit" name="character_delete" class="inline-flex items-center px-4 py-2 border border-red-200 text-sm font-bold rounded-lg text-red-600 bg-red-50 hover:bg-red-100 hover:text-red-700 transition duration-150" onclick="return confirm('Are you sure you want to delete this character? This action cannot be undone.');">
                         <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5-4h4a1 1 0 011 1v1H9V4a1 1 0 011-1z"></path></svg>
-                        DeleteCharacters
+                        Delete character
                     </button>
                 </div>
                 {% endif %}
@@ -323,23 +307,21 @@
 </div>
 
 <script>
-    function imagePreview() {
-        return {
-            imageUrl: '{% if character.portrait %}{{ character.portrait.url }}{% endif %}',
-            init() {
-                const fileInput = document.getElementById('id_portrait');
-                if(fileInput) {
-                    fileInput.addEventListener('change', (e) => {
-                        const file = e.target.files[0];
-                        if (file) {
-                            this.imageUrl = URL.createObjectURL(file);
-                        } else {
-                            this.imageUrl = null;
-                        }
-                    });
-                }
-            }
-        }
+    function previewCharacterPortrait(event) {
+        const file = event.target.files && event.target.files[0];
+        if (!file) return;
+
+        const preview = document.getElementById('character-portrait-preview');
+        const placeholder = document.getElementById('character-portrait-placeholder');
+        if (!preview || !placeholder) return;
+
+        const reader = new FileReader();
+        reader.addEventListener('load', () => {
+            preview.src = reader.result;
+            preview.classList.remove('hidden');
+            placeholder.classList.add('hidden');
+        });
+        reader.readAsDataURL(file);
     }
 
     function generateCharacter() {
@@ -397,7 +379,7 @@
                 setVal('id_strengths', d.strengths);
                 setVal('id_weaknesses', d.weaknesses);
                 
-                alert("<svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg> Character generated successfully!");
+                alert("Character generated successfully!");
             } else {
                 alert("An error occurred: " + data.error);
             }

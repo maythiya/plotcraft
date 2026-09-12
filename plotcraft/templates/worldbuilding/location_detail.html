@@ -1,9 +1,8 @@
 {% extends "base.html" %}
 {% block title %}Location | PlotCraft{% endblock %}
 {% block content %}
-<script src="https://cdn.tailwindcss.com"></script>
 
-<div class="min-h-screen font-sans p-4 md:p-8 text-[#2F4F4F]">
+<div class="pc-detail-page min-h-screen font-sans p-4 md:p-8 text-[#2F4F4F]">
   
   <div class="max-w-7xl mx-auto flex flex-col md:flex-row gap-6">
     
@@ -46,13 +45,13 @@
 
             <div class="grid grid-cols-2 gap-3 mb-6">
                 <div class="bg-[#1a3030]/50 p-3 rounded-xl border border-[#FAEBD7]/10 text-center">
-                    <span class="block text-[10px] text-[#FAEBD7]/60 uppercase tracking-wider mb-1">typeworld</span>
+                    <span class="block text-[10px] text-[#FAEBD7]/60 uppercase tracking-wider mb-1">World type</span>
                     <span class="block text-[#DAA520] font-semibold text-sm truncate">
                         {{ location.world_type|default:"-" }}
                     </span>
                 </div>
                 <div class="bg-[#1a3030]/50 p-3 rounded-xl border border-[#FAEBD7]/10 text-center">
-                    <span class="block text-[10px] text-[#FAEBD7]/60 uppercase tracking-wider mb-1">languagemain</span>
+                    <span class="block text-[10px] text-[#FAEBD7]/60 uppercase tracking-wider mb-1">Primary language</span>
                     <span class="block text-[#DAA520] font-semibold text-sm truncate">
                         {{ location.language|default:"-" }}
                     </span>
@@ -64,7 +63,7 @@
             <div>
                 <h4 class="text-xs font-bold text-[#FAEBD7]/50 uppercase mb-3 tracking-wider flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                    residents (Residents)
+                    Residents
                 </h4>
                 {% if location.residents.all %}
                 <div class="flex flex-wrap gap-2">
@@ -93,7 +92,7 @@
         
         <div class="flex flex-col gap-3">
             <a href="{% url 'plotcraft:location_edit' location.id %}" class="w-full py-2.5 bg-[#DAA520] hover:bg-[#b8860b] text-white text-center rounded-lg transition text-sm font-bold shadow hover:shadow-lg">
-                Editinformation
+                Edit location
             </a>
             <a href="{% url 'plotcraft:location_list' %}" class="w-full py-2.5 bg-[#2F4F4F] hover:bg-[#1a3030] text-[#FAEBD7] text-center rounded-lg transition text-sm font.medium">
                 Back to list
@@ -112,18 +111,18 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
             </div>
-            <h2 class="text-xl font-bold text-[#2F4F4F]">terrainandenvironment</h2>
+            <h2 class="text-xl font-bold text-[#2F4F4F]">Terrain & environment</h2>
         </div>
 
         <div class="grid grid-cols-1 gap-8">
             <div>
-                <h3 class="text-sm font-bold text-[#DAA520] uppercase mb-2 tracking-wide">appearanceterrain (Terrain)</h3>
-                <p class="text-gray-700 whitespace-pre-line leading-relaxed">{{ location.terrain|default:"Noinformation" }}</p>
+                <h3 class="text-sm font-bold text-[#DAA520] uppercase mb-2 tracking-wide">Terrain</h3>
+                <p class="text-gray-700 whitespace-pre-line leading-relaxed">{{ location.terrain|default:"No information" }}</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-[#FAEBD7]/30 p-4 rounded-xl">
                 <div>
-                    <h3 class="text-sm font-bold text-[#2F4F4F] uppercase mb-2">climate (Climate)</h3>
+                    <h3 class="text-sm font-bold text-[#2F4F4F] uppercase mb-2">Climate</h3>
                     <p class="text-gray-800 font-medium">{{ location.climate|default:"-" }}</p>
                 </div>
                 <div>
@@ -147,13 +146,13 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
                 <h3 class="text-sm font-bold text-[#2F4F4F] uppercase mb-2">History</h3>
-                <div class="bg-[#F9FAFB] p-4 rounded-xl border border-gray-100 h-full">
+                <div class="pc-readable-panel bg-[#F9FAFB] p-4 rounded-xl border border-gray-100 h-full">
                      <p class="text-gray-700 whitespace-pre-line leading-relaxed">{{ location.history|default:"-" }}</p>
                 </div>
             </div>
             <div>
-                <h3 class="text-sm font-bold text-[#2F4F4F] uppercase mb-2">myths (Myths)</h3>
-                <div class="bg-[#F9FAFB] p-4 rounded-xl border border-gray-100 h-full">
+                <h3 class="text-sm font-bold text-[#2F4F4F] uppercase mb-2">Myths</h3>
+                <div class="pc-readable-panel bg-[#F9FAFB] p-4 rounded-xl border border-gray-100 h-full">
                     <p class="text-gray-700 whitespace-pre-line leading-relaxed">{{ location.myths|default:"-" }}</p>
                 </div>
             </div>
@@ -167,7 +166,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
                 </svg>
             </div>
-            <h2 class="text-xl font-bold text-[#2F4F4F]">societyandculture</h2>
+            <h2 class="text-xl font-bold text-[#2F4F4F]">Society & culture</h2>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -177,7 +176,7 @@
             </div>
 
             <div class="bg-[#DAA520]/10 border-l-4 border-[#DAA520] p-4 rounded-r-xl">
-                <h3 class="text-[#b8860b] font-bold mb-2">economy (Economy)</h3>
+                <h3 class="text-[#b8860b] font-bold mb-2">Economy</h3>
                 <p class="text-gray-700 whitespace-pre-line text-sm">{{ location.economy|default:"-" }}</p>
             </div>
         </div>

@@ -1,8 +1,7 @@
 {% extends "base.html" %}
-{% block title %}resultstheSearch: {{ query }} | PlotCraft{% endblock %}
+{% block title %}Search results: {{ query }} | PlotCraft{% endblock %}
 
 {% block content %}
-<script src="https://cdn.tailwindcss.com"></script>
 
 <style>
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -22,9 +21,9 @@
             <h1 class="text-3xl md:text-4xl font-extrabold mb-3">Search results for "<span class="text-[#DAA520]">{{ query }}</span>"</h1>
             <p class="text-gray-500">
                 {% if results.projects or results.characters or results.scenes or results.locations or results.items or results.timeline_events %}
-                    foundinformationinuniverseyouras follows...
+                    Here is what we found in your story universe.
                 {% else %}
-                    universequiet... notfoundinformationthatmatching
+                    No matching results were found.
                 {% endif %}
             </p>
         </div>
@@ -34,7 +33,7 @@
             {% if results.projects %}
             <section class="fade-in-up delay-100">
                 <h2 class="text-2xl font-bold text-[#2F4F4F] mb-6 flex items-center gap-3">
-                    <span class="bg-[#2F4F4F]/10 p-2 rounded-lg"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 5h4v15H4zM8 4h4v16H8zM12 6h4v14h-4zM16 5h4v15h-4z"/></svg></span> Novels / project 
+                    <span class="bg-[#2F4F4F]/10 p-2 rounded-lg"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="M4 5h4v15H4zM8 4h4v16H8zM12 6h4v14h-4zM16 5h4v15h-4z"/></svg></span> Novels
                     <span class="bg-[#DAA520] text-white text-xs px-2 py-1 rounded-full">{{ results.projects.count }}</span>
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -86,7 +85,7 @@
             {% if results.locations %}
             <section class="fade-in-up delay-300">
                 <h2 class="text-2xl font-bold text-[#2F4F4F] mb-6 flex items-center gap-3">
-                    <span class="bg-green-100 text-green-600 p-2 rounded-lg"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg>️</span> Locations
+                    <span class="bg-green-100 text-green-600 p-2 rounded-lg"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg></span> Locations
                     <span class="bg-[#DAA520] text-white text-xs px-2 py-1 rounded-full">{{ results.locations.count }}</span>
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -95,7 +94,7 @@
                         {% if location.map_image %}
                             <img src="{{ location.map_image.url }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
                         {% else %}
-                            <div class="w-full h-full bg-[#f0fdf4] flex items-center justify-center text-green-200 text-4xl"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg>️</div>
+                            <div class="w-full h-full bg-[#f0fdf4] flex items-center justify-center text-green-200 text-4xl"><svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg></div>
                         {% endif %}
                         <div class="absolute inset-0 bg-linear-to-t from-black/60 to-transparent flex items-end p-4">
                             <h4 class="text-white font-bold text-lg shadow-black drop-shadow-md">{{ location.name }}</h4>

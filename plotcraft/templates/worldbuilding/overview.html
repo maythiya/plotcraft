@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Story universe | PlotCraft{% endblock %}
+{% block content %}
+<section class="pc-page pc-world-overview">
+  <header class="pc-page__header">
+    <div>
+      <p class="pc-page__eyebrow">Worldbuilding</p>
+      <h1>Story universe</h1>
+      <p class="pc-page__lead">Keep every character, location, and meaningful object in one connected workspace.</p>
+    </div>
+  </header>
+
+  <div class="pc-world-grid">
+    <a class="pc-world-card" href="{% url 'plotcraft:character_list' %}">
+      <span class="pc-world-card__icon" aria-hidden="true">
+        <svg class="pc-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 21a7 7 0 0 1 14 0"/></svg>
+      </span>
+      <span class="pc-world-card__body">
+        <span class="pc-world-card__title">Characters</span>
+        <span class="pc-world-card__copy">Develop personalities, motivations, relationships, and character arcs.</span>
+      </span>
+      <span class="pc-world-card__count">{{ character_count }}</span>
+      <svg class="pc-icon pc-world-card__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+    </a>
+
+    <a class="pc-world-card" href="{% url 'plotcraft:location_list' %}">
+      <span class="pc-world-card__icon" aria-hidden="true">
+        <svg class="pc-icon" viewBox="0 0 24 24"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0z"/><circle cx="12" cy="10" r="2"/></svg>
+      </span>
+      <span class="pc-world-card__body">
+        <span class="pc-world-card__title">Locations</span>
+        <span class="pc-world-card__copy">Map places, cultures, histories, environments, and the people who live there.</span>
+      </span>
+      <span class="pc-world-card__count">{{ location_count }}</span>
+      <svg class="pc-icon pc-world-card__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+    </a>
+
+    <a class="pc-world-card" href="{% url 'plotcraft:item_list' %}">
+      <span class="pc-world-card__icon" aria-hidden="true">
+        <svg class="pc-icon" viewBox="0 0 24 24"><path d="m3 7 9-4 9 4-9 4zM3 7v10l9 4 9-4V7M12 11v10"/></svg>
+      </span>
+      <span class="pc-world-card__body">
+        <span class="pc-world-card__title">Items & artifacts</span>
+        <span class="pc-world-card__copy">Track objects, abilities, owners, limitations, and their place in your lore.</span>
+      </span>
+      <span class="pc-world-card__count">{{ item_count }}</span>
+      <svg class="pc-icon pc-world-card__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+    </a>
+  </div>
+</section>
+{% endblock %}

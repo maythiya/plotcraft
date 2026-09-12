@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block title %}{% if form.instance.pk %}Edit timeline event{% else %}Add timeline event{% endif %} | PlotCraft{% endblock %}
 {% block content %}
-<script src="https://cdn.tailwindcss.com"></script>
 
 <div class="min-h-screen py-12 px-4 font-sans flex items-center justify-center">
     <div class="w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden relative border border-[#2F4F4F]/10">
@@ -38,7 +37,7 @@
                     {{ form.related_scene }}
                 </div>
                 <div class="space-y-2">
-                    <label class="block text-xs font-bold text-[#2F4F4F] uppercase tracking-wider">Charactersthatrelated</label>
+                    <label class="block text-xs font-bold text-[#2F4F4F] uppercase tracking-wider">Related characters</label>
                     {{ form.characters }}
                 </div>
                 <div class="space-y-2">
@@ -118,7 +117,7 @@
                         if (descEl) {
                             descEl.value = data.description;
                         }
-                        alert('<svg aria-hidden="true" class="pc-icon" viewBox="0 0 24 24"><path d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5zM19 16l.5 1.5L21 18l-1.5.5L19 20l-.5-1.5L17 18l1.5-.5z"/></svg> AI event draft completed!');
+                        alert('AI event draft completed.');
                         promptEl.value = '';
                     } else {
                         alert('An error occurred: ' + (data.error || 'Unknown'));

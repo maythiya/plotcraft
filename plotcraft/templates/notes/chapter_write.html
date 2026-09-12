@@ -2,15 +2,25 @@
 {% block title %}Writing: {{ chapter.title }}{% endblock %}
 
 {% block content %}
-<script src="https://cdn.tailwindcss.com"></script>
 <style> 
     body { overflow: hidden; background-color: #F0F2F5; }
 
     [contenteditable]:empty:before { content: attr(placeholder); color: #9ca3af; display: block; font-style: italic; }
     
     /* Toolbar Button Styles */
-    .tool-btn { @apply p-2 rounded-lg text-gray-500 transition-all duration-200 hover:bg-[#DAA520]/10 hover:text-[#DAA520] hover:scale-110; }
-    .tool-btn.active { @apply bg-[#DAA520] text-white shadow-md transform scale-105; }
+    .tool-btn { padding: .5rem; border-radius: .5rem; color: #eaf4ed; transition: background .2s, transform .2s; }
+    .tool-btn:hover { background: rgba(255,255,255,.12); }
+    .tool-btn.active { background: #d4ad52; color: #14251c; }
+    .pc-main .pc-writer-paper { background: #fff !important; color: #111 !important; border-color: #e5e7eb !important; }
+    .pc-main .pc-writer-editor, .pc-main .pc-writer-editor * {
+        color: #111 !important;
+        background: transparent !important;
+        font-family: Georgia, "Noto Serif Thai", "Thonburi", serif !important;
+        text-shadow: none !important;
+    }
+    .pc-main .pc-writer-editor { caret-color: #111; font-size: 18px; line-height: 1.9; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .pc-main .pc-writer-editor::selection, .pc-main .pc-writer-editor *::selection { background: #cfe3ff !important; color: #111 !important; }
+    .pc-main .pc-writer-editor:empty::before { color: #737373; }
 
     /* Custom Scrollbar */
     .smart-scroll::-webkit-scrollbar { width: 4px; }
@@ -87,7 +97,7 @@
 
     <div class="flex-1 flex overflow-hidden relative">
         <main class="flex-1 flex flex-col items-center justify-start overflow-hidden px-4 pb-8 w-full transition-all duration-300">
-            <div class="bg-white shadow-xl shadow-gray-200/50 rounded-lg w-full max-w-3xl h-full border border-gray-50 relative paper-enter flex flex-col transition-all duration-300">
+            <div class="pc-writer-paper bg-white shadow-xl shadow-gray-200/50 rounded-lg w-full max-w-3xl h-full border border-gray-50 relative paper-enter flex flex-col transition-all duration-300">
                 <div x-ref="scrollContainer"
                      @scroll="handleScroll"
                      class="smart-scroll flex-1 overflow-y-auto px-8 md:px-16 py-12 relative"
@@ -95,17 +105,17 @@
                      
                      <div x-ref="editor"
                           contenteditable="true"
-                          class="outline-none text-lg leading-loose text-gray-800 font-serif min-h-full selection:bg-[#DAA520]/30 break-word"
+                          class="pc-writer-editor outline-none text-lg leading-loose font-serif min-h-full"
+                          role="textbox" aria-label="Chapter content" aria-multiline="true"
                           placeholder="Start writing your imagination here..."
+                          @paste.prevent="pastePlainText($event)"
                           @input="updateStats(); unsavedChanges = true"
                           @mouseup="checkActiveButtons()"
                           @keyup="checkActiveButtons()"
                           @keydown.cmd.b.prevent="format('bold')"
                           @keydown.ctrl.b.prevent="format('bold')"
                           @keydown.cmd.s.prevent="openSaveModal()"
-                          @keydown.ctrl.s.prevent="openSaveModal()">
-                          {{ chapter.content|safe }}
-                    </div>
+                          @keydown.ctrl.s.prevent="openSaveModal()">{{ chapter.content|safe }}</div>
                     
                     <div class="h-20"></div>
                 </div>
@@ -182,7 +192,7 @@
     function writerApp() {
         return {
             title: "{{ chapter.title|escapejs }}",
-            content: `{{ chapter.content|safe }}`,
+            content: "",
             charCount: 0,
             wordCount: 0,
             isSaving: false,
@@ -209,6 +219,14 @@
                 }, 1000);
             },
             
+            pastePlainText(event) {
+                const text = event.clipboardData.getData('text/plain').replace(/\r\n?/g, '\n');
+                document.execCommand('insertText', false, text);
+                this.updateStats();
+                this.checkActiveButtons();
+                this.unsavedChanges = true;
+            },
+
             format(cmd, val=null) {
                 document.execCommand(cmd, false, val);
                 this.$refs.editor.focus();
@@ -230,7 +248,14 @@
                 this.content = el.innerHTML;
                 const text = el.innerText || "";
                 this.charCount = text.replace(/\s/g, '').length;
-                this.wordCount = text.trim() ? text.split(/\s+/).length : 0;
+                if (!text.trim()) {
+                    this.wordCount = 0;
+                } else if ('Segmenter' in Intl) {
+                    const segmenter = new Intl.Segmenter(undefined, { granularity: 'word' });
+                    this.wordCount = [...segmenter.segment(text)].filter(part => part.isWordLike).length;
+                } else {
+                    this.wordCount = text.trim().split(/\s+/).length;
+                }
             },
 
             // เClose Modal
@@ -292,13 +317,8 @@
                     })
                 })
                 .then(response => {
-                    if (response.redirected) {
-                        // ถ้า Django Redirect แปลว่าsuccessful (for View ปัจจุบัน)
-                        // แต่realๆ ถ้า AutoSave ควรทำ API แยก orแก้ View thatคืน JSON can
-                        // inthatนี้สมมติว่าsuccessful
-                        return { status: 'success' };
-                    }
-                    return { status: 'success' }; 
+                    if (!response.ok) throw new Error(`Auto-save returned ${response.status}`);
+                    return response;
                 })
                 .then(data => {
                     this.isSaving = false;
@@ -314,4 +334,5 @@
         }
     }
 </script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.9/dist/cdn.min.js"></script>
 {% endblock %}

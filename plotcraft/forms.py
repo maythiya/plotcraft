@@ -17,7 +17,7 @@ class RegisterForm(UserCreationForm):
     birthdate = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}), required=False)
     terms = forms.BooleanField(
         required=True, 
-        error_messages={'required': 'กรุณายอมรับเงื่อนไขการใช้งานก่อนลงทะเบียน'}
+        error_messages={'required': 'Please accept the terms of service before registering.'}
     )
     
     class Meta(UserCreationForm.Meta):
@@ -36,7 +36,7 @@ class UserForm(forms.ModelForm):
         super(UserForm, self).__init__(*args, **kwargs)
         self.fields['display_name'].widget.attrs.update({
             'class': 'w-full px-4 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#DAA520] focus:border-[#DAA520] outline-none transition',
-            'placeholder': 'ชื่อเล่น / นามแฝง'
+            'placeholder': 'Pen name or display name'
         })
         self.fields['email'].widget.attrs.update({
             'class': 'w-full px-4 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#DAA520] focus:border-[#DAA520] outline-none transition',
@@ -67,8 +67,8 @@ class NovelForm(forms.ModelForm):
         model = Novel
         fields = ['title', 'synopsis', 'category', 'rating', 'status', 'cover_image']
         widgets = {
-            'title': forms.TextInput(attrs={'class': 'w-full p-3 border rounded-lg focus:ring-[#DAA520] focus:border-[#DAA520]', 'placeholder': 'ชื่อเรื่อง...'}),
-            'synopsis': forms.Textarea(attrs={'class': 'w-full p-3 border rounded-lg focus:ring-[#DAA520] focus:border-[#DAA520]', 'rows': 5, 'placeholder': 'เรื่องย่อ...'}),
+            'title': forms.TextInput(attrs={'class': 'w-full p-3 border rounded-lg focus:ring-[#DAA520] focus:border-[#DAA520]', 'placeholder': 'Novel title...'}),
+            'synopsis': forms.Textarea(attrs={'class': 'w-full p-3 border rounded-lg focus:ring-[#DAA520] focus:border-[#DAA520]', 'rows': 5, 'placeholder': 'Write a short synopsis...'}),
             'category': forms.Select(attrs={'class': 'w-full p-3 border rounded-lg'}),
             'rating': forms.Select(attrs={'class': 'w-full p-3 border rounded-lg'}),
             'status': forms.Select(attrs={'class': 'w-full p-3 border rounded-lg'}),
@@ -124,8 +124,8 @@ class CharacterForm(forms.ModelForm):
         self.fields['project'].widget.attrs.update({'class': select, 'onchange': "if(this.value) window.location.href='?project=' + this.value"})
         
         # ข้อมูลพื้นฐาน
-        self.fields['name'].widget.attrs.update({'placeholder': 'ชื่อตัวละคร (จำเป็น)'})
-        self.fields['alias'].widget.attrs.update({'placeholder': 'ฉายา / ชื่อเรียก'})
+        self.fields['name'].widget.attrs.update({'placeholder': 'Character name (required)'})
+        self.fields['alias'].widget.attrs.update({'placeholder': 'Alias or nickname'})
         
         # วันเกิด (ต้องแก้ Type เป็น date)
         self.fields['birth_date'].widget = forms.DateInput(
@@ -140,20 +140,20 @@ class CharacterForm(forms.ModelForm):
         self.fields['gender'].widget.attrs.update({'class': select})
         
         # ข้อมูลย่อย
-        self.fields['species'].widget.attrs.update({'placeholder': 'มนุษย์ / เอลฟ์ / แวมไพร์ ฯลฯ'})
-        self.fields['role'].widget.attrs.update({'placeholder': 'ตัวเอก / ตัวร้าย / ตัวประกอบ'})
-        self.fields['status'].widget.attrs.update({'placeholder': 'มีชีวิต / เสียชีวิต / หายตัว'})
+        self.fields['species'].widget.attrs.update({'placeholder': 'Human, elf, vampire, etc.'})
+        self.fields['role'].widget.attrs.update({'placeholder': 'Protagonist, antagonist, supporting character...'})
+        self.fields['status'].widget.attrs.update({'placeholder': 'Alive, deceased, missing...'})
 
         # Textarea Guides (คำแนะนำ)
         guides = {
-            'appearance': 'เช่น สีผม, สีตา, ส่วนสูง, รูปร่าง, การแต่งกาย, แผลเป็น หรือจุดเด่นที่เห็นได้ชัด...',
-            'personality': 'นิสัยใจคอ, ความชอบ/ไม่ชอบ, Introvert/Extrovert, การตอบสนองต่อความเครียด, ท่าทางติดตัว...',
-            'background': 'ภูมิหลัง, บ้านเกิด, ครอบครัว, เหตุการณ์สำคัญในวัยเด็ก หรือจุดเปลี่ยนของชีวิต...',
-            'goals': 'สิ่งที่ตัวละครต้องการมากที่สุด (ทั้งระยะสั้นและระยะยาว), แรงจูงใจในการกระทำ...',
-            'strengths': 'จุดแข็ง, ความสามารถพิเศษ, ข้อดีทางนิสัย, หรือสิ่งที่ถนัด...',
-            'weaknesses': 'จุดอ่อน, ความกลัว, ข้อเสีย, โรคประจำตัว, หรือสิ่งที่ทำได้ไม่ดี...',
-            'skills': 'ทักษะเฉพาะตัว เช่น การต่อสู้, การทำอาหาร, เวทมนตร์, การเจรจา...',
-            'notes': 'เกร็ดเล็กเกร็ดน้อย, วันเกิด, ของกินที่ชอบ, ธีมสี, หรือข้อมูลอื่นๆ...'
+            'appearance': 'Hair, eyes, height, build, clothing, scars, and other distinctive features...',
+            'personality': 'Temperament, preferences, habits, stress responses, and social style...',
+            'background': 'Origins, family, childhood events, and important turning points...',
+            'goals': 'Short- and long-term goals, desires, and motivations...',
+            'strengths': 'Talents, positive traits, special abilities, and areas of expertise...',
+            'weaknesses': 'Fears, flaws, limitations, health conditions, or vulnerable points...',
+            'skills': 'Skills such as combat, cooking, magic, negotiation, or research...',
+            'notes': 'Small details, preferences, themes, birthdays, or anything else worth remembering...'
         }
 
         # วนลูปใส่ class และ placeholder
@@ -310,15 +310,15 @@ class LocationForm(forms.ModelForm):
             self.fields['residents'].queryset = Character.objects.none()
 
         guides = {
-            'terrain': 'เช่น ภูเขา, ป่าทึบ, ทะเลทราย, ที่ราบลุ่ม, ลักษณะเด่นทางธรณีวิทยา...',
-            'climate': 'สภาพอากาศ, ฤดูกาล, อุณหภูมิเฉลี่ย, ปรากฏการณ์ธรรมชาติพิเศษ...',
-            'ecosystem': 'พืชพรรณ, สัตว์ป่า, สัตว์ประหลาด, ทรัพยากรธรรมชาติที่หาได้...',
-            'history': 'ประวัติการก่อตั้ง, สงครามในอดีต, เหตุการณ์สำคัญ, หรือซากปรักหักพัง...',
-            'myths': 'ตำนานพื้นบ้าน, เรื่องเล่าสยองขวัญ, ความเชื่อ, เทพเจ้าประจำถิ่น...',
-            'politics': 'ระบบการปกครอง, ผู้นำ, กฎหมาย, ความขัดแย้งทางการเมือง, กลุ่มอำนาจ...',
-            'economy': 'สินค้าส่งออก/นำเข้า, สกุลเงิน, อาชีพหลักของชาวบ้าน, ความยากจน/ร่ำรวย...',
-            'culture': 'ประเพณี, เทศกาล, การแต่งกาย, อาหารการกิน, วิถีชีวิตประจำวัน...',
-            'language': 'ภาษาที่ใช้, สำเนียงท้องถิ่น, คำแสลง, หรือภาษาโบราณ...'
+            'terrain': 'Mountains, forests, deserts, plains, coastlines, and geological landmarks...',
+            'climate': 'Weather, seasons, average temperature, and unusual natural phenomena...',
+            'ecosystem': 'Plants, wildlife, creatures, and available natural resources...',
+            'history': 'Founding, past wars, defining events, monuments, and ruins...',
+            'myths': 'Local legends, folklore, beliefs, deities, and cautionary tales...',
+            'politics': 'Government, leaders, laws, factions, and political conflicts...',
+            'economy': 'Trade, currency, major occupations, resources, and distribution of wealth...',
+            'culture': 'Traditions, festivals, clothing, food, religion, and everyday life...',
+            'language': 'Languages, dialects, slang, writing systems, and ancient forms...'
         }
 
         # วนลูปใส่ class และ placeholder
@@ -362,19 +362,19 @@ class ItemForm(forms.ModelForm):
         self.fields['project'].widget.attrs.update({'class': select})
         self.fields['name'].widget.attrs.update({
             'class': base_input,
-            'placeholder': 'ชื่อไอเทม เช่น ดาบแห่งรัตติกาล'
+            'placeholder': 'Item name, e.g. The Nightglass Blade'
         })
         self.fields['category'].widget.attrs.update({
             'class': base_input,
-            'placeholder': 'อาวุธ / เครื่องราง / วัตถุโบราณ'
+            'placeholder': 'Weapon, charm, artifact...'
         })
 
         # Textarea
         guides = {
-            'appearance': 'เช่น วัสดุที่ใช้, สี, ขนาด, น้ำหนัก, แสงออร่า, สภาพความเก่า/ใหม่...',
-            'abilities': 'ไอเทมนี้ทำอะไรได้บ้าง? (เช่น เพิ่มพลังโจมตี, รักษาบาดแผล, เปิดประตูมิติ)...',
-            'limitations': 'ข้อจำกัด, เงื่อนไขการใช้, คูลดาวน์, ผลข้างเคียง, หรือสิ่งที่แพ้ทาง...',
-            'history': 'ใครเป็นคนสร้าง?, ผู้ครอบครองคนก่อน, ตำนานที่เกี่ยวข้อง, วิธีการได้มา...'
+            'appearance': 'Materials, color, size, weight, aura, condition, and distinctive marks...',
+            'abilities': 'What can this item do? Describe its powers and practical effects...',
+            'limitations': 'Conditions, limits, cooldowns, side effects, and vulnerabilities...',
+            'history': 'Its creator, former owners, legends, origin, and how it was obtained...'
         }
 
         # วนลูปใส่ class และ placeholder
@@ -498,7 +498,7 @@ class SceneForm(forms.ModelForm):
         
         self.fields['title'].widget.attrs.update({
             'class': base,
-            'placeholder': 'เช่น บทที่ 5: การเผชิญหน้า'
+            'placeholder': 'e.g. Chapter 5: The Confrontation'
         })
         self.fields['order'].widget.attrs.update({'class': base})
         self.fields['status'].widget.attrs.update({'class': select})
@@ -524,7 +524,7 @@ class SceneForm(forms.ModelForm):
         # Writing
         self.fields['content'].widget.attrs.update({
             'class': textarea + ' min-h-[300px]',
-            'placeholder': 'เริ่มเขียนฉากตรงนี้...'
+            'placeholder': 'Start writing the scene here...'
         })
 
     class Meta:

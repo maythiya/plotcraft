@@ -10,6 +10,7 @@ from django.views.decorators.http import require_POST
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import reverse
+from django.utils.http import url_has_allowed_host_and_scheme
 import json
 
 from django.contrib.auth.forms import AuthenticationForm
@@ -33,7 +34,6 @@ from .forms import (
 )
 
 from .rag_service import rag_service
-from django.views.decorators.csrf import csrf_exempt
 
 # ==================== AUTHENTICATION & PROFILE (from myapp) ====================
 
@@ -41,6 +41,7 @@ def landing(request):
     return render(request, 'landing.html')
 
 
+@login_required
 def home(request):
     max_items = 3
     if request.user.is_authenticated:
@@ -118,7 +119,7 @@ def profile(request):
                 profile.image.delete(save=False) 
                 profile.image = None
                 profile.save()
-                messages.success(request, 'ลบรูปภาพโปรไฟล์เรียบร้อยแล้ว')
+                messages.success(request, 'Profile photo removed.')
             return redirect('plotcraft:profile')
 
         # 3. การบันทึกข้อมูลปกติ (Save Changes)
@@ -128,7 +129,7 @@ def profile(request):
         if u_form.is_valid() and p_form.is_valid():
             u_form.save()
             p_form.save()
-            messages.success(request, 'บันทึกข้อมูลสำเร็จ')
+            messages.success(request, 'Profile updated successfully.')
             return redirect('plotcraft:profile')
     else:
         u_form = UserForm(instance=request.user)
@@ -309,18 +310,16 @@ def chapter_delete(request, pk):
     return redirect('plotcraft:novel_detail', pk=novel_id)
 
 @login_required
+@require_POST
 def change_chapter_status(request, chapter_id, status):
-    # ฟังก์ชันสำหรับเปลี่ยนสถานะ Draft/finish แบบไม่ต้องรีโหลดหน้า
-    chapter = get_object_or_404(Chapter, id=chapter_id)
-    
-    # ตรวจสอบสิทธิ์ความเป็นเจ้าของก่อนบันทึก (กันคนอื่นมาแก้)
-    # if chapter.novel.author != request.user:
-    #    return JsonResponse({'success': False, 'error': 'Permission denied'}, status=403)
+    chapter = get_object_or_404(Chapter, id=chapter_id, novel__author=request.user)
     
     if status == 'finish':
         chapter.is_draft = False
     elif status == 'draft':
         chapter.is_draft = True
+    else:
+        return JsonResponse({'success': False, 'error': 'Invalid status.'}, status=400)
         
     chapter.save()
     
@@ -329,10 +328,7 @@ def change_chapter_status(request, chapter_id, status):
 
 @login_required
 def chapter_preview(request, pk):
-    chapter = get_object_or_404(Chapter, id=pk)
-    
-    if chapter.novel.author != request.user:
-         return HttpResponseForbidden("คุณไม่มีสิทธิ์ดูตัวอย่างตอนนี้")
+    chapter = get_object_or_404(Chapter, id=pk, novel__author=request.user)
 
     # หาตอนที่มี order น้อยกว่าปัจจุบัน (ตอนก่อนหน้า)
     previous_chapter = Chapter.objects.filter(
@@ -357,8 +353,13 @@ def chapter_preview(request, pk):
 
 # ==================== WORLDBUILDING (Characters, Locations, Items) ====================
 
+@login_required
 def worldbuilding_overview(request):
-    return render(request, "worldbuilding/overview.html")
+    return render(request, "worldbuilding/overview.html", {
+        'character_count': Character.objects.filter(created_by=request.user).count(),
+        'location_count': Location.objects.filter(created_by=request.user).count(),
+        'item_count': Item.objects.filter(created_by=request.user).count(),
+    })
 
 
 @login_required
@@ -442,7 +443,7 @@ def character_edit(request, pk):
     character = get_object_or_404(Character, id=pk) 
     
     if character.created_by != request.user:
-        messages.error(request, "คุณไม่มีสิทธิ์แก้ไข/ลบตัวละครนี้")
+        messages.error(request, "You do not have permission to edit or delete this character.")
         return redirect('plotcraft:character_detail', pk=pk)
 
     if request.method == 'POST':
@@ -450,7 +451,7 @@ def character_edit(request, pk):
         if "character_delete" in request.POST:
             character_name = character.name
             character.delete()
-            messages.success(request, f"ลบตัวละคร '{character_name}' เรียบร้อยแล้ว")
+            messages.success(request, f"Character '{character_name}' deleted.")
             return redirect('plotcraft:character_list')
 
         # การบันทึกแก้ไขปกติ
@@ -469,7 +470,7 @@ def character_edit(request, pk):
             # บันทึกความสัมพันธ์
             formset.save()
             
-            messages.success(request, f"บันทึกข้อมูลเรียบร้อยแล้ว")
+            messages.success(request, "Character updated successfully.")
             return redirect('plotcraft:character_detail', pk=obj.id)
             
     else:
@@ -488,7 +489,7 @@ def character_edit(request, pk):
 
 @login_required
 def character_detail(request, pk):
-    character = get_object_or_404(Character, id=pk)
+    character = get_object_or_404(Character, id=pk, created_by=request.user)
     return render(request, 'worldbuilding/character_detail.html', {'character': character})
 
 
@@ -501,7 +502,7 @@ def location_create(request):
             location.created_by = request.user
             location.save()
             form.save_m2m()
-            messages.success(request, f"สร้างสถานที่ '{location.name}' เรียบร้อยแล้ว")
+            messages.success(request, f"Location '{location.name}' created.")
             return redirect('plotcraft:location_detail', pk=location.id)
     else:
         initial = {}
@@ -533,7 +534,7 @@ def location_list(request):
 
 @login_required
 def location_detail(request, pk):
-    location = get_object_or_404(Location, id=pk)
+    location = get_object_or_404(Location, id=pk, created_by=request.user)
     return render(request, 'worldbuilding/location_detail.html', {'location': location})
 
 
@@ -542,14 +543,14 @@ def location_edit(request, pk):
     location = get_object_or_404(Location, id=pk)
     
     if location.created_by != request.user:
-        messages.error(request, "คุณไม่มีสิทธิ์แก้ไข/ลบสถานที่นี้")
+        messages.error(request, "You do not have permission to edit or delete this location.")
         return redirect('plotcraft:location_detail', pk=pk)
 
     if request.method == 'POST':
         if "location_delete" in request.POST:
             location_name = location.name
             location.delete()
-            messages.success(request, f"ลบสถานที่ '{location_name}' เรียบร้อยแล้ว")
+            messages.success(request, f"Location '{location_name}' deleted.")
             return redirect('plotcraft:location_list')
         
         form = LocationForm(request.user, request.POST, request.FILES, instance=location)
@@ -558,7 +559,7 @@ def location_edit(request, pk):
             obj.created_by = request.user
             obj.save()
             form.save_m2m()
-            messages.success(request, f"บันทึกสถานที่ '{obj.name}' เรียบร้อยแล้ว")
+            messages.success(request, f"Location '{obj.name}' updated.")
             return redirect('plotcraft:location_detail', pk=obj.id)
     else:
         form = LocationForm(request.user, instance=location)
@@ -578,7 +579,7 @@ def item_create(request):
             item.created_by = request.user
             item.save()
             form.save_m2m()
-            messages.success(request, f"สร้างไอเท็ม '{item.name}' เรียบร้อยแล้ว")
+            messages.success(request, f"Item '{item.name}' created.")
             return redirect('plotcraft:item_detail', pk=item.id)
     else:
         initial = {}
@@ -610,7 +611,7 @@ def item_list(request):
 
 @login_required
 def item_detail(request, pk):
-    item = get_object_or_404(Item, id=pk)
+    item = get_object_or_404(Item, id=pk, created_by=request.user)
     return render(request, 'worldbuilding/item_detail.html', {'item': item})
 
 
@@ -619,14 +620,14 @@ def item_edit(request, pk):
     item = get_object_or_404(Item, id=pk)
     
     if item.created_by != request.user:
-        messages.error(request, "คุณไม่มีสิทธิ์แก้ไข/ลบไอเท็มนี้")
+        messages.error(request, "You do not have permission to edit or delete this item.")
         return redirect('plotcraft:item_detail', pk=pk)
 
     if request.method == 'POST':
         if "item_delete" in request.POST:
             item_name = item.name
             item.delete()
-            messages.success(request, f"ลบไอเท็ม '{item_name}' เรียบร้อยแล้ว")
+            messages.success(request, f"Item '{item_name}' deleted.")
             return redirect('plotcraft:item_list')
         
         form = ItemForm(request.user, request.POST, request.FILES, instance=item)
@@ -635,7 +636,7 @@ def item_edit(request, pk):
             obj.created_by = request.user
             obj.save()
             form.save_m2m()
-            messages.success(request, f"บันทึกไอเท็ม '{obj.name}' เรียบร้อยแล้ว")
+            messages.success(request, f"Item '{obj.name}' updated.")
             return redirect('plotcraft:item_detail', pk=obj.id)
     else:
         form = ItemForm(request.user, instance=item)
@@ -692,14 +693,14 @@ def scene_create(request):
             obj = form.save(commit=False)
             # ตรวจสอบสิทธิ์: ผู้ใช้ต้องเป็นเจ้าของโปรเจกต์ที่จะเพิ่มฉาก
             if obj.project and getattr(obj.project, 'author', None) != request.user:
-                messages.error(request, "ไม่มีสิทธิ์สร้างฉากในโปรเจกต์นี้")
+                messages.error(request, "You do not have permission to create a scene in this novel.")
                 return redirect('plotcraft:scene_list')
 
             obj.created_by = request.user
             obj.save()
             form.save_m2m() # เซฟความสัมพันธ์พวก ตัวละคร, ไอเทม
 
-            messages.success(request, f"สร้างฉาก '{obj.title}' เรียบร้อย")
+            messages.success(request, f"Scene '{obj.title}' created.")
             url = reverse('plotcraft:scene_list')
             return redirect(f"{url}?project={obj.project.id}")
     else:
@@ -745,14 +746,14 @@ def scene_create(request):
 def render_character_list_for_scene(scene):
     characters = scene.characters.all()
     if not characters:
-        return "ไม่มีตัวละครในฉากนี้"
+        return "No characters in this scene"
     return ", ".join([char.name for char in characters])
 
 @login_required
 def render_item_list_for_scene(scene):
     items = scene.items.all()
     if not items:
-        return "ไม่มีไอเท็มในฉากนี้"
+        return "No items in this scene"
     return ", ".join([item.name for item in items])
 
 @login_required
@@ -760,14 +761,14 @@ def scene_edit(request, pk):
     scene = get_object_or_404(Scene, pk=pk)
 
     if scene.created_by != request.user:
-        messages.error(request, "ไม่มีสิทธิ์แก้ไข")
+        messages.error(request, "You do not have permission to edit this scene.")
         return redirect('plotcraft:scene_list')
 
     if request.method == 'POST':
         if "scene_delete" in request.POST:
             project_id = scene.project.id
             scene.delete()
-            messages.success(request, "ลบฉากเรียบร้อย")
+            messages.success(request, "Scene deleted.")
 
             url = reverse('plotcraft:scene_list')
             return redirect(f"{url}?project={project_id}")
@@ -775,7 +776,7 @@ def scene_edit(request, pk):
         form = SceneForm(request.user, request.POST, instance=scene)
         if form.is_valid():
             form.save()
-            messages.success(request, "บันทึกฉากเรียบร้อย")
+            messages.success(request, "Scene updated.")
 
             url = reverse('plotcraft:scene_list')
             return redirect(f"{url}?project={scene.project.id}")
@@ -790,13 +791,13 @@ def scene_delete(request, pk):
     scene = get_object_or_404(Scene, pk=pk)
 
     if scene.created_by != request.user:
-        messages.error(request, "ไม่มีสิทธิ์ลบ")
+        messages.error(request, "You do not have permission to delete this scene.")
         return redirect('plotcraft:scene_list')
 
     if request.method == 'POST':
         project_id = scene.project.id
         scene.delete()
-        messages.success(request, "ลบฉากเรียบร้อย")
+        messages.success(request, "Scene deleted.")
 
         url = reverse('plotcraft:scene_list')
         return redirect(f"{url}?project={project_id}")
@@ -815,20 +816,13 @@ def scene_detail(request, pk):
 
 # ==================== TIMELINE ====================
 
+@login_required
 def timeline_list(request):
-
-    # เตรียมตัวแปร bookmarked_ids ไว้ก่อน (เผื่อกรณีไม่ได้ login)
-    bookmarked_ids = []
-
-    if request.user.is_authenticated:
-        timelines = Timeline.objects.filter(created_by=request.user).order_by('-updated_at')
-
-        bookmarked_ids = Bookmark.objects.filter(
-            user=request.user,
-            content_type__model='timeline'
-        ).values_list('object_id', flat=True)
-    else:
-        timelines = Timeline.objects.all().order_by('-updated_at')
+    timelines = Timeline.objects.filter(created_by=request.user).order_by('-updated_at')
+    bookmarked_ids = Bookmark.objects.filter(
+        user=request.user,
+        content_type__model='timeline'
+    ).values_list('object_id', flat=True)
 
     return render(request, 'timeline/timeline_list.html', {
         'timelines': timelines,
@@ -852,14 +846,25 @@ def timeline_create(request):
     return render(request, 'timeline/timeline_form.html', {'form': form})
 
 
-def timeline_detail(request, pk):
-    timeline = get_object_or_404(Timeline, id=pk)
-    events = timeline.events.all().order_by('order')
-
-    if request.user.is_authenticated:
-        event_form = EventForm(user=request.user, timeline=timeline)
+@login_required
+def timeline_edit(request, pk):
+    timeline = get_object_or_404(Timeline, id=pk, created_by=request.user)
+    if request.method == 'POST':
+        form = TimelineForm(request.POST, instance=timeline, user=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Timeline updated successfully.')
+            return redirect('plotcraft:timeline_detail', pk=timeline.id)
     else:
-        event_form = EventForm()
+        form = TimelineForm(instance=timeline, user=request.user)
+    return render(request, 'timeline/timeline_form.html', {'form': form})
+
+
+@login_required
+def timeline_detail(request, pk):
+    timeline = get_object_or_404(Timeline, id=pk, created_by=request.user)
+    events = timeline.events.all().order_by('order')
+    event_form = EventForm(user=request.user, timeline=timeline)
 
     return render(request, 'timeline/timeline_detail.html', {
         'timeline': timeline,
@@ -879,6 +884,7 @@ def timeline_delete(request, pk):
     return render(request, 'timeline/timeline_confirm_delete.html', {'timeline': timeline})
 
 
+@login_required
 @require_POST
 def update_event_order(request):
     try:
@@ -916,7 +922,7 @@ def timeline_event_create(request, pk):
                 if not ev.description:
                     ev.description = ai_result
                 else:
-                    ev.description += f"\n\n[AI สรุป/ร่าง]\n" + ai_result
+                    ev.description += f"\n\n[AI draft]\n" + ai_result
             ev.save()
             form.save_m2m()
             return redirect('plotcraft:timeline_detail', pk=timeline.id)
@@ -946,7 +952,7 @@ def timeline_event_update(request, pk):
                 if not ev.description:
                     ev.description = ai_result
                 else:
-                    ev.description += f"\n\n[AI สรุป/ร่าง]\n" + ai_result
+                    ev.description += f"\n\n[AI draft]\n" + ai_result
             ev.save()
             form.save_m2m()
             return redirect('plotcraft:timeline_detail', pk=event.timeline.id)
@@ -966,7 +972,7 @@ def timeline_event_delete(request, pk):
     timeline_id = event.timeline.id
     if request.method == 'POST':
         event.delete()
-        messages.success(request, "ลบเหตุการณ์เรียบร้อย")
+        messages.success(request, "Event deleted.")
         return redirect('plotcraft:timeline_detail', pk=timeline_id)
     
     return render(request, 'timeline/event_confirm_delete.html', {'event': event})
@@ -1181,7 +1187,7 @@ def export_novel_epub(request, pk):
 <body>
     <div class="title-page-container">
         <div class="novel-title">{novel.title}</div>
-        <div class="author-name">โดย {novel.author.get_full_name() or novel.author.username}</div>
+        <div class="author-name">By {novel.author.get_full_name() or novel.author.username}</div>
     </div>
 </body></html>'''
     book.add_item(title_page)
@@ -1191,17 +1197,17 @@ def export_novel_epub(request, pk):
     # แก้ไขตรงนี้: ใช้ novel.synopsis ตามใน Models.py
     synopsis_page = None
     if novel.synopsis: 
-        synopsis_page = epub.EpubHtml(title="เรื่องย่อ", file_name="synopsis.xhtml", lang='th')
+        synopsis_page = epub.EpubHtml(title="Synopsis", file_name="synopsis.xhtml", lang='en')
         synopsis_page.add_item(nav_css)
         
         # แปลง \n เป็น <br> เพื่อให้ขึ้นบรรทัดใหม่สวยงาม
         desc_text = novel.synopsis.replace('\n', '<br/>')
         
         synopsis_page.content = f'''<!DOCTYPE html>
-<html lang="th"><head><title>เรื่องย่อ</title><link rel="stylesheet" type="text/css" href="nav.css"/></head>
+<html lang="en"><head><title>Synopsis</title><link rel="stylesheet" type="text/css" href="nav.css"/></head>
 <body>
     <div class="chapter-content">
-        <h1>เรื่องย่อ</h1>
+        <h1>Synopsis</h1>
         <div>{desc_text}</div>
     </div>
 </body></html>'''
@@ -1273,13 +1279,24 @@ def export_novel_epub(request, pk):
 
 # 1. ฟังก์ชันสำหรับกดปุ่ม Bookmark (Toggle: กดครั้งแรกเก็บ กดอีกทีลบ)
 @login_required
+@require_POST
 def toggle_bookmark(request, model_name, pk):
-    # หา ContentType จากชื่อ Model (เช่น 'character', 'novel')
-    try:
-        content_type = ContentType.objects.get(model=model_name.lower())
-    except ContentType.DoesNotExist:
-        messages.error(request, "ไม่พบประเภทข้อมูลที่ต้องการบันทึก")
+    owned_objects = {
+        'novel': Novel.objects.filter(author=request.user),
+        'character': Character.objects.filter(created_by=request.user),
+        'location': Location.objects.filter(created_by=request.user),
+        'item': Item.objects.filter(created_by=request.user),
+        'scene': Scene.objects.filter(created_by=request.user),
+        'timeline': Timeline.objects.filter(created_by=request.user),
+    }
+    model_name = model_name.lower()
+    queryset = owned_objects.get(model_name)
+    if queryset is None:
+        messages.error(request, "This type cannot be bookmarked.")
         return redirect('plotcraft:home')
+
+    get_object_or_404(queryset, pk=pk)
+    content_type = ContentType.objects.get_for_model(queryset.model)
 
     # เช็คว่ามีอยู่แล้วไหม (ถ้ามีดึงมา ถ้าไม่มีสร้างใหม่)
     bookmark, created = Bookmark.objects.get_or_create(
@@ -1291,13 +1308,19 @@ def toggle_bookmark(request, model_name, pk):
     if not created:
         # ถ้ามีอยู่แล้ว แปลว่า user กดซ้ำเพื่อ "ยกเลิก" -> ลบทิ้ง
         bookmark.delete()
-        messages.info(request, f'นำออกจากรายการโปรดแล้ว')
+        messages.info(request, 'Removed from bookmarks.')
     else:
         # ถ้าเพิ่งสร้าง -> แจ้งเตือน
-        messages.success(request, f'บันทึกลงรายการโปรดแล้ว')
+        messages.success(request, 'Saved to bookmarks.')
 
-    # เด้งกลับไปหน้าเดิมที่ user กดมา
-    return redirect(request.META.get('HTTP_REFERER', 'plotcraft:home'))
+    return_url = request.META.get('HTTP_REFERER')
+    if not return_url or not url_has_allowed_host_and_scheme(
+        return_url,
+        allowed_hosts={request.get_host()},
+        require_https=request.is_secure(),
+    ):
+        return redirect('plotcraft:home')
+    return redirect(return_url)
 
 # 2. หน้าแสดงรายการ Bookmark ทั้งหมด
 @login_required
@@ -1320,7 +1343,6 @@ def bookmark_list(request):
 
 # ==================== RAG SERVICE INTEGRATION ====================
 
-@csrf_exempt
 @login_required
 def ai_generate_scene(request):
     """ API สำหรับ Gen เนื้อหาฉาก (Draft) """
@@ -1350,7 +1372,6 @@ def ai_generate_scene(request):
 
     return JsonResponse({'error': 'Invalid method'}, status=405)
 
-@csrf_exempt
 @login_required
 def ai_chat_general(request):
     if request.method == "POST":
@@ -1371,7 +1392,6 @@ def ai_chat_general(request):
     
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
-@csrf_exempt
 @login_required
 def ai_generate_character(request):
     """ API สำหรับ Gen ข้อมูลตัวละคร """
@@ -1386,14 +1406,13 @@ def ai_generate_character(request):
             if char_data:
                 return JsonResponse({'success': True, 'data': char_data})
             else:
-                return JsonResponse({'success': False, 'error': 'แป๋ว... AI นึกไม่ออก ลองเปลี่ยนคำสั่งดูนะคะ'})
+                return JsonResponse({'success': False, 'error': 'The AI could not generate a result. Try a more specific concept.'})
                 
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
     
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
-@csrf_exempt
 @login_required
 def ai_generate_location(request):
     """ API สำหรับ Gen ข้อมูลสถานที่ """
@@ -1407,13 +1426,12 @@ def ai_generate_location(request):
             if loc_data:
                 return JsonResponse({'success': True, 'data': loc_data})
             else:
-                return JsonResponse({'success': False, 'error': 'แป๋ว... AI นึกไม่ออก ลองเปลี่ยนคำสั่งดูนะคะ'})
+                return JsonResponse({'success': False, 'error': 'The AI could not generate a result. Try a more specific concept.'})
                 
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
-@csrf_exempt
 @login_required
 def ai_generate_item(request):
     """ API สำหรับ Gen ข้อมูลไอเทม """
@@ -1427,14 +1445,13 @@ def ai_generate_item(request):
             if item_data:
                 return JsonResponse({'success': True, 'data': item_data})
             else:
-                return JsonResponse({'success': False, 'error': 'แป๋ว... AI นึกไม่ออก ลองเปลี่ยนคำสั่งดูนะคะ'})
+                return JsonResponse({'success': False, 'error': 'The AI could not generate a result. Try a more specific concept.'})
                 
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 
-@csrf_exempt
 @login_required
 def ai_generate_timeline_event(request):
     """ API สำหรับร่าง/สรุปเหตุการณ์ใน Timeline โดยใช้ rag_service.generate_timeline_event_summary """

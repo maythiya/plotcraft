@@ -1,9 +1,10 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Register | PlotCraft</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="{% static 'css/dist/styles.css' %}">
   <style>
       .checkbox-theme:checked {
           background-color: #DAA520;
@@ -75,7 +76,7 @@
       <div class="flex items-start mt-2">
           <input id="terms" name="terms" type="checkbox" required class="h-4 w-4 mt-0.5 text-[#DAA520] border-gray-300 rounded checkbox-theme focus:ring-[#DAA520]">
           <label for="terms" class="ml-2 block text-xs text-gray-600">
-            I accept the <a href="#" class="text-[#DAA520] hover:underline">terms of service</a> and <a href="#" class="text-[#DAA520] hover:underline">privacy policy</a>
+            I accept PlotCraft's terms of service and privacy policy.
           </label>
       </div>
 
