@@ -90,7 +90,6 @@
                     <div>
                         {% if form.instance.pk %}
                             <a href="{% url 'plotcraft:novel_delete' form.instance.pk %}"
-                               onclick="return confirm('Are you sure you want to delete this novel? All of its chapters will also be deleted.');"
                                class="text-red-500 font-bold hover:text-red-700
                                      hover:bg-red-50 px-4 py-2.5 rounded-lg transition 
                                      flex items-center gap-2">

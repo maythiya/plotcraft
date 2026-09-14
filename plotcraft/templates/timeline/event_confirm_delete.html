@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Delete event | PlotCraft{% endblock %}
+{% block content %}
+<section class="min-h-[70vh] flex items-center justify-center px-4 py-12">
+  <div class="w-full max-w-xl rounded-2xl border border-red-200/30 bg-[#0d3b2e] p-8 text-center shadow-2xl">
+    <div class="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-red-500/10 text-red-300">
+      <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.3 4.2 2.7 17.5A1.7 1.7 0 0 0 4.2 20h15.6a1.7 1.7 0 0 0 1.5-2.5L13.7 4.2a2 2 0 0 0-3.4 0Z"/></svg>
+    </div>
+    <p class="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-red-300">Permanent action</p>
+    <h1 class="text-3xl font-bold text-white">Delete this event?</h1>
+    <p class="mt-3 text-sm leading-6 text-emerald-100/70">“{{ event.title }}” will be permanently deleted from this timeline. This action cannot be undone.</p>
+    <form method="post" class="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-center">
+      {% csrf_token %}
+      <a href="{% url 'plotcraft:timeline_detail' event.timeline.id %}" class="inline-flex items-center justify-center rounded-xl border border-white/15 px-5 py-3 font-bold text-white transition hover:bg-white/10">Keep event</a>
+      <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-red-500 px-5 py-3 font-bold text-white transition hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300">Delete event</button>
+    </form>
+  </div>
+</section>
+{% endblock %}
